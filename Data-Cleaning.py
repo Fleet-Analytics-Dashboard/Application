@@ -1,5 +1,6 @@
 # Todo:
 #   - Replace 'clas_id', 'voc_id', 'type_id', 'drive_id' and 'fuel_id' with representing strings from PDF Document
+#   - Check for duplicate content e.g. characteristic acceleration
 
 import pandas as pd
 
@@ -101,13 +102,12 @@ new['max_acceleration_event_duration'] = df['max_acceleration_event_duration'].c
 new['max_deceleration_event_duration'] = df['max_deceleration_event_duration'].copy()
 new['characteristic_acceleration'] = df['characteristic_acceleration'].copy()
 new['characteristic_deceleration'] = df['characteristic_deceleration'].copy()
-new['ca_standard'] = df['ca_standard'].copy()
-new['cd_standard'] = df['cd_standard'].copy()
+#new['ca_standard'] = df['ca_standard'].copy()
+#new['cd_standard'] = df['cd_standard'].copy()
 new['cumulative_acceleration_duration'] = df['cumulative_acceleration_duration'].copy()
 new['cumulative_deceleration_duration'] = df['cumulative_deceleration_duration'].copy()
 new['absolute_time_cumulative_acceleration_duration'] = df['absolute_time_cumulative_acceleration_duration'].copy()
 new['absolute_time_cumulative_deceleration_duration'] = df['absolute_time_cumulative_deceleration_duration'].copy()
-
 
 # add all relevant columns from category 'Stops' (original column 174-192)
 new['average_stop_duration'] = df['average_stop_duration'].copy()
