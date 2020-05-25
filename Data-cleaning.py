@@ -1,14 +1,40 @@
-# Todo:
-#   - Replace 'clas_id', 'voc_id', 'type_id', 'drive_id' and 'fuel_id' with representing strings from PDF Document
-#   - Check for duplicate content e.g. characteristic acceleration
-
 import pandas as pd
 
 # import NREL-Fleet-DNA-Data.csv as dataframe 'df'
 df = pd.read_csv('Batch-data/composite-data-for-fleet-dna-csv-1.csv')
 
+
 # create new dataframe with all relevant columns and add all the IDs and vehicle information
 new = df[['vid', 'did', 'pid', 'class_id', 'voc_id', 'type_id', 'drive_id', 'fuel_id', 'day_id']].copy()
+
+# replace IDs for 'voc_id', 'type_id', 'drive_id', 'fuel_id' with their meaning
+# voc_id --> Vocation
+new.replace({'voc_id': {1: 'Telecom', 2: 'Beverage Delivery', 3: 'Warehouse Delivery', 4: 'Parcel Delivery',
+                        5: 'School Bus', 6: 'Linen Delivery', 7: 'Refuse Pickup', 8: 'Long Haul', 10: 'Mass Transit',
+                        11: 'Towing', 12: 'Grocery Delivery', 13: 'Port Drayage', 14: 'Food Delivery', 15: 'Snow Plow',
+                        16: 'Utility', 18: 'Local Delivery'}}, inplace=True)
+# type_id --> Vehicle Type
+new.replace({'type_id': {1: 'Beverage', 2: 'Bucket Truck', 3: 'Cement Mixer', 4: 'City Delivery', 5: 'City Transit Bus',
+                         6: 'Conventional Van', 7: 'Crew Size Pickup', 8: 'Dump', 9: 'Fire Truck', 10: 'Fuel',
+                         11: 'Full Size Pickup', 12: 'Furniture', 13: 'Heavy Semi Tractor', 14: 'High Profile Semi',
+                         15: 'Home Fuel', 16: 'Landscape Utility', 17: 'Medium Semi Tractor', 18: 'Mini Bus',
+                         20: 'Mini Pickup', 21: 'Minivan', 23: 'Rack', 24: 'Refrigerated Van', 25: 'Refuse Truck',
+                         26: 'School Bus', 27: 'Semi Sleeper', 28: 'Service Van', 29: 'Single Axle Van',
+                         30: 'Stake Body', 31: 'Step Van', 32: 'Straight Truck', 33: 'SUV', 34: 'Tour Bus', 35: 'Tow',
+                         36: 'Tractor', 37: 'Type C', 38: 'Utility Van', 39: 'Walk In'}}, inplace=True)
+
+# drive_id --> Drivetrain Type
+new.replace({'drive_id': {0: 'Conventional', 1: 'Parallel Hybrid', 2: 'Hydraulic Hybrid', 3: 'Series Hybrid',
+                          4: 'Hybrid', 5: 'Electric', 6: 'Hybrid Electric'}}, inplace=True)
+
+# fuel_id --> Fuel Type
+new.replace({'fuel_id': {0: 'Gasoline', 1: 'Diesel', 2: 'Electricity', 3: 'Compressed Natural Gas'}}, inplace=True)
+
+# rename columns for better understanding
+new = new.rename(
+    columns={'class_id': 'vehicle_class', 'voc_id': 'vocation', 'type_id': 'vehicel_type',
+             'drive_id': 'drivetrain_type', 'fuel_id': 'fuel_type'})
+
 
 # add all relevant columns from category 'Speed' (original column 17-123, 287-372)
 new['speed_data_duration_hrs_includes_zero'] = df['speed_data_duration_hrs'].copy()
@@ -101,8 +127,6 @@ new['min_acceleration_event_duration'] = df['min_acceleration_event_duration'].c
 new['min_deceleration_event_duration'] = df['min_deceleration_event_duration'].copy()
 new['max_acceleration_event_duration'] = df['max_acceleration_event_duration'].copy()
 new['max_deceleration_event_duration'] = df['max_deceleration_event_duration'].copy()
-# new['characteristic_acceleration'] = df['characteristic_acceleration'].copy()
-# new['characteristic_deceleration'] = df['characteristic_deceleration'].copy()
 
 new['cumulative_acceleration_duration'] = df['cumulative_acceleration_duration'].copy()
 new['cumulative_deceleration_duration'] = df['cumulative_deceleration_duration'].copy()
@@ -183,27 +207,17 @@ new['func_4_distance'] = df['func_4_distance'].copy()
 new['func_5_ttl'] = df['func_5_ttl'].copy()
 new['func_5_distance'] = df['func_5_distance'].copy()
 
-# new['spd_cat_1_ttl'] = df['spd_cat_1_ttl'].copy()
 new['spd_cat_1_distance'] = df['spd_cat_1_distance'].copy()
-# new['spd_cat_2_ttl'] = df['spd_cat_2_ttl'].copy()
 new['spd_cat_2_distance'] = df['spd_cat_2_distance'].copy()
-# new['spd_cat_3_ttl'] = df['spd_cat_3_ttl'].copy()
 new['spd_cat_3_distance'] = df['spd_cat_3_distance'].copy()
-# new['spd_cat_4_ttl'] = df['spd_cat_4_ttl'].copy()
 new['spd_cat_4_distance'] = df['spd_cat_4_distance'].copy()
-# new['spd_cat_5_ttl'] = df['spd_cat_5_ttl'].copy()
 new['spd_cat_5_distance'] = df['spd_cat_5_distance'].copy()
-# new['spd_cat_6_ttl'] = df['spd_cat_6_ttl'].copy()
 new['spd_cat_6_distance'] = df['spd_cat_6_distance'].copy()
-# new['spd_cat_7_ttl'] = df['spd_cat_7_ttl'].copy()
 new['spd_cat_7_distance'] = df['spd_cat_7_distance'].copy()
-# new['spd_cat_8_ttl'] = df['spd_cat_8_ttl'].copy()
 new['spd_cat_8_distance'] = df['spd_cat_8_distance'].copy()
 
 # replace the NaN values with 0
 new.fillna(0, inplace=True)
-# print(new['non_matched_ttl_zero_speed'])
 
 # save new df as new csv-file in same folder
 new.to_csv('Batch-data/cleaned-data-for-fleet-dna.csv')
-
