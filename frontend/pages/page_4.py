@@ -1,8 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 
-page_1_layout = html.Div([
-    html.H1('Overview'),
+page_4_layout = html.Div([
+    html.H1('Vehicles Tables'),
     html.Br(),
     dcc.Link('Go to to overview', href='/'),
     html.Br(),
@@ -13,9 +13,9 @@ page_1_layout = html.Div([
     dcc.Link('Go to vehicles tables view', href='/page-4'),
     html.Br(),
     html.Br(),
-    html.Div(id='page-1-content'),
-    dcc.Dropdown(
-        id='page-1-dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-        value='LA'
+    html.Div(id='page-4-content'),
+    dcc.RadioItems(
+        id='page-4-radios',
+        options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
+        value='Orange'
     )])
