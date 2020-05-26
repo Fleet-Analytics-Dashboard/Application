@@ -1,7 +1,7 @@
 import pandas as pd
 
 # import NREL-Fleet-DNA-Data.csv as dataframe 'df'
-df = pd.read_csv('Batch-data/composite-data-for-fleet-dna-csv-1.csv')
+df = pd.read_csv('batch-data/composite-data-for-fleet-dna-csv-1.csv')
 
 
 # create new dataframe with all relevant columns and add all the IDs and vehicle information
@@ -220,4 +220,4 @@ new['spd_cat_8_distance'] = df['spd_cat_8_distance'].copy()
 new.fillna(0, inplace=True)
 
 # save new df as new csv-file in same folder
-new.to_csv('Batch-data/cleaned-data-for-fleet-dna.csv')
+new.to_csv('batch-data/cleaned-data-for-fleet-dna.csv')
