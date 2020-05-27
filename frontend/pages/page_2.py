@@ -2,6 +2,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 from pandas.tests.groupby.test_value_counts import df
+import pandas as pd
+
+fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
 
 page_2_layout = html.Div([
     html.H1('Controlling'),

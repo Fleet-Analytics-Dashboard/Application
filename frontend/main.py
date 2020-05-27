@@ -4,9 +4,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from frontend.pages import page_1, page_2, page_3, page_4
-import pandas as pd
-
-fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
 
 app = dash.Dash()
 
