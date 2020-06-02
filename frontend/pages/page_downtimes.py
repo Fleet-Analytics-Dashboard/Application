@@ -1,13 +1,12 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
-from pandas.tests.groupby.test_value_counts import df
 import pandas as pd
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
 
-page_1_layout = html.Div([
-    html.H1('Overview'),
+page_layout = html.Div([
+    html.H1('Downtimes'),
     html.Br(),
     dcc.Link('Go to to overview', href='/'),
     html.Br(),
@@ -18,17 +17,17 @@ page_1_layout = html.Div([
     dcc.Link('Go to vehicles tables view', href='/page-4'),
     html.Br(),
     html.Br(),
-    html.Div(id='page-1-content'),
-    dcc.Dropdown(
-        id='page-1-dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-        value='LA'
+    html.Div(id='page-downtimes-content'),
+    dcc.RadioItems(
+        id='page-downtimes-radios',
+        options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
+        value='Orange'
     ),
     html.Br(),
     html.Br(),
     dash_table.DataTable(
-        data=df.to_dict('records'),
-        columns=[{'id': c, 'name': c} for c in df.columns],
+        data=fleet_data.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in fleet_data.columns],
         style_cell={'textAlign': 'left'},
         style_cell_conditional=[
             {

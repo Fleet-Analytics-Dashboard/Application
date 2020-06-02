@@ -3,7 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-from frontend.pages import page_1, page_2, page_3, page_4
+from frontend.pages import page_overview, page_controlling, page_downtimes, page_vehiclestables
 
 app = dash.Dash()
 
@@ -17,29 +17,29 @@ app.layout = html.Div([
 
 # Routing
 ## Page overview
-@app.callback(dash.dependencies.Output('page-1-content', 'children'),
-              [dash.dependencies.Input('page-1-dropdown', 'value')])
+@app.callback(dash.dependencies.Output('overview-content', 'children'),
+              [dash.dependencies.Input('overview-dropdown', 'value')])
 def page_1_dropdown(value):
     return 'You have selected "{}"'.format(value)
 
 
 ## Page controlling view
-@app.callback(Output('page-2-content', 'children'),
-              [Input('page-2-radios', 'value')])
+@app.callback(Output('controlling-content', 'children'),
+              [Input('controlling-radios', 'value')])
 def page_2_radios(value):
     return 'You have selected "{}"'.format(value)
 
 
 ## Page downtimes view
-@app.callback(Output('page-3-content', 'children'),
-              [Input('page-3-radios', 'value')])
+@app.callback(Output('downtimes-content', 'children'),
+              [Input('downtimes-radios', 'value')])
 def page_3_radios(value):
     return 'You have selected "{}"'.format(value)
 
 
 ## Page vehicles tables view
-@app.callback(Output('page-4-content', 'children'),
-              [Input('page-4-radios', 'value')])
+@app.callback(Output('vehicles-tables-content', 'children'),
+              [Input('vehicles-tables-radios', 'value')])
 def page_4_radios(value):
     return 'You have selected "{}"'.format(value)
 
@@ -49,13 +49,13 @@ def page_4_radios(value):
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return page_1.page_1_layout
-    elif pathname == '/page-2':
-        return page_2.page_2_layout
-    elif pathname == '/page-3':
-        return page_3.page_3_layout
-    elif pathname == '/page-4':
-        return page_4.page_4_layout
+        return page_overview.page_layout
+    elif pathname == '/controlling':
+        return page_controlling.page_layout
+    elif pathname == '/downtimes':
+        return page_downtimes.page_layout
+    elif pathname == '/vehicles-tables':
+        return page_vehiclestables.page_layout
     else:
         return '404'
 
