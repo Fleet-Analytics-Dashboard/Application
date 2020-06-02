@@ -7,8 +7,6 @@ from dash.dependencies import Input, Output
 
 from frontend.pages import page_overview, page_controlling, page_downtimes, page_vehiclestables
 
-server = app.server
-
 app = dash.Dash()
 
 app.config.suppress_callback_exceptions = True
@@ -65,7 +63,7 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
-    app.server(host='0.0.0.0', port=8080, debug=True)
+    app.run_server(host='0.0.0.0')
 
 app.css.config.serve_locally = True
 app.scripts.config.serve_locally = True
