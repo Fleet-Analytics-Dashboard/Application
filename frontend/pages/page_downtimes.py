@@ -1,13 +1,12 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
-from pandas.tests.groupby.test_value_counts import df
 import pandas as pd
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
 
-page_2_layout = html.Div([
-    html.H1('Controlling'),
+page_layout = html.Div([
+    html.H1('Downtimes'),
     html.Br(),
     dcc.Link('Go to to overview', href='/'),
     html.Br(),
@@ -18,9 +17,9 @@ page_2_layout = html.Div([
     dcc.Link('Go to vehicles tables view', href='/page-4'),
     html.Br(),
     html.Br(),
-    html.Div(id='page-2-content'),
+    html.Div(id='page-downtimes-content'),
     dcc.RadioItems(
-        id='page-2-radios',
+        id='page-downtimes-radios',
         options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
         value='Orange'
     ),
