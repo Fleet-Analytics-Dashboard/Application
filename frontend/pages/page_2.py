@@ -27,8 +27,8 @@ page_2_layout = html.Div([
     html.Br(),
     html.Br(),
     dash_table.DataTable(
-        data=df.to_dict('records'),
-        columns=[{'id': c, 'name': c} for c in df.columns],
+        data=fleet_data.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in fleet_data.columns],
         style_cell={'textAlign': 'left'},
         style_cell_conditional=[
             {
