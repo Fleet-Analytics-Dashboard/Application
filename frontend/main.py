@@ -61,7 +61,7 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host='0.0.0.0')
 
 app.css.config.serve_locally = True
 app.scripts.config.serve_locally = True
