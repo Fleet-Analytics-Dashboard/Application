@@ -64,21 +64,36 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 PAGE_SIZE = 10
 
 app.layout = dash_table.DataTable(
-    id='datatable-paging',
+    id='table-paging-and-sorting',
     columns=[
-        {"name": i, "id": i} for i in sorted(df_vehicle_table1.columns)
+        {'name': i, 'id': i, 'deletable': True} for i in df_vehicle_table1.columns
     ],
     page_current=0,
     page_size=PAGE_SIZE,
     page_action='custom',
+
+    sort_action='custom',
+    sort_mode='single',
+    sort_by=[]
 )
 
 @app.callback(
-    Output('datatable-paging', 'data'),
-    [Input('datatable-paging', "page_current"),
-     Input('datatable-paging', "page_size")])
-def update_table(page_current,page_size):
-    return df_vehicle_table1.iloc[
+    Output('table-paging-and-sorting', 'data'),
+    [Input('table-paging-and-sorting', "page_current"),
+     Input('table-paging-and-sorting', "page_size"),
+     Input('table-paging-and-sorting', 'sort_by')])
+def update_table(page_current, page_size, sort_by):
+    if len(sort_by):
+        dff = df.sort_values(
+            sort_by[0]['column_id'],
+            ascending=sort_by[0]['direction'] == 'asc',
+            inplace=False
+        )
+    else:
+        # No sort is applied
+        dff = df_vehicle_table1
+
+    return dff.iloc[
         page_current*page_size:(page_current+ 1)*page_size
     ].to_dict('records')
 
