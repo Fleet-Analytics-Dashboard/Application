@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
 import dash_table
 import pandas as pd
 import dash
@@ -40,7 +41,7 @@ page_layout = html.Div([
 
 
 df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv')
-df_vehicle_table1 = df[['vehicel_type','drivetrain_type','fuel_type','day_id','speed_data_duration_hrs_includes_zero']]
+df_vehicle_table1 = df[['vid','vehicel_type','drivetrain_type','fuel_type','day_id','speed_data_duration_hrs_includes_zero']]
 
 
 def generate_table(dataframe, max_rows=10):
@@ -60,10 +61,26 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = html.Div(children=[
-    html.H4(children='Vehicle Table'),
-    generate_table(df_vehicle_table1)
-])
+PAGE_SIZE = 10
+
+app.layout = dash_table.DataTable(
+    id='datatable-paging',
+    columns=[
+        {"name": i, "id": i} for i in sorted(df_vehicle_table1.columns)
+    ],
+    page_current=0,
+    page_size=PAGE_SIZE,
+    page_action='custom',
+)
+
+@app.callback(
+    Output('datatable-paging', 'data'),
+    [Input('datatable-paging', "page_current"),
+     Input('datatable-paging', "page_size")])
+def update_table(page_current,page_size):
+    return df_vehicle_table1.iloc[
+        page_current*page_size:(page_current+ 1)*page_size
+    ].to_dict('records')
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8055)
