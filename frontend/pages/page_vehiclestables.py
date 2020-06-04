@@ -6,6 +6,8 @@ import pandas as pd
 import dash
 
 fleet_data = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv')
+df_vehicle_table1 = fleet_data[['vid','vehicel_type','drivetrain_type','fuel_type','day_id','speed_data_duration_hrs_includes_zero']]
+
 
 page_layout = html.Div([
     html.H1('Vehicles Tables'),
@@ -40,8 +42,6 @@ page_layout = html.Div([
 ])
 
 
-df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv')
-df_vehicle_table1 = df[['vid','vehicel_type','drivetrain_type','fuel_type','day_id','speed_data_duration_hrs_includes_zero']]
 
 
 def generate_table(dataframe, max_rows=10):
@@ -150,5 +150,6 @@ def update_table(page_current, page_size, sort_by, filter):
     size = page_size
     return dff.iloc[page * size: (page + 1) * size].to_dict('records')
 
+
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8055)
+    app.run_server(debug=True, port=8051)
