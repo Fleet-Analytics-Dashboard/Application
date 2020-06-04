@@ -4,26 +4,10 @@ import dash_table
 import pandas as pd
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
+fleet_data = fleet_data.head(10) # limits the displayed rows to 10
 
 page_layout = html.Div([
     html.H1('Vehicles Tables'),
-    html.Br(),
-    dcc.Link('Go to to overview', href='/'),
-    html.Br(),
-    dcc.Link('Go to to controlling view ', href='/page-2'),
-    html.Br(),
-    dcc.Link('Go to downtimes view', href='/page-3'),
-    html.Br(),
-    dcc.Link('Go to vehicles tables view', href='/page-4'),
-    html.Br(),
-    html.Br(),
-    html.Div(id='page-vehicles-tables-content'),
-    dcc.RadioItems(
-        id='page-vehicles-tables-radios',
-        options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
-        value='Orange'
-    ),
-    html.Br(),
     html.Br(),
     dash_table.DataTable(
         data=fleet_data.to_dict('records'),
