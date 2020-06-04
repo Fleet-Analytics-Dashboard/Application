@@ -1,5 +1,3 @@
-import os
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -63,7 +61,7 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0')
+    app.run_server(debug=True)
 
 app.css.config.serve_locally = True
 app.scripts.config.serve_locally = True
