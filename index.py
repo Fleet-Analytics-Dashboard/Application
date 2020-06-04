@@ -1,7 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from app import app
-from frontend.pages import overview, controlling, downtimes, vehiclestables
+from pages import controlling
 
 index_page = html.Div([
     dcc.Link('Go to page overview', href='/pages/page_controlling'),
