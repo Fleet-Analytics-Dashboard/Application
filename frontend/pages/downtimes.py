@@ -4,9 +4,21 @@ import dash_table
 import pandas as pd
 import plotly.graph_objects as go
 
+#Daten
+
+fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
+fleet_data = fleet_data.head(10) # limits the displayed rows to 10
+
+
+#PieCharts
+
+labels = ['Accidents','Traffic Jams','Maintenance','Unused']
+values = [20, 30, 10, 40]
+
+pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
 #Mapbox
-#mapbox_access_token = open("pk.eyJ1IjoiamFrb2JzY2hhYWwiLCJhIjoiY2tiMWVqYnYwMDEyNDJ5bWF3YWhnMTFnNCJ9.KitYnq2a645C15FwvFdqAw").read()
+#mapbox_access_token = open(".mapbox_token").read()
 
 fig = go.Figure(go.Scattermapbox(
         lat=['38.91427','38.91538','38.91458',
@@ -48,11 +60,7 @@ fig.update_layout(
 
 
 
-#Daten
 
-
-fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
-fleet_data = fleet_data.head(10) # limits the displayed rows to 10
 
 page_layout = html.Div([
 
@@ -60,18 +68,16 @@ page_layout = html.Div([
 
     dcc.Tabs([
         dcc.Tab(label='Downtimes', children=[
-            dcc.Graph(
-                figure={
-                    'data': [
-                        {'x': [1, 2, 3], 'y': [4, 1, 2],
-                         'type': 'bar', 'name': 'SF'},
-                        {'x': [1, 2, 3], 'y': [2, 4, 5],
-                         'type': 'bar', 'name': u'Montréal'},
-                    ]
-                }
-            )
+            html.Div(
+                dcc.Graph(figure=pie1),
+            style = {'width': '49%', 'display': 'inline-block'}),
+            html.Div(
+                dcc.Graph(figure=fig),
+            style={'width': '49%', 'display': 'inline-block'}),
         ]),
-        dcc.Tab(label='Maintenance', children=[
+
+
+        dcc.Tab(label='Maintenance Calendar', children=[
             dcc.Graph(
                 figure={
                     'data': [
@@ -83,7 +89,7 @@ page_layout = html.Div([
                 }
             )
         ]),
-        dcc.Tab(label='Map', children=[
+        dcc.Tab(label='Realtime Map', children=[
 
             dcc.Graph(figure=fig),
 
