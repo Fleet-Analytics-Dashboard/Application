@@ -8,14 +8,31 @@ import plotly.graph_objects as go
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
 fleet_data = fleet_data.head(10) # limits the displayed rows to 10
+#fleet_data.iloc[:,1:3]
 
 
 #PieCharts
+
+#Downtimes Overview
 
 labels = ['Accidents','Traffic Jams','Maintenance','Unused']
 values = [20, 30, 10, 40]
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+
+#Need for Maintenance
+
+labels = ['Need','Soon','No need']
+values = [2, 5, 10]
+
+pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+
+#Accident Probability
+
+labels = ['Category 1','Category 2','Category 3']
+values = [20, 30, 10, 40]
+
+pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
 #Mapbox
 #mapbox_access_token = open(".mapbox_token").read()
@@ -67,16 +84,92 @@ page_layout = html.Div([
 #Tab-Layout
 
     dcc.Tabs([
+
+#Downtimes View
+
         dcc.Tab(label='Downtimes', children=[
+#Row 1
             html.Div(
                 dcc.Graph(figure=pie1),
             style = {'width': '49%', 'display': 'inline-block'}),
             html.Div(
                 dcc.Graph(figure=fig),
             style={'width': '49%', 'display': 'inline-block'}),
+
+#Row 2
+            html.Div(
+                dcc.Graph(figure=pie2),
+            style = {'width': '49%', 'display': 'inline-block'}),
+            html.Div(
+                dcc.Graph(figure=pie3),
+            style={'width': '49%', 'display': 'inline-block'}),
+
+#Row 3 - Truck / Driver information
+
+        #Overstepping speed limit table
+        html.Div(
+            dash_table.DataTable(
+            data=fleet_data.to_dict('records'),
+            #columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:,['vid','vehicle_class']]],
+            style_cell={'textAlign': 'left'},
+            style_cell_conditional=[
+
+            ]),
+            style={'width': '19%', 'display': 'inline-block'}),
+
+        #Oldest Vehicles table
+        html.Div(
+            dash_table.DataTable(
+            data=fleet_data.to_dict('records'),
+            #columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:,['vid','vehicle_class']]],
+            style_cell={'textAlign': 'left'},
+            style_cell_conditional=[
+
+            ]),
+            style={'width': '19%', 'display': 'inline-block'}),
+
+        #Excessive speeding table
+        html.Div(
+            dash_table.DataTable(
+            data=fleet_data.to_dict('records'),
+            #columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:,['vid','vehicle_class']]],
+            style_cell={'textAlign': 'left'},
+            style_cell_conditional=[
+
+            ]),
+            style={'width': '19%', 'display': 'inline-block'}),
+
+        #Excessive acceleration table
+        html.Div(
+            dash_table.DataTable(
+            data=fleet_data.to_dict('records'),
+            #columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:,['vid','vehicle_class']]],
+            style_cell={'textAlign': 'left'},
+            style_cell_conditional=[
+
+            ]),
+            style={'width': '19%', 'display': 'inline-block'}),
+
+        #Excessive breaking table
+        html.Div(
+            dash_table.DataTable(
+            data=fleet_data.to_dict('records'),
+            #columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:,['vid','vehicle_class']]],
+            style_cell={'textAlign': 'left'},
+            style_cell_conditional=[
+
+            ]),
+            style={'width': '19%', 'display': 'inline-block'}),
+
+
         ]),
 
-
+# Maintenance Calendar View
         dcc.Tab(label='Maintenance Calendar', children=[
             dcc.Graph(
                 figure={
@@ -89,6 +182,8 @@ page_layout = html.Div([
                 }
             )
         ]),
+
+        #Fleet location map view
         dcc.Tab(label='Realtime Map', children=[
 
             dcc.Graph(figure=fig),
