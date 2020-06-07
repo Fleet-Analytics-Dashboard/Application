@@ -4,6 +4,7 @@ import dash_table
 import pandas as pd
 import plotly.graph_objects as go
 
+
 #Daten
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
@@ -70,7 +71,8 @@ fig.update_layout(
             lon=-77.07
         ),
         pitch=0,
-        zoom=10
+        zoom=10,
+        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
     ),
 )
 
@@ -166,7 +168,7 @@ page_layout = html.Div([
             style_cell_conditional=[
 
             ]),
-            style={'width': '19%', 'display': 'inline-block'}),
+            style={'width': '20%', 'display': 'inline-block'}),
 
         #Oldest Vehicles table
         html.Div(
@@ -178,7 +180,7 @@ page_layout = html.Div([
             style_cell_conditional=[
 
             ]),
-            style={'width': '19%', 'display': 'inline-block'}),
+            style={'width': '20%', 'display': 'inline-block'}),
 
         #Excessive speeding table
         html.Div(
@@ -190,7 +192,7 @@ page_layout = html.Div([
             style_cell_conditional=[
 
             ]),
-            style={'width': '19%', 'display': 'inline-block'}),
+            style={'width': '20%', 'display': 'inline-block'}),
 
         #Excessive acceleration table
         html.Div(
@@ -202,7 +204,7 @@ page_layout = html.Div([
             style_cell_conditional=[
 
             ]),
-            style={'width': '19%', 'display': 'inline-block'}),
+            style={'width': '20%', 'display': 'inline-block'}),
 
         #Excessive breaking table
         html.Div(
@@ -214,7 +216,7 @@ page_layout = html.Div([
             style_cell_conditional=[
 
             ]),
-            style={'width': '19%', 'display': 'inline-block'}),
+            style={'width': '20%', 'display': 'inline-block'}),
 
 
         ]),
