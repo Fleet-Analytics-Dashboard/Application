@@ -88,21 +88,71 @@ page_layout = html.Div([
 #Downtimes View
 
         dcc.Tab(label='Downtimes', children=[
+        #html.H2('Downtimes'),
 #Row 1
-            html.Div(
-                dcc.Graph(figure=pie1),
-            style = {'width': '49%', 'display': 'inline-block'}),
-            html.Div(
-                dcc.Graph(figure=fig),
-            style={'width': '49%', 'display': 'inline-block'}),
+        html.Div([
+
+                html.Div([
+                    html.Div(
+                        html.H2('Vehicle Downtimes'),
+                        style={'text-align': 'center'}
+                        ),
+                    html.Div([
+                        #Graph Towntimes
+                        dcc.Graph(figure=pie1, style={'width': '59%', 'margin': '0'}),
+
+                       # dcc.Graph(figure=pie1, style={'width': '40%', 'margin': '0'}),
+                    ]),
+                ],style={'width': '49%', 'display': 'inline-block', 'margin': '0'}),
+
+
+#Accidents
+            html.Div([
+                html.Div([
+                    html.Div(
+                        html.H2('Accidents'),
+                        style={'text-align': 'center'}
+                        ),
+                    html.Div(
+                        dcc.Graph(figure=fig),
+                        ),
+                ]),
+
+            ],style={'width': '49%', 'display': 'inline-block', 'margin': '0'}),
+        ]),
+
 
 #Row 2
-            html.Div(
-                dcc.Graph(figure=pie2),
-            style = {'width': '49%', 'display': 'inline-block'}),
-            html.Div(
-                dcc.Graph(figure=pie3),
-            style={'width': '49%', 'display': 'inline-block'}),
+
+            #Need for Maintenance View
+            html.Div([
+                html.Div(
+                    html.H2('Need for Maintanance'),
+                    style={'text-align': 'center'}
+                ),
+                html.Div([
+                    #Graph - Need for Maintanance
+                    dcc.Graph(figure=pie1, style={'width': '59%', 'margin': '0'}),
+
+                    #Table - Need for maintenance
+
+                ]),
+            ], style={'width': '49%', 'display': 'inline-block'}),
+
+            #Accident probability view
+            html.Div([
+                html.Div(
+                    html.H2('Accident probability'),
+                    style={'text-align': 'center'}
+                ),
+                html.Div([
+                    # Graph - Accident probability
+                    dcc.Graph(figure=pie1, style={'width': '59%', 'margin': '0'}),
+
+                    # Table - Accident probability
+
+                ]),
+            ], style={'width': '49%', 'display': 'inline-block'}),
 
 #Row 3 - Truck / Driver information
 
