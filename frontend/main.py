@@ -6,8 +6,8 @@ import dash_bootstrap_components as dbc
 
 from frontend.pages import overview, controlling, downtimes, vehiclestables
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
+app = dash.Dash(__name__)
+ #, external_stylesheets=[dbc.themes.BOOTSTRAP]
 #Navigationbar
 
 navigation = dbc.Nav(
@@ -18,6 +18,7 @@ navigation = dbc.Nav(
         dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
     ],
     pills=True,
+    style={'align-items' :'left'}
 )
 
 app.config.suppress_callback_exceptions = True
