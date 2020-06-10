@@ -45,4 +45,4 @@ def display_page(pathname):
 
 # server
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0', debug=False, port=8020)
+    app.run_server(host='0.0.0.0', debug=False, port=8080)
