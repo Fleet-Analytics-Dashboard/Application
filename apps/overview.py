@@ -1,6 +1,6 @@
 import dash_html_components as html
 
-overview_layout = html.Div(children=[
+layout = html.Div(children=[
     html.H1(children='Overview'),
 
     html.Div(children='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut '

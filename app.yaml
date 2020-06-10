@@ -10,4 +10,6 @@ resources:
     memory_gb: 1
     disk_size_gb: 10
 
+# 8080 port needs to match the port specified in the app.py
+# app:server needs to match the app.py file and the server variable in the app.py
 entrypoint: gunicorn -b 0.0.0.0:8080 app:server

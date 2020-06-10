@@ -7,6 +7,7 @@ from apps import vehiclestables, downtimes, controlling, overview
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
+# navigation
 app.layout = html.Div([
     # represents the URL bar, doesn't render anything
     dcc.Location(id='url', refresh=False),
@@ -27,18 +28,18 @@ app.layout = html.Div([
 
 server = app.server
 
-# Routing: index page callback
+# routing based on navigation
 @app.callback(Output('page-content', 'children'),
                    [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return overview.overview_layout
+        return overview.layout
     elif pathname == '/controlling':
-        return controlling.controlling_layout
+        return controlling.layout
     elif pathname == '/downtimes':
-        return downtimes.donwtimes_layout
+        return downtimes.layout
     elif pathname == '/vehicles-tables':
-        return vehiclestables.vehiclestabes_layout
+        return vehiclestables.layout
     else:
         return '404'
 
