@@ -10,4 +10,4 @@ resources:
     memory_gb: 1
     disk_size_gb: 10
 
-entrypoint: gunicorn -b 0.0.0.0:8080 main:server
+entrypoint: gunicorn -b 0.0.0.0:8080 app:server
