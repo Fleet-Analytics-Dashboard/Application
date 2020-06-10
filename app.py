@@ -3,11 +3,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-from pages import overview, controlling, downtimes, vehiclestables
+from apps import vehiclestables, downtimes, controlling, overview
 
-app = dash.Dash()
-
-app.config.suppress_callback_exceptions = True
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 app.layout = html.Div([
     # represents the URL bar, doesn't render anything
@@ -27,21 +25,24 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
+server = app.server
+
 # Routing: index page callback
 @app.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
+                   [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return overview.page_layout
+        return overview.overview_layout
     elif pathname == '/controlling':
-        return controlling.page_layout
+        return controlling.controlling_layout
     elif pathname == '/downtimes':
-        return downtimes.page_layout
+        return downtimes.donwtimes_layout
     elif pathname == '/vehicles-tables':
-        return vehiclestables.page_layout
+        return vehiclestables.vehiclestabes_layout
     else:
         return '404'
 
-# Server
+
+# server
 if __name__ == '__main__':
-    app.server(host='0.0.0.0', port=8080, debug=True)
+    app.run_server(host='0.0.0.0', debug=False, port=8020)
