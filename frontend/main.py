@@ -3,7 +3,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-from frontend.pages import page_overview, page_controlling, page_downtimes, page_vehiclestables
+from frontend.pages import page_overview, page_controlling, page_downtimes
+from frontend.pages.page_vehiclestable import page_vehiclestables
 
 app = dash.Dash()
 
