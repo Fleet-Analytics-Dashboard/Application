@@ -130,3 +130,6 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# Project folder with database connection
+hidden/database_config.py

@@ -16,4 +16,6 @@ numpy
 pytz
 retrying
 six
-Werkzeug
+
+psycopg2
+sqlalchemy
