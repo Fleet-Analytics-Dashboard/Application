@@ -1,8 +1,11 @@
 import pandas as pd
+from database_connection import connect, return_enginge
 
-# import NREL-Fleet-DNA-Data.csv as dataframe 'df'
-df = pd.read_csv('batch-data/composite-data-for-fleet-dna-csv-1.csv')
-
+# connect to database and add files to
+conn = connect()
+sql = "select * from raw_data_fleet_dna;"
+df = pd.read_sql_query(sql, conn)
+conn = None
 
 # create new dataframe with all relevant columns and add all the IDs and vehicle information
 new = df[['vid', 'did', 'pid', 'class_id', 'voc_id', 'type_id', 'drive_id', 'fuel_id', 'day_id']].copy()
@@ -219,5 +222,7 @@ new['spd_cat_8_distance'] = df['spd_cat_8_distance'].copy()
 # replace the NaN values with 0
 new.fillna(0, inplace=True)
 
-# save new df as new csv-file in same folder
-new.to_csv('batch-data/cleaned-data-for-fleet-dna.csv')
+# create new Database Table from Dataframe
+engine = return_enginge()
+new.to_sql('cleaned_data_fleet_dna', con=engine, if_exists='replace')
+engine = None
