@@ -1,6 +1,8 @@
 import psycopg2 as pg
 from sqlalchemy import create_engine
 import hidden.database_config as config
+import enum
+enum.IntFlag
 
 
 def connect():
