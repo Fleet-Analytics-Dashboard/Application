@@ -1,10 +1,10 @@
-dash==1.13.3
+dash
 dash-core-components
 dash-html-components
 dash-renderer
 pandas
-gunicorn==19.10.0
-Flask==1.1.2
+gunicorn
+Flask
 Flask-Compress
 numpy
 Werkzeug
