@@ -178,14 +178,23 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dcc.Graph(figure=pie1)),
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
+                        dbc.Col([
 
-                            ]), ),
+                            dcc.RadioItems(
+                                id='page-controlling-radios-2',
+                                options=[{'label': i, 'value': i}
+                                         for i in ['Unused', 'Traffic Jams', 'Accidents', 'Maintenance']],
+                                value='Overall'),
+
+                            dash_table.DataTable(
+                                data=fleet_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                                style_cell={'textAlign': 'left'},
+                                style_cell_conditional=[
+
+                                ]),
+                        ]),
                     ]),
                 ], className='container', width=True),
 
@@ -219,16 +228,23 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dcc.Graph(figure=pie2)),
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
+                        dbc.Col([
+                            dcc.RadioItems(
+                                id='page-controlling-radios-2',
+                                options=[{'label': i, 'value': i}
+                                         for i in ['Need', 'Soon', 'No need']],
+                                value='Overall'),
+                            dash_table.DataTable(
+                                data=fleet_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                                style_cell={'textAlign': 'left'},
+                                style_cell_conditional=[
 
-                            ]), ),
+                                ]),
+                        ]),
                     ]),
-                ],className='container', width=True),
+                ], className='container', width=True),
 
                 dbc.Col([
                     dbc.Row(
@@ -241,25 +257,31 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dcc.Graph(figure=pie3)),
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
+                        dbc.Col([
+                            dcc.RadioItems(
+                                id='page-controlling-radios-2',
+                                options=[{'label': i, 'value': i}
+                                         for i in ['Category 1', 'Category 2', 'Category 3']],
+                                value='Overall'),
 
-                            ]), ),
+                            dash_table.DataTable(
+                                data=fleet_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                                style_cell={'textAlign': 'left'},
+                                style_cell_conditional=[
+                                ]),
+                        ]),
                     ]),
                 ], className='container', width=True),
 
             ]),
 
-############# Row 3 #############
+            ############# Row 3 #############
 
+            dbc.Row([
 
-dbc.Row([
-
-# Overstepping speed limit table
+                # Overstepping speed limit table
 
                 dbc.Col([
                     dbc.Row(
@@ -282,7 +304,7 @@ dbc.Row([
                     ]),
                 ], className='container', width=True),
 
-# Oldest Vehicles table
+                # Oldest Vehicles table
 
                 dbc.Col([
                     dbc.Row(
@@ -305,7 +327,7 @@ dbc.Row([
                     ]),
                 ], className='container', width=True),
 
-# Excessive speeding table
+                # Excessive speeding table
 
                 dbc.Col([
                     dbc.Row(
@@ -328,7 +350,7 @@ dbc.Row([
                     ]),
                 ], className='container', width=True),
 
-# Excessive acceleration table
+                # Excessive acceleration table
 
                 dbc.Col([
                     dbc.Row(
@@ -351,7 +373,7 @@ dbc.Row([
                     ]),
                 ], className='container', width=True),
 
-# Excessive breaking table
+                # Excessive breaking table
 
                 dbc.Col([
                     dbc.Row(
@@ -375,11 +397,9 @@ dbc.Row([
                 ], className='container', width=True),
             ]),
 
-
         ]),
 
-
-################### Maintenance Calendar View ##################
+        ################### Maintenance Calendar View ##################
         dcc.Tab(label='Maintenance Calendar', children=[
             dcc.Graph(figure=plt)
 
