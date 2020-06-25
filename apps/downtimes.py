@@ -254,71 +254,132 @@ layout = html.Div([
 
             ]),
 
-            # Row 3 - Truck / Driver information
+############# Row 3 #############
 
-            # Overstepping speed limit table
-            html.Div(
-                dash_table.DataTable(
-                    data=fleet_data.to_dict('records'),
-                    # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                    columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                    style_cell={'textAlign': 'left'},
-                    style_cell_conditional=[
 
+dbc.Row([
+
+# Overstepping speed limit table
+
+                dbc.Col([
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Overstepping Speed Limit'),
+                                style={'text-align': 'center'}
+                            ),
+                        ),
+                    ),
+                    dbc.Row([
+                        dbc.Col(dash_table.DataTable(
+                            data=fleet_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                            style_cell={'textAlign': 'left'},
+                            style_cell_conditional=[
+
+                            ]), ),
                     ]),
-                style={'width': '20%', 'display': 'inline-block'}),
+                ], className='container', width=True),
 
-            # Oldest Vehicles table
-            html.Div(
-                dash_table.DataTable(
-                    data=fleet_data.to_dict('records'),
-                    # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                    columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                    style_cell={'textAlign': 'left'},
-                    style_cell_conditional=[
+# Oldest Vehicles table
 
+                dbc.Col([
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Oldest Vehicles'),
+                                style={'text-align': 'center'}
+                            ),
+                        ),
+                    ),
+                    dbc.Row([
+                        dbc.Col(dash_table.DataTable(
+                            data=fleet_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                            style_cell={'textAlign': 'left'},
+                            style_cell_conditional=[
+
+                            ]), ),
                     ]),
-                style={'width': '20%', 'display': 'inline-block'}),
+                ], className='container', width=True),
 
-            # Excessive speeding table
-            html.Div(
-                dash_table.DataTable(
-                    data=fleet_data.to_dict('records'),
-                    # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                    columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                    style_cell={'textAlign': 'left'},
-                    style_cell_conditional=[
+# Excessive speeding table
 
+                dbc.Col([
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Excessive Speeding'),
+                                style={'text-align': 'center'}
+                            ),
+                        ),
+                    ),
+                    dbc.Row([
+                        dbc.Col(dash_table.DataTable(
+                            data=fleet_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                            style_cell={'textAlign': 'left'},
+                            style_cell_conditional=[
+
+                            ]), ),
                     ]),
-                style={'width': '20%', 'display': 'inline-block'}),
+                ], className='container', width=True),
 
-            # Excessive acceleration table
-            html.Div(
-                dash_table.DataTable(
-                    data=fleet_data.to_dict('records'),
-                    # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                    columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                    style_cell={'textAlign': 'left'},
-                    style_cell_conditional=[
+# Excessive acceleration table
 
+                dbc.Col([
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Excessive Acceleration'),
+                                style={'text-align': 'center'}
+                            ),
+                        ),
+                    ),
+                    dbc.Row([
+                        dbc.Col(dash_table.DataTable(
+                            data=fleet_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                            style_cell={'textAlign': 'left'},
+                            style_cell_conditional=[
+
+                            ]), ),
                     ]),
-                style={'width': '20%', 'display': 'inline-block'}),
+                ], className='container', width=True),
 
-            # Excessive breaking table
-            html.Div(
-                dash_table.DataTable(
-                    data=fleet_data.to_dict('records'),
-                    # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                    columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                    style_cell={'textAlign': 'left'},
-                    style_cell_conditional=[
+# Excessive breaking table
 
+                dbc.Col([
+                    dbc.Row(
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Excessive Breaking'),
+                                style={'text-align': 'center'}
+                            ),
+                        ),
+                    ),
+                    dbc.Row([
+                        dbc.Col(dash_table.DataTable(
+                            data=fleet_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
+                            style_cell={'textAlign': 'left'},
+                            style_cell_conditional=[
+
+                            ]), ),
                     ]),
-                style={'width': '20%', 'display': 'inline-block'}),
+                ], className='container', width=True),
+            ]),
+
 
         ]),
 
-        # Maintenance Calendar View
+
+################### Maintenance Calendar View ##################
         dcc.Tab(label='Maintenance Calendar', children=[
             dcc.Graph(figure=plt)
 
