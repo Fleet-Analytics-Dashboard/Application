@@ -155,7 +155,7 @@ plt = go.Figure(plt.show())
 
 layout = html.Div([
 
-    # Tab-Layout
+    ###### Tab-Layout ############
 
     dcc.Tabs([
 
@@ -163,14 +163,17 @@ layout = html.Div([
 
         dcc.Tab(label='Downtimes', children=[
 
-#################Row 1###########################
+            ################# Row 1 ###########################
 
             dbc.Row([
 
                 dbc.Col([
                     dbc.Row(
-                        html.Div(
-                            html.H2('Vehicle Downtimes'),
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Vehicle Downtimes'),
+                                style={'text-align': 'center'}
+                            ),
                         ),
                     ),
                     dbc.Row([
@@ -184,7 +187,7 @@ layout = html.Div([
 
                             ]), ),
                     ]),
-                ], width=True),
+                ], className='container', width=True),
 
                 dbc.Col(html.Div([
                     html.Div([
@@ -197,19 +200,21 @@ layout = html.Div([
                         ),
                     ]),
 
-                ]), width=True),
+                ]), className='container', width=True),
 
             ]),
 
-#################Row 2###########################
+            ################# Row 2 ###########################
 
             dbc.Row([
 
                 dbc.Col([
                     dbc.Row(
-                        html.Div(
-                            html.H2('Need for Maintenance'),
-                            style={'text-align': 'center'}
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Need for Maintenance'),
+                                style={'text-align': 'center'}
+                            ),
                         ),
                     ),
                     dbc.Row([
@@ -223,13 +228,15 @@ layout = html.Div([
 
                             ]), ),
                     ]),
-                ], width=True),
+                ],className='container', width=True),
 
                 dbc.Col([
                     dbc.Row(
-                        html.Div(
-                            html.H2('Accident Probability'),
-                            style={'text-align': 'center'}
+                        dbc.Col(
+                            html.Div(
+                                html.H2('Accident Probability'),
+                                style={'text-align': 'center'}
+                            ),
                         ),
                     ),
                     dbc.Row([
@@ -243,11 +250,9 @@ layout = html.Div([
 
                             ]), ),
                     ]),
-                ], width=True),
+                ], className='container', width=True),
 
             ]),
-
-
 
             # Row 3 - Truck / Driver information
 
