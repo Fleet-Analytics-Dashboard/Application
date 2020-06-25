@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import calendar
 import matplotlib.pyplot as plt
 
+
 # Daten
 
 fleet_data = pd.read_csv('../batch-data/cleaned-data-for-fleet-dna.csv')
@@ -149,7 +150,7 @@ plt = go.Figure(plt.show())
 
 
 
-page_layout = html.Div([
+layout = html.Div([
 
     # Tab-Layout
 
