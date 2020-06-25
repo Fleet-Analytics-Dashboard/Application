@@ -16,3 +16,4 @@ entrypoint: gunicorn -b 0.0.0.0:8080 app:server
 
 beta_settings:
       cloud_sql_instances: abiding-orb-278309:europe-west3:databasefleetboard
+
