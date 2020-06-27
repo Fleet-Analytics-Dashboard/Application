@@ -45,6 +45,7 @@ def display_page(pathname):
 
 server = app.server
 
-# server
+# This is used when running locally only
+# When deploying to Google App
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0', debug=True, port=8080)
+    app.run_server(debug=True)

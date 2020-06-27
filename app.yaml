@@ -1,4 +1,5 @@
 service: default
+env: flex
 runtime: python37
 
 beta_settings:
