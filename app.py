@@ -26,11 +26,10 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
-server = app.server
 
 # routing based on navigation
 @app.callback(Output('page-content', 'children'),
-                   [Input('url', 'pathname')])
+              [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
         return overview.layout
@@ -44,6 +43,8 @@ def display_page(pathname):
         return '404'
 
 
+server = app.server
+
 # server
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=True, port=8080)
