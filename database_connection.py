@@ -9,6 +9,8 @@ def connect():
                      host=config.host)
     return con
 
+
 def return_enginge():
-    engine = create_engine('postgresql://'+config.db_user+':'+config.db_user_pass+'@'+config.host+'/'+config.db_name)
+    engine = create_engine(
+        'postgresql://' + config.db_user + ':' + config.db_user_pass + '@' + config.host + '/' + config.db_name)
     return engine
