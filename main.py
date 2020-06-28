@@ -2,10 +2,12 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import flask
 
 from apps import vehiclestables, downtimes, controlling, overview
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
+app = flask.Flask(__name__)
+app = dash.Dash(__name__, server=app, url_base_pathname='/', suppress_callback_exceptions=True)
 
 # navigation
 app.layout = html.Div([
@@ -42,8 +44,6 @@ def display_page(pathname):
     else:
         return '404'
 
-
-server = app.server
 
 # This is used when running locally only
 if __name__ == '__main__':
