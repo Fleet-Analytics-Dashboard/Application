@@ -5,6 +5,7 @@ dash-renderer
 Flask
 Flask-Compress
 Werkzeug
+uwsgi==2.0.18
 gunicorn
 sqlalchemy
 psycopg2-binary
