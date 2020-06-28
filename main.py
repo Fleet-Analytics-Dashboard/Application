@@ -3,8 +3,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import flask
-
+import sys
+sys.path.append('/apps')
 from apps import vehiclestables, downtimes, controlling, overview
+
 
 application = flask.Flask(__name__)
 application = dash.Dash(__name__, server=application, url_base_pathname='/', suppress_callback_exceptions=True)
