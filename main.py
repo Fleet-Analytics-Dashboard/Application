@@ -6,11 +6,11 @@ import flask
 
 from apps import vehiclestables, downtimes, controlling, overview
 
-app = flask.Flask(__name__)
-app = dash.Dash(__name__, server=app, url_base_pathname='/', suppress_callback_exceptions=True)
+application = flask.Flask(__name__)
+application = dash.Dash(__name__, server=application, url_base_pathname='/', suppress_callback_exceptions=True)
 
 # navigation
-app.layout = html.Div([
+application.layout = html.Div([
     # represents the URL bar, doesn't render anything
     dcc.Location(id='url', refresh=False),
     html.H1('Navigation'),
@@ -30,7 +30,7 @@ app.layout = html.Div([
 
 
 # routing based on navigation
-@app.callback(Output('page-content', 'children'),
+@application.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
@@ -47,4 +47,4 @@ def display_page(pathname):
 
 # This is used when running locally only
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8080)
+    application.run_server(debug=True, port=8080)
