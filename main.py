@@ -2,17 +2,16 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import flask
 import sys
+import flask
 from apps import vehiclestables, downtimes, controlling, overview
-
 
 sys.path.append('/apps')
 sys.path.append('/hidden')
-sys.path.append('/apps')
 
-application = flask.Flask(__name__)
-application = dash.Dash(__name__, server=application, url_base_pathname='/', suppress_callback_exceptions=True)
+server = flask.Flask(__name__)
+
+application = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
 
 # navigation
 application.layout = html.Div([
