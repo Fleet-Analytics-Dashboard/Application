@@ -6,7 +6,7 @@ import hidden.database_config as config
 def connect():
     # connect to
     con = pg.connect(database=config.db_name, user=config.db_user, password=config.db_user_pass,
-                     host=config.host)
+                     host=config.host, port=5432)
     return con
 
 
