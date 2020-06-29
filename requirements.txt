@@ -1,9 +1,8 @@
-dash
-dash-core-components
-dash-html-components
-dash-renderer
-Flask
-Flask-Compress
+dash-core-components==1.5.0
+dash-html-components==1.0.1
+dash-renderer==1.2.0
+Flask==1.1.1
+Flask-Compress==1.4.0
 Werkzeug
 uwsgi==2.0.18
 sqlalchemy
