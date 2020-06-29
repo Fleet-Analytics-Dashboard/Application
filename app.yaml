@@ -4,7 +4,7 @@ env: flex
 entrypoint: uwsgi --socket 0.0.0.0:8080 --protocol=http --module main --callable application
 
 runtime_config:
-  python_version: 37
+  python_version: 3.7
 
 manual_scaling:
   instances: 1
@@ -14,6 +14,4 @@ resources:
   disk_size_gb: 10
 
 beta_settings:
-      cloud_sql_instances: abiding-orb-278309:europe-west3:databasefleetboard
-
-
+      cloud_sql_instances: abiding-orb-278309:europe-west3:databasefleetboard=tcp:5432

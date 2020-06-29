@@ -10,7 +10,7 @@ def connect():
     return con
 
 
-def return_enginge():
+def return_engine():
     engine = create_engine(
         'postgresql://' + config.db_user + ':' + config.db_user_pass + '@' + config.host + '/' + config.db_name)
     return engine
