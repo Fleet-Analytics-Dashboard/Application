@@ -84,21 +84,16 @@ app.layout = html.Div([
     #block 2
     html.Div([
         dcc.Store(id = 'memory'),
-        html.H3('Cars'),
+        html.H3('Vehicle Overview'),
         html.Div(
             [
                 html.Div(
                     [
-                        html.P('Models:'),
+                        html.P('Vehicle Number:'),
                         dcc.Dropdown(
                                 id = 'filter_x',
-                                options=[
-                                    {'label': 'No filter', 'value': 0},
-                                    {'label': '2', 'value': 1},
-                                    {'label': '3', 'value': 2},
-                                    {'label': '4', 'value': 3}
-                                ],
-                                value='0'
+                                options=[{'label': i, 'value': i} for i in sorted(df_vehicle['vid'])],
+                                value=''
                         ),
                     ],
                     className='three columns',
@@ -243,11 +238,10 @@ def tab(sel, table, state):
     dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
 def update_image_src(fx, fy, button, back, selected_cell, current_table):
-    res = df_group_vehicle_class.copy()
-    if fx == 1:
-        res = res[res['vehicle_class'] == 2]
-    if fx == 2:
-        res = res[res['vehicle_class'] == 3]
+    if fx == '':
+            res = df_group_vehicle_class
+    else:
+            res = df_vehicle[df_vehicle['vid'] == fx]
 
 
     # Reset Chart Button conditionals
