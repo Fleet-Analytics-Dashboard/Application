@@ -6,9 +6,9 @@ import plotly.graph_objects as go
 import calendar
 import matplotlib.pyplot as plt
 import dash_bootstrap_components as dbc
-import app
 
-from database_connection import connect, return_enginge
+
+from database_connection import connect, return_engine
 
 #connect to database and add files to
 conn = connect()
