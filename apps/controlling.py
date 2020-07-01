@@ -21,7 +21,7 @@ conn = None
 
 #df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
 #column_name_dropdown = fleet_data[['vid', 'vocation']]
-df_goals = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\apps\Graph Goals.csv')
+df_goals = pd.read_csv('apps/Graph Goals.csv')
 #df_goals = pd.read_csv('GraphGoals.csv', index_col=0, parse_dates=True)
 df_goals.index = pd.to_datetime(df_goals['Id'])
 
