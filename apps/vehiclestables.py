@@ -1,24 +1,17 @@
-import copy
-import dash
+
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
 import pandas as pd
-from plotly import graph_objs as go
 
-
-
-
-app = dash.Dash(__name__)
-server = app.server
 
 # Datasets
 
 
-fleet_data = pd.read_csv('../cleaned-data-for-fleet-dna_v3.csv')
+fleet_data = pd.read_csv('cleaned-data-for-fleet-dna_v3.csv')
 fleet_data.drop_duplicates(keep=False,inplace=True)
 
-dfnames = pd.read_csv('../names/names.csv')
+dfnames = pd.read_csv('names/names.csv')
 #rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
@@ -41,24 +34,9 @@ df_driver = df_driver.rename(columns={"pid": "pp"}).copy()
 
 #available_vid = fleet_data_rounded['vid'].unique()
 
-# Boostrap CSS.
-app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
-
-layout = dict(
-    autosize=True,
-    height=450,
-    font=dict(color="#191A1A"),
-    titlefont=dict(color="#191A1A", size='14'),
-    margin=dict(
-        l=45,
-        r=15,
-        b=45,
-        t=35
-    )
-)
 
 # Layout
-app.layout = html.Div([
+layout = html.Div([
     # Title - Row
     html.Div(
         [
@@ -114,21 +92,19 @@ app.layout = html.Div([
                         )
                     ],
                     className='three columns',
-                    style={'margin-top': '10'}
+
                 ),
                 html.Div(
                     [
                         html.Button('Reset Chart', id='button_chart')
                     ],
                     className='one columns',
-                    style={'margin-top': '40'}
                 ),
                 html.Div(
                     [
                         html.Button('Previous Level', id='back_button')
                     ],
                     className='one columns',
-                    style={'margin-top': '40', 'margin-left':'50'}
                 )
             ],
             className='row'
@@ -145,124 +121,3 @@ app.layout = html.Div([
                                     'border-radius': '5px'})
 ], style = {'padding': '25px'})
 
-#Table function
-def make_table(data, output):
-    return html.Div(
-    [
-        dt.DataTable(
-            id = output,
-            data=data.to_dict('rows'),
-            columns=[{'id': c, 'name': c} for c in data.columns],
-            selected_rows=[],
-            style_cell={'padding': '5px',
-                        'whiteSpace': 'no-wrap',
-                        'overflow': 'hidden',
-                        'textOverflow': 'ellipsis',
-                        'maxWidth': 0,
-                        'height': 30,
-                        'textAlign': 'left'},
-            style_header={
-                'backgroundColor': 'white',
-                'fontWeight': 'bold',
-                'color': 'black'
-
-            },
-
-
-        ),
-    ], className="seven columns", style = {'margin-top': '35',
-                                           'margin-left': '15',
-                                           'border': '1px solid #C6CCD5'}
-)
-
-def make_chart(df, x, y, label = 'Author', size = 'Size'):
-    graph = []
-    if size == '':
-        s = 15
-    else:
-        s = df[size]
-    graph.append(go.Scatter(
-            x=df[x],
-            y=df[y],
-            mode='markers',
-            text = ['{}: {}'.format(label, a) for a in df[label]],
-            opacity=0.7,
-            marker={
-                'size': s,
-                'line': {'width': 0.5, 'color': 'white'}
-            },
-            name='X'
-        ))
-
-    return graph
-
-# Callbacks and functions
-@app.callback(dash.dependencies.Output('memory', 'data'),
-              [dash.dependencies.Input('table', 'selected_cells'),
-               dash.dependencies.Input('table', 'derived_virtual_data')],
-              [dash.dependencies.State('memory', 'data')])
-def tab(sel, table, state):
-    # to initialize variables when it is None
-    if state is None:
-        state = {}
-    if table is None:
-        state['data'] = df_group_vehicle_class.to_dict('records')
-        table = [{}]
-    else:
-        state['data'] = table #save current table value afer it gets initialized
-
-    # store information of selected rows to retrieve them when back button is clicked
-    # information is stored in json format
-    #
-    if sel:
-        if 'vid' in table[0].keys():
-            state['vid'] = table[0]['vid']
-        if 'vehicle_class' in table[0].keys() and table is not None:
-            state['vehicle_class'] = table[0]['vehicle_class']
-
-    return state
-
-@app.callback(
-    dash.dependencies.Output('table-box', 'children'),
-    [dash.dependencies.Input('filter_x', 'value'),
-    dash.dependencies.Input('filter_y', 'value'),
-    dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-    dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-    dash.dependencies.Input('table', 'selected_cells')],
-    [dash.dependencies.State('memory', 'data')])
-def update_image_src(fx, fy, button, back, selected_cell, current_table):
-    if fx == '':
-            res = df_group_vehicle_class
-    else:
-            res = df_vehicle[df_vehicle['vid'] == fx]
-
-    if selected_cell:
-        print(current_table)
-        if 'Klasse' in current_table['data'][0].keys():
-            res = df_vehicle[df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
-        if 'pid' in current_table['data'][0].keys():
-            res = df_driver[df_driver['pp'] == current_table['data'][list(selected_cell)[0]['row']]['pid']]
-
-    return make_table(res, 'table')
-
-@app.callback(
-    dash.dependencies.Output('graph', 'figure'),
-    [dash.dependencies.Input('filter_x', 'value'),
-     dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-     dash.dependencies.Input('table', 'selected_cells')])
-
-def update_graph(fx, fy, back, selected_cell, current_table):
-
-    if fx == '':
-             return {
-                'data': [{
-                    'x': df_group_vehicle_class['Klasse'],
-                    'y': df_group_vehicle_class['anzahl']
-                }]
-            }
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True, port=8088)
