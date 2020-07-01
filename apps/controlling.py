@@ -9,7 +9,7 @@ import re
 import plotly.graph_objects as go
 import numpy as np
 np.random.seed(1)
-from database_connection import connect, return_enginge
+from database_connection import connect, return_engine
 
 # connect to database and add files to
 conn = connect()
@@ -273,7 +273,7 @@ def generate_table(dataframe, max_rows=10):
     ])
 
 
-app.layout = html.Div([
+layout = html.Div([
         html.Div(className='row',
                  children=[
                     html.Div(className='left part',
@@ -478,5 +478,5 @@ def update_output(start_date, end_date):
         return string_prefix
 
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+#if __name__ == '__main__':
+#    app.run_server(debug=True)

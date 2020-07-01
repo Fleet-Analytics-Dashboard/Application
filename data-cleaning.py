@@ -1,5 +1,5 @@
 import pandas as pd
-from database_connection import connect, return_enginge
+from database_connection import connect, return_engine
 
 # connect to database and add files to
 conn = connect()
@@ -226,6 +226,6 @@ new['spd_cat_8_distance'] = df['spd_cat_8_distance'].copy()
 new.fillna(0, inplace=True)
 
 # create new Database Table from Dataframe
-engine = return_enginge()
+engine = return_engine()
 new.to_sql('cleaned_data_fleet_dna', con=engine, if_exists='replace')
 engine = None

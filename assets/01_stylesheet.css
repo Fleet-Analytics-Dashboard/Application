@@ -1,0 +1,17 @@
+.body{
+  background-color: darkgrey;
+}
+.container {
+  border-radius: 5px;
+  background-color: lightgrey;
+  margin:5px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey;
+}
+div {
+  padding: 0;
+}
+.filter {
+  width: 200px;
+}
