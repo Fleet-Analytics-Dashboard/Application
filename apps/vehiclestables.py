@@ -3,24 +3,16 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
-import numpy as np
-import os
 import pandas as pd
-import plotly
-import time
-
-from dash.exceptions import PreventUpdate
-from dash.dependencies import Input, Output, State
-from flask import Flask
 from plotly import graph_objs as go
-from plotly.graph_objs import *
+
+
 
 
 app = dash.Dash(__name__)
 server = app.server
 
 # Datasets
-
 
 
 fleet_data = pd.read_csv('../cleaned-data-for-fleet-dna_v3.csv')
@@ -273,4 +265,4 @@ def update_graph(fx, fy, back, selected_cell, current_table):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8084)
+    app.run_server(debug=True, port=8088)
