@@ -4,11 +4,17 @@ from database_connection import connect
 import dash_table
 
 # connect to database and add files to
-conn = connect()
-sql = "select * from cleaned_data_fleet_dna;"
-df = pd.read_sql_query(sql, conn)
-df = df.head(10)
-conn = None
+#conn = connect()
+#sql = "select * from cleaned_data_fleet_dna;"
+#df = pd.read_sql_query(sql, conn)
+#df = df.head(10)
+#conn = None
+
+# Daten
+fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
+fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
+# fleet_data.iloc[:,1:3]
+
 
 layout = html.Div(children=[
     html.H1(children='Overview'),
@@ -21,8 +27,8 @@ layout = html.Div(children=[
 
     html.Div(dash_table.DataTable(
                 id='table-2',
-                data=df.to_dict('records'),
-                columns=[{'name': i, 'id': i} for i in df.loc[:]
+                data=fleet_data.to_dict('records'),
+                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:]
                          ],
     ),)
 ])

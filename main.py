@@ -2,19 +2,14 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import sys
-import flask
+import dash_bootstrap_components as dbc
+
 from apps import vehiclestables, downtimes, controlling, overview
 
-sys.path.append('/apps')
-sys.path.append('/hidden')
-
-server = flask.Flask(__name__)
-
-application = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.GRID])
 
 # navigation
-application.layout = html.Div([
+app.layout = html.Div([
     # represents the URL bar, doesn't render anything
     dcc.Location(id='url', refresh=False),
     html.H1('Navigation'),
@@ -32,10 +27,11 @@ application.layout = html.Div([
     html.Div(id='page-content')
 ])
 
+server = app.server
 
 # routing based on navigation
-@application.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
+@app.callback(Output('page-content', 'children'),
+                   [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
         return overview.layout
@@ -49,6 +45,6 @@ def display_page(pathname):
         return '404'
 
 
-# This is used when running locally only
+# server
 if __name__ == '__main__':
-    application.run_server(debug=True, port=8080)
+    app.run_server(debug=True)
