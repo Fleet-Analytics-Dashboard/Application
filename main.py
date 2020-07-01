@@ -11,6 +11,7 @@ from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.GRID])
 
+
 # navigation
 app.layout = html.Div([
     # represents the URL bar, doesn't render anything
@@ -60,7 +61,7 @@ def make_table(data, output):
                         'whiteSpace': 'no-wrap',
                         'overflow': 'hidden',
                         'textOverflow': 'ellipsis',
-                        'maxWidth': 0,
+                        'maxWidth': 100,
                         'height': 30,
                         'textAlign': 'left'},
             style_header={

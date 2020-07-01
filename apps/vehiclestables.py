@@ -35,8 +35,22 @@ df_driver = df_driver.rename(columns={"pid": "pp"}).copy()
 #available_vid = fleet_data_rounded['vid'].unique()
 
 
+
 # Layout
 layout = html.Div([
+
+    #dict(
+     #   autosize=True,
+      #  height=450,
+       # font=dict(color="#191A1A"),
+        #titlefont=dict(color="#191A1A", size='14'),
+        #margin=dict(
+         #   l=45,
+          #  r=15,
+           # b=45,
+            #t=35
+        #)
+    #),
     # Title - Row
     html.Div(
         [
@@ -91,20 +105,22 @@ layout = html.Div([
                                 value='0'
                         )
                     ],
-                    className='three columns',
-
+                    className='filter',
+                    style={'margin-top': '10'}
                 ),
                 html.Div(
                     [
                         html.Button('Reset Chart', id='button_chart')
                     ],
                     className='one columns',
+                    style={'margin-top': '40'}
                 ),
                 html.Div(
                     [
                         html.Button('Previous Level', id='back_button')
                     ],
                     className='one columns',
+                    style={'margin-top': '40', 'margin-left':'50'}
                 )
             ],
             className='row'
@@ -119,5 +135,5 @@ layout = html.Div([
     ], className = 'row',  style = {'margin-top': 20, 'border':
                                     '1px solid #C6CCD5', 'padding': 15,
                                     'border-radius': '5px'})
-], style = {'padding': '25px'})
+], style = {'padding': '25px',})
 
