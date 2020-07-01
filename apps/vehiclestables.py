@@ -138,7 +138,8 @@ app.layout = html.Div([
             [
                 html.Div(
                     [
-                        dcc.Graph(id='chart-2')
+                        dcc.Graph(id='graph'
+                                  ),
                     ], className = "four columns", style = {'margin-top': 35,
                                                             'padding': '15',
                                                             'border': '1px solid #C6CCD5'}
@@ -243,36 +244,6 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
     else:
             res = df_vehicle[df_vehicle['vid'] == fx]
 
-
-    # Reset Chart Button conditionals
-    # stamp: actual timestamp
-    # button: timestamp of button click
-    # if stamp == button then there's a new click. The str transformation was
-    # necessary as time.time() returns 10 digits and button 13 digits
-    # ex.: time.time() --> 1548657188 button -->1548657188440
-    if button is None:
-        button = 0
-    stamp = str(time.time())[:10]
-    if stamp == str(button)[:10]:
-        return make_table(res, 'table')
-
-    # Retrieves data saved in browser memory to remember previous level selection
-    # then apply to previous level dataset
-    # ex.: if select Honda --> Civic --> back button, when back button is clicked
-    # it will remember to show only Honda cars
-    #if back is None:
-     #   back = 0
-    #stamp = str(time.time())[:10]
-    #if stamp == str(back)[:10]:
-     #   if 'Price' in current_table['data'][0].keys():
-      #      return make_table(res, 'table')
-       # if 'Date' in current_table['data'][0].keys():
-        #    return make_table(models[models['Brand'] == current_table['Brand']], 'table')
-
-    # When selection occurs, the code looks for the current table and based on a
-    # differentiator column (unique among all datasets) it decides the next level table
-    # ex.: if Average Price is in current table columns, then current table is "brands"
-    # and next table is "models"
     if selected_cell:
         print(current_table)
         if 'Klasse' in current_table['data'][0].keys():
@@ -283,41 +254,37 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
     return make_table(res, 'table')
 
 @app.callback(
-    dash.dependencies.Output('chart-2', 'figure'),
+    dash.dependencies.Output('graph', 'figure'),
     [dash.dependencies.Input('table', 'data')])
-def update_image_src(data):
-    layout_individual = copy.deepcopy(layout)
-    layout_individual['legend'] = legend=dict(x=0.05, y=1)
 
-    df = pd.DataFrame(data)
-    graph = []
+def update_graph3(data):
+    odf = df_group_vehicle_class
+
+    return {
+        'data': [{
+            'x': odf['Klasse'],
+            'y': odf['anzahl']
+        }]
+    }
+
+    #df = df_group_vehicle_class
+
+    #graph = []
 
     # The callback retrieve the new data after click and based on its columns,
     # we decide the x axis, y axis, label and size of dots to pass to make_chart()
-    if 'Average Price' in data[0].keys():
-        layout_individual['title'] = 'Chart XYZ'
-        layout_individual['xaxis'] = dict(title='Models')
-        layout_individual['yaxis'] = dict(title='Average Price')
-        graph = make_chart(pd.DataFrame(data), 'Models', 'Average Price', 'Brand', '')
+    #if 'Klasse' in data[0].keys():
+     #   layout_individual['title'] = 'Vehicle Class'
+      #  layout_individual['xaxis'] = dict(title='Anzahl')
+       # layout_individual['yaxis'] = dict(title='Klasse')
+        #graph = make_chart(df, 'x', 'y', 'Anzahl', 'Klasse')
 
-    if 'Price' in data[0].keys():
-        layout_individual['title'] = 'Chart XYZ 2'
-        layout_individual['xaxis'] = dict(title='Price')
-        layout_individual['yaxis'] = dict(title='Sales')
-        graph = make_chart(pd.DataFrame(data), 'Price', 'Sales', 'Model', 'Sales')
+    #figure = {
+     #   'data': graph,
+      #  'layout': layout_individual
+   # }
 
-    if 'Date' in data[0].keys():
-        layout_individual['title'] = 'Chart XYZ 3'
-        layout_individual['xaxis'] = dict(title='X')
-        layout_individual['yaxis'] = dict(title='Y')
-        graph = make_chart(pd.DataFrame(data), 'x', 'y', 'Model', '')
-
-    figure = {
-        'data': graph,
-        'layout': layout_individual
-    }
-
-    return figure
+   # return figure
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8080)
+    app.run_server(debug=True, port=8084)
