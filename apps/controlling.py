@@ -273,7 +273,7 @@ def generate_table(dataframe, max_rows=10):
     ])
 
 
-app.layout = html.Div([
+layout = html.Div([
         html.Div(className='row',
                  children=[
                     html.Div(className='left part',

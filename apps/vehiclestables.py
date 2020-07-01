@@ -11,7 +11,7 @@ import pandas as pd
 fleet_data = pd.read_csv('cleaned-data-for-fleet-dna_v3.csv')
 fleet_data.drop_duplicates(keep=False,inplace=True)
 
-dfnames = pd.read_csv('names/names.csv')
+dfnames = pd.read_csv('names.csv')
 #rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
