@@ -89,6 +89,14 @@ app.layout = html.Div([
             [
                 html.Div(
                     [
+                        dcc.Graph(id='graph'
+                                  ),
+                    ], className="four columns", style={'margin-top': 35,
+                                                        'padding': '15',
+                                                        'border': '1px solid #C6CCD5'}
+                ),
+                html.Div(
+                    [
                         html.P('Vehicle Number:'),
                         dcc.Dropdown(
                                 id = 'filter_x',
@@ -136,14 +144,6 @@ app.layout = html.Div([
 
         html.Div(
             [
-                html.Div(
-                    [
-                        dcc.Graph(id='graph'
-                                  ),
-                    ], className = "four columns", style = {'margin-top': 35,
-                                                            'padding': '15',
-                                                            'border': '1px solid #C6CCD5'}
-                ),
                 html.Div(id = 'table-box'),
                 html.Div(dt.DataTable(id = 'table', data=[{}]), style={'display': 'none'})
             ], className = 'row'
@@ -255,36 +255,22 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
 
 @app.callback(
     dash.dependencies.Output('graph', 'figure'),
-    [dash.dependencies.Input('table', 'data')])
+    [dash.dependencies.Input('filter_x', 'value'),
+     dash.dependencies.Input('filter_y', 'value'),
+     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
+     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
+     dash.dependencies.Input('table', 'selected_cells')])
 
-def update_graph3(data):
-    odf = df_group_vehicle_class
+def update_graph(fx, fy, back, selected_cell, current_table):
 
-    return {
-        'data': [{
-            'x': odf['Klasse'],
-            'y': odf['anzahl']
-        }]
-    }
+    if fx == '':
+             return {
+                'data': [{
+                    'x': df_group_vehicle_class['Klasse'],
+                    'y': df_group_vehicle_class['anzahl']
+                }]
+            }
 
-    #df = df_group_vehicle_class
-
-    #graph = []
-
-    # The callback retrieve the new data after click and based on its columns,
-    # we decide the x axis, y axis, label and size of dots to pass to make_chart()
-    #if 'Klasse' in data[0].keys():
-     #   layout_individual['title'] = 'Vehicle Class'
-      #  layout_individual['xaxis'] = dict(title='Anzahl')
-       # layout_individual['yaxis'] = dict(title='Klasse')
-        #graph = make_chart(df, 'x', 'y', 'Anzahl', 'Klasse')
-
-    #figure = {
-     #   'data': graph,
-      #  'layout': layout_individual
-   # }
-
-   # return figure
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8084)
