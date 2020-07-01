@@ -10,3 +10,5 @@ psycopg2-binary
 pandas
 numpy
 gunicorn
+dash-bootstrap-components==0.10.2
+
