@@ -50,10 +50,10 @@ layout = html.Div([
         [
             html.H1(
                 'Test App',
-                className='eight columns',
+                className='example',
             )
         ],
-        className='row'
+        className='example'
     ),
 
     # block 2
@@ -66,7 +66,7 @@ layout = html.Div([
                     [
                         dcc.Graph(id='graph'
                                   ),
-                    ], className="four columns"
+                    ], className="four-columns"
                 ),
                 html.Div(
                     [
@@ -77,7 +77,7 @@ layout = html.Div([
                             value=''
                         ),
                     ],
-                    className='three columns'
+                    className='three-columns'
                 ),
                 html.Div(
                     [
@@ -97,16 +97,20 @@ layout = html.Div([
                 ),
                 html.Div(
                     [
-                        html.Button('Reset Chart', id='button_chart', className='vehicles-tables-button-reset')
+                        html.Button('Reset Chart',
+                                    id='button_chart',
+                                    className='vehicles-tables-button-reset')
                     ],
                 ),
                 html.Div(
                     [
-                        html.Button('Previous Level', id='back_button', className='vehicles-tables-button-previous-level')
+                        html.Button('Previous Level',
+                                    id='back_button',
+                                    className='vehicles-tables-button-previous-level')
                     ],
                 )
             ],
-            className='graph'
+            className='example'
         ),
 
         html.Div(
