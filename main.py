@@ -1,41 +1,43 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table as dt
-
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.GRID])
-
+app = dash.Dash(__name__, suppress_callback_exceptions=True,
+                external_stylesheets=[dbc.themes.GRID, dbc.themes.BOOTSTRAP])
 
 # navigation
 app.layout = html.Div([
-    # represents the URL bar, doesn't render anything
+
     dcc.Location(id='url', refresh=False),
-    html.H1('Navigation'),
-    html.Br(),
-    dcc.Link('Overview', href='/'),
-    html.Br(),
-    dcc.Link('Controlling ', href='/controlling'),
-    html.Br(),
-    dcc.Link('Downtimes', href='/downtimes'),
-    html.Br(),
-    dcc.Link('Vehicles tables', href='/vehicles-tables'),
-    html.Br(),
-    html.Br(),
+    html.H1('Fleetboard'),
+
+    # TODO fix active=True
+    dbc.Nav(
+        [
+            dbc.NavItem(dbc.NavLink("Overview", href="/")),
+            dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
+            dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
+            dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+        ],
+        pills=True,
+    ),
+
     # page content from respective site will be loaded via this id
-    html.Div(id='page-content')
+    html.Div(id='page-content'),
 ])
 
 server = app.server
 
+
 # routing based on navigation
 @app.callback(Output('page-content', 'children'),
-                   [Input('url', 'pathname')])
+              [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
         return overview.layout
@@ -48,56 +50,58 @@ def display_page(pathname):
     else:
         return '404'
 
-#Table function
+
+# Table function
 def make_table(data, output):
     return html.Div(
-    [
-        dt.DataTable(
-            id = output,
-            data=data.to_dict('rows'),
-            columns=[{'id': c, 'name': c} for c in data.columns],
-            selected_rows=[],
-            style_cell={'padding': '5px',
-                        'whiteSpace': 'no-wrap',
-                        'overflow': 'hidden',
-                        'textOverflow': 'ellipsis',
-                        'maxWidth': 100,
-                        'height': 30,
-                        'textAlign': 'left'},
-            style_header={
-                'backgroundColor': 'white',
-                'fontWeight': 'bold',
-                'color': 'black'
+        [
+            dt.DataTable(
+                id=output,
+                data=data.to_dict('rows'),
+                columns=[{'id': c, 'name': c} for c in data.columns],
+                selected_rows=[],
+                style_cell={'padding': '5px',
+                            'whiteSpace': 'no-wrap',
+                            'overflow': 'hidden',
+                            'textOverflow': 'ellipsis',
+                            'maxWidth': 100,
+                            'height': 30,
+                            'textAlign': 'left'},
+                style_header={
+                    'backgroundColor': 'white',
+                    'fontWeight': 'bold',
+                    'color': 'black'
 
-            },
+                },
+
+            ),
+        ], className="seven columns", style={'margin-top': '35',
+                                             'margin-left': '15',
+                                             'border': '1px solid #C6CCD5'}
+    )
 
 
-        ),
-    ], className="seven columns", style = {'margin-top': '35',
-                                           'margin-left': '15',
-                                           'border': '1px solid #C6CCD5'}
-)
-
-def make_chart(df, x, y, label = 'Author', size = 'Size'):
+def make_chart(df, x, y, label='Author', size='Size'):
     graph = []
     if size == '':
         s = 15
     else:
         s = df[size]
     graph.append(go.Scatter(
-            x=df[x],
-            y=df[y],
-            mode='markers',
-            text = ['{}: {}'.format(label, a) for a in df[label]],
-            opacity=0.7,
-            marker={
-                'size': s,
-                'line': {'width': 0.5, 'color': 'white'}
-            },
-            name='X'
-        ))
+        x=df[x],
+        y=df[y],
+        mode='markers',
+        text=['{}: {}'.format(label, a) for a in df[label]],
+        opacity=0.7,
+        marker={
+            'size': s,
+            'line': {'width': 0.5, 'color': 'white'}
+        },
+        name='X'
+    ))
 
     return graph
+
 
 # Callbacks and functions
 @app.callback(dash.dependencies.Output('memory', 'data'),
@@ -112,7 +116,7 @@ def tab(sel, table, state):
         state['data'] = df_group_vehicle_class.to_dict('records')
         table = [{}]
     else:
-        state['data'] = table #save current table value afer it gets initialized
+        state['data'] = table  # save current table value afer it gets initialized
 
     # store information of selected rows to retrieve them when back button is clicked
     # information is stored in json format
@@ -125,28 +129,31 @@ def tab(sel, table, state):
 
     return state
 
+
 @app.callback(
     dash.dependencies.Output('table-box', 'children'),
     [dash.dependencies.Input('filter_x', 'value'),
-    dash.dependencies.Input('filter_y', 'value'),
-    dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-    dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-    dash.dependencies.Input('table', 'selected_cells')],
+     dash.dependencies.Input('filter_y', 'value'),
+     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
+     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
+     dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
 def update_image_src(fx, fy, button, back, selected_cell, current_table):
     if fx == '':
-            res = df_group_vehicle_class
+        res = df_group_vehicle_class
     else:
-            res = df_vehicle[df_vehicle['vid'] == fx]
+        res = df_vehicle[df_vehicle['vid'] == fx]
 
     if selected_cell:
         print(current_table)
         if 'Klasse' in current_table['data'][0].keys():
-            res = df_vehicle[df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
+            res = df_vehicle[
+                df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
         if 'pid' in current_table['data'][0].keys():
             res = df_driver[df_driver['pp'] == current_table['data'][list(selected_cell)[0]['row']]['pid']]
 
     return make_table(res, 'table')
+
 
 @app.callback(
     dash.dependencies.Output('graph', 'figure'),
@@ -155,16 +162,14 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
      dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')])
-
 def update_graph(fx, fy, back, selected_cell, current_table):
-
     if fx == '':
-             return {
-                'data': [{
-                    'x': df_group_vehicle_class['Klasse'],
-                    'y': df_group_vehicle_class['anzahl']
-                }]
-            }
+        return {
+            'data': [{
+                'x': df_group_vehicle_class['Klasse'],
+                'y': df_group_vehicle_class['anzahl']
+            }]
+        }
 
 
 # server

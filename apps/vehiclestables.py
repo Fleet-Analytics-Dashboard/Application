@@ -50,9 +50,6 @@ layout = html.Div([
         [
             html.H1(
                 'Test App',
-                style={'font-family': 'Helvetica',
-                       "margin-left": "20",
-                       "margin-bottom": "0"},
                 className='eight columns',
             )
         ],
@@ -69,25 +66,22 @@ layout = html.Div([
                     [
                         dcc.Graph(id='graph'
                                   ),
-                    ], className="four columns", style={'margin-top': 35,
-                                                        'padding': '15',
-                                                        'border': '1px solid #C6CCD5'}
+                    ], className="four columns"
                 ),
                 html.Div(
                     [
-                        html.P('Vehicle Number:'),
+                        html.P('Insert the vehicle number here:'),
                         dcc.Dropdown(
                             id='filter_x',
                             options=[{'label': i, 'value': i} for i in sorted(df_vehicle['vid'])],
                             value=''
                         ),
                     ],
-                    className='three columns',
-                    style={'margin-top': '10'}
+                    className='three columns'
                 ),
                 html.Div(
                     [
-                        html.P('Price:'),
+                        html.P('Filter for vehicle type:'),
                         dcc.Dropdown(
                             id='filter_y',
                             options=[
@@ -99,34 +93,27 @@ layout = html.Div([
                             value='0'
                         )
                     ],
-                    className='filter',
-                    style={'margin-top': '10'}
+                    className='vehicles-tables-filter'
                 ),
                 html.Div(
                     [
-                        html.Button('Reset Chart', id='button_chart')
+                        html.Button('Reset Chart', id='button_chart', className='vehicles-tables-button-reset')
                     ],
-                    className='one columns',
-                    style={'margin-top': '40'}
                 ),
                 html.Div(
                     [
-                        html.Button('Previous Level', id='back_button')
+                        html.Button('Previous Level', id='back_button', className='vehicles-tables-button-previous-level')
                     ],
-                    className='one columns',
-                    style={'margin-top': '40', 'margin-left': '50'}
                 )
             ],
-            className='row'
+            className='graph'
         ),
 
         html.Div(
             [
                 html.Div(id='table-box'),
-                html.Div(dt.DataTable(id='table', data=[{}]), style={'display': 'none'})
-            ], className='row'
+                html.Div(dt.DataTable(id='table', data=[{}]))
+            ], className='vehicles-tables-data-table'
         )
-    ], className='row', style={'margin-top': 20, 'border':
-        '1px solid #C6CCD5', 'padding': 15,
-                               'border-radius': '5px'})
-], style={'padding': '25px', })
+    ], className='chart')
+], className='vehicles-tables-content')
