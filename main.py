@@ -4,6 +4,8 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table as dt
+from plotly import graph_objs as go
+
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
@@ -120,10 +122,9 @@ def tab(sel, table, state):
 
     # store information of selected rows to retrieve them when back button is clicked
     # information is stored in json format
-    #
     if sel:
         if 'vid' in table[0].keys():
-            state['vid'] = table[0]['vid']
+            state['vid'] = table[0]['Klasse']
         if 'vehicle_class' in table[0].keys() and table is not None:
             state['vehicle_class'] = table[0]['vehicle_class']
 
@@ -134,11 +135,10 @@ def tab(sel, table, state):
     dash.dependencies.Output('table-box', 'children'),
     [dash.dependencies.Input('filter_x', 'value'),
      dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
-def update_image_src(fx, fy, button, back, selected_cell, current_table):
+def update_image_src(fx, fy, back, selected_cell, current_table):
     if fx == '':
         res = df_group_vehicle_class
     else:
@@ -159,10 +159,9 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
     dash.dependencies.Output('graph', 'figure'),
     [dash.dependencies.Input('filter_x', 'value'),
      dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')])
-def update_graph(fx, fy, back, selected_cell, current_table):
+def update_graph(fx, fy, back, selected_cell):
     if fx == '':
         return {
             'data': [{

@@ -94,14 +94,7 @@ layout = html.Div([
                 ),
                 html.Div(
                     [
-                        html.Button('Reset Chart',
-                                    id='button_chart',
-                                    className='vehicles-tables-button-reset')
-                    ],
-                ),
-                html.Div(
-                    [
-                        html.Button('Previous Level',
+                        html.Button('Back',
                                     id='back_button',
                                     className='vehicles-tables-button-previous-level')
                     ],
