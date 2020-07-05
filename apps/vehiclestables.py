@@ -7,22 +7,24 @@ import pandas as pd
 
 
 fleet_data = pd.read_csv('cleaned-data-for-fleet-dna_v3.csv')
-fleet_data.drop_duplicates(keep=False, inplace=True)
 
 dfnames = pd.read_csv('names.csv')
 
 # rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
-df_vehicle = fleet_data[['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'drivetrain_type', 'pid']].copy()
+df_vehicle = fleet_data[['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'fuel_type', 'drivetrain_type', 'pid']].copy()
 df_vehicle = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
 
 df_vehicle_class = fleet_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicel_type']].copy()
-df_vehicle_class = df_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
+df_vehicle_class = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
 
-df_group_vehicle_class = fleet_data.groupby(["vehicle_class"], as_index=False)["vid"].count()
-df_group_vehicle_class.columns = (["Klasse", "anzahl"])
-df_group_vehicle_class = df_group_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
+
+df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class','vocation'])['vid'].count().reset_index()
+df_group_vehicle_class.columns = (["Klasse", 'Typ',"anzahl"])
+
+
+
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 df_driver = df_driver.rename(columns={"pid": "pp"}).copy()
@@ -81,17 +83,12 @@ layout = html.Div([
                 ),
                 html.Div(
                     [
-                        html.P('Filter for vehicle type:'),
+                        html.P('Vehicle_class'),
                         dcc.Dropdown(
                             id='filter_y',
-                            options=[
-                                {'label': 'No filter', 'value': 0},
-                                {'label': '1 to 20k', 'value': 1},
-                                {'label': '20k to 30k', 'value': 2},
-                                {'label': '30k+', 'value': 3}
-                            ],
-                            value='0'
-                        )
+                            options=[{'label': i, 'value': i} for i in sorted(df_group_vehicle_class['Klasse'])],
+                            value=''
+                        ),
                     ],
                     className='vehicles-tables-filter'
                 ),
