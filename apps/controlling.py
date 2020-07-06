@@ -8,16 +8,15 @@ from datetime import datetime as dt
 import re
 import plotly.graph_objects as go
 import numpy as np
-np.random.seed(1)
+from sklearn.linear_model import LinearRegression
 from database_connection import connect, return_engine
 
 # connect to database and add files to
-conn = connect()
-sql = "select vid, vehicel_type, seconds_at_speed_zero from cleaned_data_fleet_dna;"
-df_table = pd.read_sql_query(sql, conn)
-conn = None
-# df_table = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\batch-data\cleaned-data-for-fleet-dna_v3.csv')
-# df_table = df_table_full['vid', 'vehicel_type', 'non_recorded_time_hrs', 'seconds_at_speed_zero']
+#conn = connect()
+#sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
+#df_table = pd.read_sql_query(sql, conn)
+#conn = None
+df_table = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\batch-data\cleaned-data-for-fleet-dna_v3.csv')
 
 #df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
 #column_name_dropdown = fleet_data[['vid', 'vocation']]
@@ -26,12 +25,25 @@ df_goals = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\apps\Graph 
 df_goals.index = pd.to_datetime(df_goals['Id'])
 
 #mock data for goals chart
-years = ['2016/Q1', '2016/Q2', '2016/Q3', '2016/Q4', '2017/Q1', '2017/Q2', '2017/Q3',
-         '2017/Q4', '2018/Q1', '2018/Q2', '2018/Q3', '2018/Q4', '2019/Q1',
-         '2019/Q2', '2019/Q3', '2019/Q4', '2020/Q1', '2020/Q2']
+years = np.vstack((np.arange(2014, 2021),)*4)
+y_data_revenue = np.random.normal(8, 1.5, 100)
+y_data_revenue.sort()
+y_data_profit = np.random.normal(7, 1.5, 100)
+y_data_profit.sort()
+y_data_liquidity = np.random.normal(7.5, 1.5, 100)
+y_data_liquidity.sort()
+y_data_goals = [y_data_revenue, y_data_profit, y_data_liquidity]
+names_goals =['Revenue', 'Profit', 'Liquidity']
+
+# regression
+#reg = LinearRegression().fit(np.vstack(df_goals_chart['X']), y_data_revenue)
+#df_goals_chart['bestfit'] = reg.predict(np.vstack(df_goals_chart['X']))
+
 
 # mock data for costs chart
-colors = ['rgb(67,67,67)', 'rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)']
+np.random.seed(1)
+colors = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']
+colors_trend = ['rgb(0,255,0)', 'rgb(0,0,139)', 'rgb(0,255,255)']
 labels_goals = ['Revenue', 'Profit', 'Liquidity']
 labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
@@ -50,21 +62,37 @@ y_data = np.array([
 
 fig_goals = go.Figure()
 
-fig_goals.add_trace(go.Bar(x=years,
-                           y= df_goals['Revenue'],
-                           name='Revenue',
-                           marker_color='rgb(189,189,189)'))
+for i in range(0, 3):
+    fig_goals.add_trace(go.Bar(x=years[i],
+                               y=y_data_goals[i],
+                               name=names_goals[i],
+                               marker_color=colors[i]))
+    fig_goals.add_trace(go.Scatter(x=years[i],
+                                   y=y_data_goals[i],
+                                   mode='lines+markers',
+                                   line=dict(
+                                       width=3,
+                                   ),
+                                   connectgaps=True,
+                                   marker_color=colors_trend[i],
+                                   name=names_goals[i]
+                                   ))
 
-fig_goals.add_trace(go.Bar(x=years,
-                           y= df_goals['Profit'],
-                           name='Profit',
-                           marker_color='rgb(115,115,115)'))
-fig_goals.add_trace(go.Bar(x=years,
-                           y=df_goals['Liquidity'],
-                           name='Liquidity',
-                           marker_color='rgb(49,130,189)'))
 
 fig_goals.update_layout(
+    xaxis=dict(
+        showline=True,
+        showgrid=False,
+        showticklabels=True,
+        linecolor='rgb(204, 204, 204)',
+        linewidth=2,
+        ticks='outside',
+        tickfont=dict(
+            family='Arial',
+            size=12,
+            color='rgb(82, 82, 82)',
+        ),
+    ),
     xaxis_tickfont_size=14,
     yaxis=dict(
         title='EUR (millions)',
@@ -349,13 +377,13 @@ layout = html.Div([
                                         id='table-for-capacity',
                                         style_table={
                                             'maxHeight': '400px',
-                                            'maxWidth': '400px',
+                                            'maxWidth': '800px',
                                             'overflowY': 'scroll'
                                         },
                                         style_data={
                                             'whiteSpace': 'normal',
                                             'height': 'auto',
-                                            'align': 'left'
+                                            'align': 'right'
                                         },
                                         columns=[{'name': i, 'id': i} for i in df_table.columns],
                                         data=df_table.to_dict('records')
@@ -365,7 +393,7 @@ layout = html.Div([
 
 
                                 ],
-                                    style={'width': '48%', 'display': 'inline-block'})
+                                    style={'width': '50%', 'display': 'inline-block'})
 
                              ])
 

@@ -11,13 +11,13 @@ import dash_bootstrap_components as dbc
 from database_connection import connect, return_engine
 
 #connect to database and add files to
-conn = connect()
-sql = "select * from cleaned_data_fleet_dna;"
-fleet_data = pd.read_sql_query(sql, conn)
-conn = None
+#conn = connect()
+#sql = "select * from cleaned_data_fleet_dna;"
+#fleet_data = pd.read_sql_query(sql, conn)
+#conn = None
 
 # Daten
-#fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
+fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
 fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 # fleet_data.iloc[:,1:3]
 
