@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import calendar
 import matplotlib.pyplot as plt
 import dash_bootstrap_components as dbc
+import dash_dangerously_set_inner_html as dds
 
 from database_connection import connect, return_engine
 
@@ -20,6 +21,9 @@ conn = None
 fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 # fleet_data.iloc[:,1:3]
 
+# Kalendar
+
+#calenderview = open('calendar.html', 'wb')
 
 # PieCharts
 
@@ -400,7 +404,14 @@ layout = html.Div([
 
         ################### Maintenance Calendar View ##################
         dcc.Tab(label='Maintenance Calendar', children=[
-            dcc.Graph(figure=plt)
+            #dcc.Graph(figure=calenderview),
+            html.Div(html.Iframe(src='assets/calendar.html')),
+            # dbc.Container(html.Iframe(src='assets/calendar.html')),
+            html.Iframe(src='assets/calendar.html'),
+            #html.Div([
+            #    html.Div(className='calendar'),
+            #    html.Div(style={'clear:both'}),
+            #], className='wrap')
 
         ]),
 
