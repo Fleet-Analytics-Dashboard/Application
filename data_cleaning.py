@@ -45,13 +45,20 @@ new = new.rename(
              'drive_id': 'drivetrain_type', 'fuel_id': 'fuel_type'})
 
 # remove all the lines with unrealistic vehicle types for our use case
-# remove vehicle types 'City Transit Bus', 'Refuse Truck', 'School Bus' and 'Tractor'
+# remove vehicle types 'City Transit Bus', 'Refuse Truck', 'School Bus'
 new = new[new.vehicle_type != 'City Transit Bus']
 new = new[new.vehicle_type != 'Refuse Truck']
 new = new[new.vehicle_type != 'School Bus']
-new = new[new.vehicle_type != 'Tractor']
+
+# Separate Vehicle Information from the rest of the dataset to normalise table
+v_df = new[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
+new = new.drop(['vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type'], axis=1)
+
+# drop duplicates in v_df
+v_df = v_df.drop_duplicates(keep='first', ignore_index=True).sort_values('vid')
 
 # add all relevant columns from category 'Speed' (original column 17-123, 287-372)
+new['distance_total'] = df['distance_total'].copy()
 new['speed_data_duration_hrs_includes_zero'] = df['speed_data_duration_hrs'].copy()
 new['driving_data_duration_hrs_no_zero'] = df['driving_data_duration_hrs'].copy()
 new['max_speed'] = df['max_speed'].copy()
@@ -237,4 +244,5 @@ new.fillna(0, inplace=True)
 # create new Database Table from Dataframe
 # engine = return_engine()
 # new.to_sql('cleaned_data_fleet_dna', con=engine, if_exists='replace')
+# v_df.to_sql('vehicle_information', con=engine, if_exists='replace')
 # engine = None
