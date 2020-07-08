@@ -18,6 +18,13 @@ div {
     padding: 0;
 }
 
+/*Kalender*/
+
+.calContainer {
+    width: 100%;
+    height: 700px;
+}
+
 /* VEHICLES TABLES */
 .vehicles-tables-filter {
     width: 200px;
