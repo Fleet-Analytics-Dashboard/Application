@@ -44,6 +44,12 @@ new = new.rename(
     columns={'class_id': 'vehicle_class', 'voc_id': 'vocation', 'type_id': 'vehicle_type',
              'drive_id': 'drivetrain_type', 'fuel_id': 'fuel_type'})
 
+# remove all the lines with unrealistic vehicle types for our use case
+# remove vehicle types 'City Transit Bus', 'Refuse Truck', 'School Bus' and 'Tractor'
+new = new[new.vehicle_type != 'City Transit Bus']
+new = new[new.vehicle_type != 'Refuse Truck']
+new = new[new.vehicle_type != 'School Bus']
+new = new[new.vehicle_type != 'Tractor']
 
 # add all relevant columns from category 'Speed' (original column 17-123, 287-372)
 new['speed_data_duration_hrs_includes_zero'] = df['speed_data_duration_hrs'].copy()
