@@ -1,0 +1,225 @@
+,vid,vehicle_class,vocation,vehicle_type,fuel_type,drivetrain_type,vehicle_construction_year,load_capacity,maintenance,position_latitude,position_longitude,vehicle_status
+39,1,7,Beverage Delivery,Tractor,Diesel,Conventional,2005,17720,37.157765719889134,37.01030982,-76.71363096,accident
+42,2,7,Beverage Delivery,Tractor,Diesel,Conventional,2011,15780,78.15276320643406,39.13910655,-73.41635887,delayed
+44,3,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2012,56939,33.30338783367635,38.72855741,-79.95690894,on time
+40,4,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2008,37555,27.158632133021754,39.41591855,-75.51161533,on time
+41,5,8,Beverage Delivery,Tractor,Diesel,Conventional,2009,23420,51.6002844878301,40.73135539,-74.16049033,on time
+46,6,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2011,49103,77.73309000704411,40.09854283,-73.64304849999999,unused
+43,8,8,Beverage Delivery,Tractor,Diesel,Conventional,2005,59639,31.158313248506353,37.35586652,-75.58916666,on time
+38,9,4,Parcel Delivery,Walk In,Diesel,Conventional,2015,5674,43.37498517332052,37.92550732,-77.02698678,on time
+1,10,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2000,6904,46.698336487585856,40.92325669,-78.2403569,unused
+35,11,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2016,6655,9.038149385498722,37.75109631,-76.40415218,delayed
+2,12,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2001,5940,67.35549572406025,41.46015842,-75.65117146,unused
+37,14,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2012,6732,3.0804616979224524,36.22779703,-77.0074349,delayed
+3,15,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2007,6066,67.43427867232751,38.49176173,-79.30502085,unused
+4,16,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2013,6475,54.95306806874987,40.74040667,-79.69111891,on time
+5,17,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2006,6083,97.91789306899949,39.60476756,-78.05670693,maintenance
+6,18,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2005,6026,63.65917038146558,41.12686882,-77.05729476,delayed
+36,20,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2011,6217,99.36648132712595,37.01938663,-79.41591126,maintenance
+45,23,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2010,35527,80.49551890296293,40.4751749,-75.01267804,on time
+47,24,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2014,30673,29.114758809128006,38.31013192,-77.28160866,on time
+48,25,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2004,49517,38.745660360881004,37.81861306,-74.06488912,accident
+113,26,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2009,16796,64.1707986517861,39.18149123,-80.46035035,unused
+53,28,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2017,17601,39.04890190756939,38.78737689,-80.56575723,delayed
+51,29,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2000,16002,95.5607343779303,38.13810231,-73.86008034,unused
+52,30,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2013,13626,20.17771295188766,39.06040314,-80.43358486,on time
+49,31,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2009,18870,80.21538598452445,39.27805873,-78.88193006,delayed
+50,32,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2009,14580,72.82412602389564,38.80141629999999,-75.11762365,unused
+84,33,7,Warehouse Delivery,Straight Truck,Diesel,Conventional,2007,16109,92.22807512186901,37.72006224,-77.56419946,on time
+7,36,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2001,13150,52.417820708714416,40.42513952,-78.55613327,unused
+0,37,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2000,15486,10.41282704885339,39.53416452,-73.91739129,on time
+8,38,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2017,17620,32.79757791135659,38.75314187,-77.32819207,delayed
+9,39,7,Parcel Delivery,Straight Truck,Diesel,Parallel Hybrid,2008,17472,47.065954012286895,38.4539261,-80.35157869,on time
+10,40,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2013,14996,63.58851215524066,38.62201836,-80.06151213,delayed
+11,42,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2015,17823,93.34048418043834,39.40911888,-80.5666703,unused
+12,43,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2010,13423,18.504277799657572,41.35251315,-78.79597519,unused
+13,44,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2008,13637,37.08881891159101,40.99055560000001,-77.30259024,delayed
+14,45,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2007,16115,29.56114749617318,41.22629551,-77.41434304,on time
+15,46,7,Parcel Delivery,Straight Truck,Diesel,Conventional,2003,18580,40.32381031664526,37.43253936,-75.66238757,on time
+56,47,5,Food Delivery,Straight Truck,Diesel,Conventional,2006,7882,30.16381040269276,39.72604613,-74.29801716,delayed
+54,48,5,Food Delivery,Straight Truck,Diesel,Conventional,2017,7806,54.59979806808838,40.50887153,-78.90175669,on time
+60,49,5,Food Delivery,Straight Truck,Diesel,Conventional,2003,8627,31.077763359699848,39.69499744,-79.36614701,unused
+55,50,5,Food Delivery,Straight Truck,Diesel,Conventional,2004,7624,56.9705452931323,39.25238347,-79.03545827,unused
+57,51,5,Food Delivery,Straight Truck,Diesel,Conventional,2017,7837,90.85066279156034,40.52873195,-79.97199616,on time
+58,52,5,Food Delivery,Straight Truck,Diesel,Conventional,2011,8762,30.043468288078195,39.10876214,-78.07194058,accident
+59,53,5,Food Delivery,Straight Truck,Diesel,Conventional,2012,9465,63.0979246529543,39.85035746,-76.0604474,on time
+76,54,5,Food Delivery,Straight Truck,Diesel,Conventional,2016,9219,14.352927059817523,37.06028395,-76.05668046,delayed
+61,55,5,Food Delivery,Straight Truck,Diesel,Conventional,2013,8434,19.307697187954602,37.17778703,-74.05555858,delayed
+62,56,5,Food Delivery,Straight Truck,Diesel,Conventional,2009,7696,73.58609347243953,40.43647984,-75.90649598,unused
+63,58,6,Linen Delivery,Step Van,Diesel,Conventional,2015,12513,93.84104333880695,40.45856441,-76.13214318,on time
+64,59,5,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2000,8332,10.02854050383894,39.70527655,-80.01311224,on time
+65,60,6,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2004,10101,85.7375627376402,41.34596545,-77.95439276,on time
+66,61,5,Linen Delivery,Step Van,Diesel,Conventional,2015,7539,58.08762155619161,41.40483508,-75.08199193,on time
+67,62,5,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2002,9091,54.61731585395418,39.03763218,-79.07744118,unused
+68,63,6,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2007,10525,34.625713845185885,36.78916427,-77.20761212,on time
+69,64,6,Linen Delivery,Step Van,Diesel,Conventional,2008,11886,78.22854662421558,39.8527192,-80.296848,delayed
+70,65,6,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2009,12699,65.4229592206217,39.3085669,-80.02888447,unused
+87,66,5,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2003,7606,52.340244703305736,41.4196038,-76.21357251,on time
+71,67,6,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2007,9910,96.88065021819978,41.38266212,-76.45302578,maintenance
+72,68,6,Linen Delivery,Step Van,Diesel,Conventional,2004,10042,33.850987731275524,39.72286411,-75.54038411,accident
+73,70,6,Linen Delivery,Step Van,Diesel,Conventional,2005,12419,22.891976202981194,38.99953783,-79.58602658,unused
+74,71,6,Linen Delivery,Step Van,Diesel,Conventional,2006,10588,7.371545574504985,39.05282128,-75.44486385,delayed
+75,72,5,Linen Delivery,Step Van,Diesel,Conventional,2008,8174,93.62734334444644,37.07513641,-77.25205798,unused
+77,74,7,Linen Delivery,Straight Truck,Diesel,Conventional,2000,15658,97.78800225490217,39.19847754,-78.88387624,maintenance
+78,75,5,Linen Delivery,Step Van,Diesel,Parallel Hybrid,2002,8667,24.758311654402597,40.72869786,-77.28824436,on time
+79,76,6,Linen Delivery,Step Van,Diesel,Conventional,2010,9570,79.02665806986678,38.083228000000005,-76.16910052,delayed
+81,77,6,Linen Delivery,Step Van,Diesel,Conventional,2015,10152,23.000756848003853,40.28800192,-75.77122105,on time
+80,78,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2015,42847,21.075073582807942,38.24883349,-80.50574265,on time
+82,79,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2007,37662,99.00132719312622,40.88905349,-75.03381498,delayed
+83,80,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2010,20200,33.96859027572244,38.46677857,-76.17522285,delayed
+85,81,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2014,35701,21.053156358726515,36.66528958,-74.80160218,on time
+86,83,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2000,21502,53.555879009938,37.97030177,-79.17598255,delayed
+88,84,8,Beverage Delivery,Tractor,Diesel,Conventional,2001,38213,36.112503198441885,39.87973876,-75.17473661,on time
+93,85,8,Beverage Delivery,Tractor,Diesel,Conventional,2017,45050,54.07002895339515,38.930721500000004,-75.24285876,delayed
+89,86,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,59570,101.92864051942288,39.73099361,-73.69652423,maintenance
+90,87,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2003,46100,86.43926779901422,41.18367071,-79.23856778,unused
+91,88,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2000,30754,95.39977137053401,39.13652593,-74.23935390000001,delayed
+92,89,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,26519,46.93002782196417,38.96553465,-75.03388633,unused
+94,90,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2006,54721,52.47267018759354,41.16283258,-76.11377752,on time
+95,91,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2006,42209,87.63244836119449,38.21045797,-75.58933774,on time
+101,92,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2002,45041,16.536897040327247,38.38384469,-76.7627405,on time
+96,93,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2012,48528,72.92430196350865,39.65614632,-73.8817432,on time
+97,94,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2011,38190,49.715386130614775,37.90692309,-77.12345146,delayed
+98,95,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2007,47381,30.11887562992276,38.85542106,-75.30144095,unused
+99,96,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,33028,84.43576301875403,40.22693597,-76.0471903,on time
+100,97,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2008,23946,28.98754564478257,41.0511312,-78.65590746,delayed
+102,98,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2011,35489,45.333925670172036,40.14914766,-77.88720839,on time
+141,99,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2012,48840,20.964698188378467,40.05831173,-75.84511337,unused
+103,100,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2011,24278,80.72427514075228,40.24921406,-79.0212066,accident
+104,101,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2004,50859,72.54246069156916,39.31972749,-78.88635372,unused
+16,102,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2007,9260,89.35641653880266,37.12408863,-74.36567793,unused
+17,103,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2007,7803,87.08594804906033,41.09639593,-77.27342052,on time
+18,104,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2013,7337,12.408855734433882,37.47808261,-77.71718221,on time
+19,105,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2004,7770,65.93912069585227,39.32577529,-75.73320258,on time
+29,106,5,Parcel Delivery,Walk In,Diesel,Conventional,2016,7213,93.30649391426533,36.8910392,-77.13297945,on time
+20,107,5,Parcel Delivery,Walk In,Diesel,Conventional,2000,9141,15.281765685315127,40.58921719,-79.29003829,accident
+21,108,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2013,7621,52.01434717101837,40.35664261,-74.25200043,delayed
+22,109,5,Parcel Delivery,Walk In,Diesel,Conventional,2010,7848,99.19204507989916,40.68024482,-79.37614056,maintenance
+23,110,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2017,9376,87.14331738583377,39.00567953,-76.4296835,delayed
+24,111,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2007,8666,46.18838195479955,37.44226952,-75.96442003,accident
+25,112,3,Parcel Delivery,Step Van,Diesel,Conventional,2010,4763,64.6627446796463,36.85150928,-78.65483787,unused
+34,115,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2000,9445,43.0252985838448,40.17306085,-80.02619477,unused
+26,116,5,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2012,8449,22.977582742237285,41.25068437,-77.39274516,on time
+27,117,3,Parcel Delivery,Step Van,Diesel,Conventional,2001,4192,84.70236608257352,37.65950423,-76.28184278,on time
+28,118,3,Parcel Delivery,Step Van,Diesel,Conventional,2009,4042,42.18909678832841,40.16089085,-79.02772216,on time
+30,119,3,Parcel Delivery,Step Van,Diesel,Conventional,2001,3225,45.111298261426406,40.91010499,-77.65588348,delayed
+31,120,3,Parcel Delivery,Step Van,Diesel,Conventional,2002,3319,17.50009456942443,38.21180094,-74.77977606,unused
+32,121,3,Parcel Delivery,Step Van,Diesel,Conventional,2012,4582,17.90389213992832,40.19718537,-79.21968442,delayed
+33,122,3,Parcel Delivery,Step Van,Diesel,Conventional,2007,5265,89.6107726097648,37.263245,-78.7373305,on time
+105,124,6,Linen Delivery,Walk In,Diesel,Conventional,2002,10499,3.6689044100926806,37.56490264,-75.43673543,on time
+106,125,6,Linen Delivery,Walk In,Diesel,Conventional,2010,9612,98.5971405296704,39.89754938,-76.7575628,maintenance
+145,126,6,Linen Delivery,Walk In,Diesel,Conventional,2000,12059,85.07662314022085,41.6057924,-75.81171686,on time
+107,127,6,Linen Delivery,Walk In,Diesel,Parallel Hybrid,2009,11905,73.91329304274412,39.7153329,-76.32456942,on time
+108,128,6,Linen Delivery,Walk In,Diesel,Conventional,2006,12062,16.48991259485864,39.79619728,-73.47836661,on time
+109,129,6,Linen Delivery,Walk In,Diesel,Parallel Hybrid,2002,12670,37.49118640951326,39.89274244,-77.50021846,on time
+110,130,6,Linen Delivery,Walk In,Diesel,Parallel Hybrid,2007,11320,28.601522176010477,38.06105003,-74.42310169,unused
+111,131,6,Linen Delivery,Walk In,Diesel,Parallel Hybrid,2007,10215,33.107137889830305,41.574394700000006,-76.68927469,on time
+112,132,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2016,42994,2.3518659678011513,38.39655737,-80.11557955,on time
+146,133,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2015,45282,48.841786314198664,40.42131564,-79.17813727,on time
+114,134,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2005,23890,89.04606138743925,38.29916842,-77.20456436,unused
+115,135,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2017,47904,23.51055968784312,40.62265959,-76.13997020000001,accident
+121,136,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2010,26061,34.978712308454526,37.46822645,-78.61140653,unused
+116,137,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2016,25108,95.25401172681775,41.06491183,-74.77026183,on time
+123,138,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2005,55389,21.902959368419147,40.75557194,-75.38713765,delayed
+117,139,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,42529,69.1014031756637,37.078382,-78.05326193,on time
+118,140,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2017,50208,68.45615567787267,40.74393421,-79.33399132,delayed
+119,141,8,Beverage Delivery,Tractor,Diesel,Conventional,2001,40738,49.27812110933056,37.39924789,-79.8411145,on time
+120,142,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2010,37187,19.457961995678964,38.23909956,-77.94607471,on time
+122,143,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2000,41422,99.73405375225141,37.18404954,-78.80088093,maintenance
+124,144,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2007,54334,12.229146831808935,37.39977397,-76.04156023,on time
+125,145,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2000,29336,12.692532244819732,39.56698106,-76.41082152,accident
+126,146,8,Beverage Delivery,Tractor,Diesel,Conventional,2017,22726,56.70803932373383,38.88845047,-75.64231728,on time
+127,147,8,Beverage Delivery,Tractor,Diesel,Conventional,2014,37532,80.98563970530768,36.30001849,-75.37513836,delayed
+128,148,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,56207,70.9133590652951,39.99826694,-79.58550919,delayed
+129,149,8,Beverage Delivery,Tractor,Diesel,Conventional,2011,31195,47.191589999051494,38.53337664,-76.87177468,delayed
+130,150,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2006,30967,66.52711756784342,40.28666835,-79.060405,delayed
+131,151,8,Beverage Delivery,Tractor,Diesel,Parallel Hybrid,2013,19379,91.12458235510498,41.07519696,-77.56435764,on time
+132,152,8,Beverage Delivery,Tractor,Diesel,Conventional,2015,21592,42.085244080401246,37.26656031,-74.77665471,delayed
+135,154,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2009,14883,11.82309974863701,40.12728305,-80.16706852,accident
+133,155,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2002,16046,8.072294103570233,39.833741499999995,-77.6370229,on time
+136,156,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2007,16734,36.266071163816775,39.46100159,-79.69973087,unused
+137,157,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2005,18217,64.8348285737315,40.03495136,-75.74895541,delayed
+139,158,7,Food Delivery,Tractor,Diesel,Conventional,2004,16526,17.444830905132086,40.20788808,-79.24054602,on time
+138,159,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2005,14700,35.625871200409335,39.63513602,-79.65701381,delayed
+144,160,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2008,15843,8.615204447063478,40.11361699,-78.59283968,delayed
+134,161,7,Food Delivery,Tractor,Diesel,Conventional,2013,16557,13.530204854957892,37.03898065,-74.53991479,on time
+140,162,7,Food Delivery,Tractor,Diesel,Parallel Hybrid,2017,17660,68.89317929474117,41.63344579,-76.30633512,unused
+148,220,6,Parcel Delivery,Walk In,Diesel,Conventional,2017,11138,50.674205057134635,37.87900811,-74.77905525,unused
+163,221,6,Parcel Delivery,Walk In,Diesel,Conventional,2015,11022,76.70282530426404,37.05074494,-77.27140599,unused
+150,222,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2013,10234,45.122920747256934,39.45326813,-80.20654419,delayed
+147,223,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2008,12949,96.4039714088462,38.69074268,-73.45345744,maintenance
+153,224,6,Parcel Delivery,Walk In,Diesel,Conventional,2014,10318,21.296976078499185,39.66604295,-76.09666858,on time
+149,225,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2013,10314,93.16980793215431,38.08142969,-74.39554684,on time
+155,226,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2016,10019,72.06092442083202,38.56792475,-73.73403094,unused
+151,227,6,Parcel Delivery,Walk In,Diesel,Conventional,2010,10993,92.03629269213785,39.71773304,-74.97746914,delayed
+152,228,6,Parcel Delivery,Walk In,Diesel,Conventional,2013,9772,25.06931099766287,36.06744549,-77.4053845,delayed
+154,230,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2003,12291,97.03014686666414,39.57451646,-75.6194119,maintenance
+161,231,6,Parcel Delivery,Walk In,Diesel,Conventional,2002,11193,1.343652210253031,38.5590894,-78.23462029,on time
+156,232,6,Parcel Delivery,Walk In,Diesel,Hydraulic Hybrid,2014,10407,14.061926251158383,39.60683922,-73.4307998,delayed
+157,233,6,Parcel Delivery,Walk In,Diesel,Conventional,2014,10969,38.19586448676338,36.92749802,-77.52757441,delayed
+142,234,6,Parcel Delivery,Walk In,Diesel,Conventional,2000,10518,85.33616735138419,38.08439353,-79.76082808,on time
+223,239,7,Local Delivery,Tractor,Diesel,Conventional,2011,14806,58.08760688524007,36.48249687,-75.51672188,delayed
+220,240,7,Local Delivery,Tractor,Diesel,Conventional,2003,16614,47.895730619859975,40.24951564,-74.38785632,delayed
+222,241,7,Local Delivery,Tractor,Diesel,Conventional,2001,18256,122.80863196705528,38.42877295,-74.14399349,delayed
+143,242,8,Utility,Bucket Truck,Diesel,Conventional,2002,52712,36.298857351864044,37.98334339,-78.18957643,on time
+221,246,8,Utility,Bucket Truck,Diesel,Conventional,2016,50902,5.187916258651564,37.42758439,-78.16831701,delayed
+158,254,7,Beverage Delivery,Tractor,Diesel,Conventional,2000,18527,31.115382396706888,40.29187519,-74.73188387,unused
+160,255,7,Beverage Delivery,Tractor,Diesel,Conventional,2010,13732,38.15894722104384,38.6276833,-76.83404504,on time
+159,257,7,Beverage Delivery,Tractor,Diesel,Conventional,2008,13704,28.17907159709284,36.766444899999996,-77.53223228,on time
+162,258,7,Beverage Delivery,Tractor,Diesel,Conventional,2013,15791,75.11808567653411,40.88854521,-75.70786722,on time
+164,284,3,Telecom,Bucket Truck,Gasoline,Conventional,2003,3657,99.02990237063912,38.38640204,-77.26217491,maintenance
+172,286,3,Telecom,Bucket Truck,Gasoline,Conventional,2000,3762,31.014386125377467,41.1422703,-75.23964079,on time
+165,287,3,Telecom,Bucket Truck,Gasoline,Conventional,2008,3417,51.27606000792955,39.31320559,-76.6223599,on time
+166,288,3,Telecom,Bucket Truck,Gasoline,Conventional,2013,3522,66.0749661977079,38.99011194,-80.25768151,delayed
+167,289,2,Telecom,Service Van,Gasoline,Conventional,2015,2552,67.0403193274305,38.40943599,-73.64778089,delayed
+168,290,2,Telecom,Service Van,Gasoline,Conventional,2009,2471,32.661751798145666,38.244693299999994,-75.76848915,on time
+169,291,3,Telecom,Bucket Truck,Gasoline,Conventional,2000,3042,75.64777903240872,37.68309079,-77.52873796,delayed
+170,292,3,Telecom,Bucket Truck,Gasoline,Conventional,2012,4622,32.5597454879397,38.68062902,-79.68454986,delayed
+173,293,3,Telecom,Bucket Truck,Gasoline,Conventional,2017,4849,97.93406255375349,38.47656621,-77.12621903,maintenance
+171,295,3,Telecom,Bucket Truck,Gasoline,Conventional,2010,3312,5.6132637351697845,38.91884238,-75.72758486,delayed
+178,296,3,Telecom,Bucket Truck,Gasoline,Conventional,2012,3373,0.7699863144241977,37.60998709,-77.26566466,on time
+175,297,3,Telecom,Bucket Truck,Gasoline,Conventional,2015,3721,38.08453809262933,37.0340301,-75.51386168,unused
+184,298,3,Telecom,Bucket Truck,Gasoline,Conventional,2014,4840,72.56874145286712,38.51029563,-77.67190740000001,delayed
+174,299,2,Telecom,Service Van,Gasoline,Conventional,2011,2001,43.78612684881866,37.89434508,-76.30570306,delayed
+179,300,2,Telecom,Service Van,Gasoline,Conventional,2007,2287,24.578105021769233,38.49345162,-77.13746357,on time
+176,301,3,Telecom,Bucket Truck,Gasoline,Conventional,2003,4420,16.061820960254884,40.46578705,-74.09161557,unused
+177,302,3,Telecom,Bucket Truck,Gasoline,Conventional,2015,3153,96.1716957633649,40.49371543,-78.59051689,maintenance
+183,303,3,Telecom,Bucket Truck,Gasoline,Conventional,2014,3333,96.63754354046178,39.87881875,-75.89713571,maintenance
+181,304,3,Telecom,Bucket Truck,Gasoline,Conventional,2002,4284,41.08350366132888,40.56968029,-74.46232038,delayed
+180,305,3,Telecom,Bucket Truck,Gasoline,Conventional,2004,3886,24.319367779802796,41.03664299,-75.02466029,on time
+185,306,3,Telecom,Bucket Truck,Gasoline,Conventional,2004,3667,21.551813582531032,41.51013482,-77.20903284,accident
+182,307,3,Telecom,Bucket Truck,Gasoline,Conventional,2000,4667,27.68350408011498,41.02280973,-75.40676490000001,delayed
+188,309,4,Parcel Delivery,Step Van,Diesel,Conventional,2003,6654,46.650164820155105,39.74300695,-76.06581264,on time
+187,310,4,Parcel Delivery,Step Van,Diesel,Conventional,2005,6344,38.05944747057961,39.18402986,-76.31870579,unused
+186,311,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2006,5852,62.56906121074029,40.43472706,-78.729167,delayed
+189,312,4,Parcel Delivery,Step Van,Diesel,Conventional,2015,6841,68.29213273131558,41.445494599999996,-77.83504692,on time
+190,313,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2007,6923,62.34068741018824,39.34313373,-74.299072,on time
+194,315,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2005,5856,32.599329397858014,40.96046038,-78.50513568,unused
+192,316,4,Parcel Delivery,Step Van,Diesel,Conventional,2015,6006,45.47955893336102,39.39008846,-79.6665219,delayed
+193,317,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2017,6408,88.07740487735839,39.27122061,-74.72214164,on time
+191,319,4,Parcel Delivery,Step Van,Diesel,Conventional,2000,6414,42.55828066229847,39.42406361,-76.21896159999999,delayed
+195,320,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2010,6682,57.22527527891934,39.530267200000004,-76.41269297,on time
+196,321,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2010,5644,25.59413967374213,37.45957393,-77.61687143,unused
+202,322,4,Parcel Delivery,Step Van,Diesel,Conventional,2002,6456,32.37361252398651,39.58999374,-79.51667865,on time
+206,323,4,Parcel Delivery,Step Van,Diesel,Conventional,2002,6951,35.28710631532175,36.9742045,-75.62121518,delayed
+197,324,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2017,5787,7.82897820273717,37.07870459,-76.24008053,unused
+200,325,4,Parcel Delivery,Step Van,Diesel,Conventional,2004,6111,65.91731715124344,37.09839738,-79.1292021,unused
+198,326,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2000,6824,53.00026121247843,40.43689558,-76.55182523,unused
+201,327,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2014,6292,32.915539243305524,37.9573099,-79.58772427,unused
+203,328,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2017,6458,7.649201754139279,37.96334661,-75.46094586,on time
+199,329,4,Parcel Delivery,Step Van,Diesel,Conventional,2007,6415,13.108889178975938,37.56337733,-78.31810542,delayed
+205,330,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2003,5504,4.276233192102714,39.04171438,-75.52204308,accident
+219,331,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2017,6051,28.370558654645126,40.97058488,-77.9034927,on time
+204,332,4,Parcel Delivery,Step Van,Diesel,Parallel Hybrid,2006,5624,17.268872600752285,37.64849652,-74.20406741,unused
+207,567,3,Food Delivery,Straight Truck,Diesel,Conventional,2009,5210,30.803012248846066,37.97618598,-79.87585004,on time
+208,569,3,Food Delivery,Straight Truck,Diesel,Conventional,2010,3042,67.15365861884707,36.92649471,-75.60579613,on time
+209,570,3,Food Delivery,Straight Truck,Diesel,Conventional,2013,3378,62.483978263978265,41.15979421,-77.43197146,on time
+210,571,3,Food Delivery,Straight Truck,Diesel,Conventional,2006,3122,83.72632644962631,37.63985038,-77.11457587,on time
+211,572,3,Food Delivery,Straight Truck,Diesel,Conventional,2006,4745,97.11666347578296,38.30081717,-73.65159158,maintenance
+212,573,3,Food Delivery,Straight Truck,Diesel,Conventional,2016,4530,59.299437109074915,36.35953692,-76.17342985,delayed
+213,574,3,Food Delivery,Straight Truck,Diesel,Conventional,2016,5267,82.37877542451692,37.40245919,-78.26878479,on time
+214,575,3,Food Delivery,Straight Truck,Diesel,Conventional,2012,3296,35.19645039368539,39.96475212,-78.51320017,delayed
+215,576,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2009,5697,31.235626099562158,37.82827337,-79.1827882,on time
+216,577,4,Parcel Delivery,Walk In,Diesel,Parallel Hybrid,2000,6017,57.89658956135901,40.16243338,-76.19638395,on time
+217,578,4,Parcel Delivery,Walk In,Diesel,Conventional,2016,5507,97.31705109451805,39.00524003,-80.21911781,maintenance
+218,579,4,Parcel Delivery,Walk In,Diesel,Conventional,2009,6986,50.12464660110279,40.54350913,-74.42758618,unused

@@ -8,7 +8,7 @@ import data_preparation.maintenance_prediction as m_prediction
 
 from database_connection import connect, return_engine
 
-# connect to database and add files to
+# connect to database and write raw data into dataframe
 # conn = connect()
 # sql = "select * from raw_data_fleet_dna;"
 # df = pd.read_sql_query(sql, conn)
@@ -52,9 +52,13 @@ driving_data = m_prediction.maintenance_increase(driving_data)
 vehicle_data = m_prediction.sum_vehicle_maintenance(driving_data, vehicle_data)
 
 #------------ return changes to database ------------------------------
-# create new Database Table from Dataframe
+# create new Database Tables from Dataframes
 # engine = return_engine()
-# new.to_sql('cleaned_data_fleet_dna', con=engine, if_exists='replace')
-# v_df.to_sql('vehicle_information', con=engine, if_exists='replace')
+# driving_data.to_sql('driving_data', con=engine, if_exists='replace')
+# vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
 # engine = None
 
+# generate new csv Files from new dataframes
+# Todo - delete this part when done
+# vehicle_data.to_csv('vehicle_data.csv')
+# driving_data.to_csv('driving_data.csv')
