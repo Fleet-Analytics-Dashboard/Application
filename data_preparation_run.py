@@ -38,6 +38,12 @@ vehicle_data = simulation.vehicle_capacity(vehicle_data)
 # simulate random maintenance start value
 vehicle_data = simulation.maintenance_start_value(vehicle_data)
 
+# simulate vehicle position
+vehicle_data = simulation.vehicle_position(vehicle_data)
+
+# simulate vehicle status
+vehicle_data = simulation.vehicle_status(vehicle_data)
+
 #------------ include maintenance_prediction.py -----------------------
 # add column with increase of maintenance value for each day
 driving_data = m_prediction.maintenance_increase(driving_data)

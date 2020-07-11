@@ -1,4 +1,4 @@
-#Todo - add maintenance summ to dataframe
+#Todo -
 import pandas as pd
 
 def calculate_maintenance(dist, decel):
@@ -13,19 +13,17 @@ def calculate_maintenance(dist, decel):
 
 
 def maintenance_increase(df):
-    result = df.copy()
     lst = []
     # iterate over Dataframe and calculate maintenance for each entry
     for index, row in df.iterrows():
         lst.append(calculate_maintenance(row['distance_total'], row['max_deceleration_ft_per_second_squared']))
-    result['maintenance_increase'] = lst
+    df['maintenance_increase'] = lst
 
-    return result
+    return df
 
 
 def sum_vehicle_maintenance(df, vehicle_df):
     sum_dic = {}
-    result = vehicle_df
     # ad maintenance increas for each row to dict where the key represents the vid
     for index, row in df.iterrows():
         if int(row['vid']) in sum_dic.keys():
@@ -33,8 +31,8 @@ def sum_vehicle_maintenance(df, vehicle_df):
         else:
             sum_dic[int(row['vid'])] = row['maintenance_increase']
     # ad a column with the value that needs to be added
-    result['maintenance_add'] = result['vid'].map(sum_dic)
-    result['maintenance'] = result['maintenance'] + result['maintenance_add']
-    result = result.drop('maintenance_add', axis=1)
+    vehicle_df['maintenance_add'] = vehicle_df['vid'].map(sum_dic)
+    vehicle_df['maintenance'] = vehicle_df['maintenance'] + vehicle_df['maintenance_add']
+    vehicle_df = vehicle_df.drop('maintenance_add', axis=1)
 
-    return result
+    return vehicle_df
