@@ -95,7 +95,7 @@ layout = html.Div([
                     ],
                     className='vehicles-tables-filter'
                 ),
-                html.Div(
+                html.Div( 
                     [
                         html.Button('Reset Chart',
                                     id='button_chart',
