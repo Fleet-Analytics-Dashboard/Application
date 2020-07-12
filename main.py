@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table as dt
+from dash.exceptions import PreventUpdate
 from plotly import graph_objs as go
 
 
@@ -60,7 +61,7 @@ def make_table(data, output):
             dt.DataTable(
                 id=output,
                 data=data.to_dict('rows'),
-                columns=[{'id': c, 'name': c} for c in data.columns],
+                columns=[{'id': c, 'name': c, "selectable": True} for c in data.columns],
                 selected_rows=[],
                 style_cell={'padding': '5px',
                             'whiteSpace': 'no-wrap',
@@ -69,13 +70,12 @@ def make_table(data, output):
                             'maxWidth': 100,
                             'height': 30,
                             'textAlign': 'left'},
-                style_header={
-                    'backgroundColor': 'white',
-                    'fontWeight': 'bold',
-                    'color': 'black'
-
-                },
-
+                editable=True,
+                filter_action="native",
+                sort_action="native",
+                sort_mode="multi",
+                selected_columns=[],
+                page_action="native",
             ),
         ], className="seven columns", style={'margin-top': '35',
                                              'margin-left': '15',
@@ -89,20 +89,11 @@ def make_chart(df, x, y, label='Author', size='Size'):
         s = 15
     else:
         s = df[size]
-    graph.append(go.Scatter(
-        x=df[x],
-        y=df[y],
-        mode='markers',
-        text=['{}: {}'.format(label, a) for a in df[label]],
-        opacity=0.7,
-        marker={
-            'size': s,
-            'line': {'width': 0.5, 'color': 'white'}
-        },
-        name='X'
-    ))
+    graph.append(go.Bar(
+            x=df[x],
+            y=df[y],
+        ))
 
-    return graph
 
 
 # Callbacks and functions
@@ -138,11 +129,13 @@ def tab(sel, table, state):
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
-def update_image_src(fx, fy, back, selected_cell, current_table):
+def update_table(fx, fy, back, selected_cell, current_table):
+    df_vehicle_new = df_vehicle.copy()
     if fx == '':
         res = df_group_vehicle_class
     else:
         res = df_vehicle[df_vehicle['vid'] == fx]
+
 
     if selected_cell:
         print(current_table)
@@ -164,10 +157,11 @@ def update_image_src(fx, fy, back, selected_cell, current_table):
 def update_graph(fx, fy, back, selected_cell):
     if fx == '':
         return {
-            'data': [{
-                'x': df_group_vehicle_class['Klasse'],
-                'y': df_group_vehicle_class['anzahl']
-            }]
+            'data':
+                [go.Bar({
+                    'x': df_group_vehicle_class['Klasse'],
+                    'y': df_group_vehicle_class['anzahl']
+            })]
         }
 
 
