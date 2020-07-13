@@ -1,5 +1,3 @@
-#Todo - switch from CSV to Database
-
 import pandas as pd
 import numpy as np
 import data_preparation.data_cleaning as data_cleaning
@@ -9,13 +7,13 @@ import data_preparation.maintenance_prediction as m_prediction
 from database_connection import connect, return_engine
 
 # connect to database and write raw data into dataframe
-# conn = connect()
-# sql = "select * from raw_data_fleet_dna;"
-# df = pd.read_sql_query(sql, conn)
-# conn = None
+conn = connect()
+sql = "select * from raw_data_fleet_dna;"
+df = pd.read_sql_query(sql, conn)
+conn = None
 
-# import NREL-Fleet-DNA-Data.csv as dataframe 'df'
-df = pd.read_csv('composite-data-for-fleet-dna-csv-1.csv')
+# import NREL-Fleet-DNA-Data.csv as dataframe 'df' if Database is gone
+# df = pd.read_csv('composite-data-for-fleet-dna-csv-1.csv')
 
 #------------ include data_cleanig.py ---------------------------------
 # generate two tables for vehicle and driving data
@@ -44,6 +42,14 @@ vehicle_data = simulation.vehicle_position(vehicle_data)
 # simulate vehicle status
 vehicle_data = simulation.vehicle_status(vehicle_data)
 
+# simulate vehicle consumption and fuel cost
+driving_data = simulation.fuel_cost(vehicle_data, driving_data)
+
+# simulate cost per vehicle
+vehicle_data = simulation.cost_per_vehicle(vehicle_data, driving_data)
+
+vehicle_data = simulation.generate_licence_plate(vehicle_data)
+
 #------------ include maintenance_prediction.py -----------------------
 # add column with increase of maintenance value for each day
 driving_data = m_prediction.maintenance_increase(driving_data)
@@ -53,12 +59,11 @@ vehicle_data = m_prediction.sum_vehicle_maintenance(driving_data, vehicle_data)
 
 #------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
-# engine = return_engine()
-# driving_data.to_sql('driving_data', con=engine, if_exists='replace')
-# vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
-# engine = None
+engine = return_engine()
+driving_data.to_sql('driving_data', con=engine, if_exists='replace')
+vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
+engine = None
 
 # generate new csv Files from new dataframes
-# Todo - delete this part when done
 # vehicle_data.to_csv('vehicle_data.csv')
 # driving_data.to_csv('driving_data.csv')

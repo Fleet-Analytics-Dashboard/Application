@@ -36,3 +36,8 @@ def sum_vehicle_maintenance(df, vehicle_df):
     vehicle_df = vehicle_df.drop('maintenance_add', axis=1)
 
     return vehicle_df
+
+
+def predict_maintenance(d_df, v_df):
+
+    return d_df

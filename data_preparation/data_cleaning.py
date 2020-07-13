@@ -101,18 +101,6 @@ def cleaning (df):
     new['spd_cat_5_std_speed'] = df['spd_cat_5_std_speed'].copy()
     new['spd_cat_5_ttl'] = df['spd_cat_5_ttl'].copy()
     new['spd_cat_5_zero_speed'] = df['spd_cat_5_zero_speed'].copy()
-    new['spd_cat_6_mean_speed'] = df['spd_cat_6_mean_speed'].copy()
-    new['spd_cat_6_std_speed'] = df['spd_cat_6_std_speed'].copy()
-    new['spd_cat_6_ttl'] = df['spd_cat_6_ttl'].copy()
-    new['spd_cat_6_zero_speed'] = df['spd_cat_6_zero_speed'].copy()
-    new['spd_cat_7_mean_speed'] = df['spd_cat_7_mean_speed'].copy()
-    new['spd_cat_7_std_speed'] = df['spd_cat_7_std_speed'].copy()
-    new['spd_cat_7_ttl'] = df['spd_cat_7_ttl'].copy()
-    new['spd_cat_7_zero_speed'] = df['spd_cat_7_zero_speed'].copy()
-    new['spd_cat_8_mean_speed'] = df['spd_cat_8_mean_speed'].copy()
-    new['spd_cat_8_std_speed'] = df['spd_cat_8_std_speed'].copy()
-    new['spd_cat_8_ttl'] = df['spd_cat_8_ttl'].copy()
-    new['spd_cat_8_zero_speed'] = df['spd_cat_8_zero_speed'].copy()
 
     # add all relevant columns from category 'Acceleration and Deceleration' (original column 124-173)
     new['total_number_of_acceleration_events'] = df['total_number_of_acceleration_events'].copy()
@@ -214,14 +202,13 @@ def cleaning (df):
     new['spd_cat_3_distance'] = df['spd_cat_3_distance'].copy()
     new['spd_cat_4_distance'] = df['spd_cat_4_distance'].copy()
     new['spd_cat_5_distance'] = df['spd_cat_5_distance'].copy()
-    new['spd_cat_6_distance'] = df['spd_cat_6_distance'].copy()
-    new['spd_cat_7_distance'] = df['spd_cat_7_distance'].copy()
-    new['spd_cat_8_distance'] = df['spd_cat_8_distance'].copy()
 
     # replace the NaN values with 0
     new.fillna(0, inplace=True)
 
-    # return cleaned dataframe new
+    # reset index and return cleaned dataframe new
+    new = new.reset_index()
+
     return new
 
 def seperate_vehicle_data(df):
@@ -229,4 +216,6 @@ def seperate_vehicle_data(df):
     result = df[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
     # drop duplicates in v_df
     result = result.drop_duplicates(keep='first', ignore_index=True).sort_values('vid')
+    result = result.reset_index()
+
     return result
