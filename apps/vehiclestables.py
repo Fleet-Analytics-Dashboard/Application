@@ -30,12 +30,9 @@ df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class','vocation'])[
 df_group_vehicle_class.columns = (["Klasse", 'Typ',"anzahl"])
 
 
-
-
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 
 df_driver = df_driver.rename(columns={"pid": "pp"}).copy()
-
 
 # Layout
 layout = html.Div([

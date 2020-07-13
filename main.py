@@ -144,6 +144,8 @@ def update_table(fx, fy, back, selected_cell, current_table):
                 df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
         if 'pid' in current_table['data'][0].keys():
             res = df_driver[df_driver['pp'] == current_table['data'][list(selected_cell)[0]['row']]['pid']]
+        if 'last_name' in current_table['data'][0].keys():
+            raise PreventUpdate
 
     return make_table(res, 'table')
 
