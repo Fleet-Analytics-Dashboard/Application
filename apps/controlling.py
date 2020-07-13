@@ -11,20 +11,17 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from database_connection import connect, return_engine
 
-# connect to database and add files to
+# connect to database
 #conn = connect()
 #sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
 #df_table = pd.read_sql_query(sql, conn)
 #conn = None
-df_table = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\batch-data\cleaned-data-for-fleet-dna_v3.csv')
+df_table = pd.read_csv('cleaned-data-for-fleet-dna.csv')
 
-#df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
-#column_name_dropdown = fleet_data[['vid', 'vocation']]
-df_goals = pd.read_csv(r'C:\Users\Larisa\PycharmProjects\Application\apps\Graph Goals.csv')
-#df_goals = pd.read_csv('GraphGoals.csv', index_col=0, parse_dates=True)
-df_goals.index = pd.to_datetime(df_goals['Id'])
+# df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
+# column_name_dropdown = fleet_data[['vid', 'vocation']]
 
-#mock data for goals chart
+# simulated data for the goals chart
 years = np.vstack((np.arange(2014, 2021),)*4)
 y_data_revenue = np.random.normal(8, 1.5, 100)
 y_data_revenue.sort()
@@ -40,11 +37,10 @@ names_goals =['Revenue', 'Profit', 'Liquidity']
 #df_goals_chart['bestfit'] = reg.predict(np.vstack(df_goals_chart['X']))
 
 
-# mock data for costs chart
+# simulated data for the costs chart
 np.random.seed(1)
 colors = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']
 colors_trend = ['rgb(0,255,0)', 'rgb(0,0,139)', 'rgb(0,255,255)']
-labels_goals = ['Revenue', 'Profit', 'Liquidity']
 labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
 line_size = [2, 2, 4, 2]
@@ -58,8 +54,16 @@ y_data = np.array([
     [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
 ])
 
-#bar chart goals
 
+# simulated data for the carbon footprint chart
+x_data_carbon = np.vstack((np.arange(2014, 2021),)*4)
+y_data_carbon = np.random.normal(0.5, 0.1, 100)
+# y_data_carbon.sort()
+y_data_carbon = np.sort(y_data_carbon)[::-1]
+y_data_carbon_footprint = [y_data_carbon]
+
+
+# bar chart goals
 fig_goals = go.Figure()
 
 for i in range(0, 3):
@@ -104,20 +108,20 @@ fig_goals.update_layout(
         y=1.0
     ),
     barmode='group',
-    bargap=0.15, # gap between bars of adjacent location coordinates.
-    bargroupgap=0.1 # gap between bars of the same location coordinate
+    bargap=0.15,  # gap between bars of adjacent location coordinates
+    bargroupgap=0.1  # gap between bars of the same location coordinate
 )
 
 annotations_1 = []
 
 # Title chart goals
 annotations_1.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
-                        xanchor='left', yanchor='bottom',
-                        text='Business Goals',
-                        font=dict(family='Arial',
-                                  size=30,
-                                  color='rgb(37,37,37)'),
-                        showarrow=False))
+                          xanchor='left', yanchor='bottom',
+                          text='Business Goals',
+                          font=dict(family='Arial',
+                                    size=30,
+                                    color='rgb(37,37,37)'),
+                          showarrow=False))
 
 fig_goals.update_layout(annotations=annotations_1)
 
@@ -125,10 +129,10 @@ fig_goals.update_layout(annotations=annotations_1)
 
 fig_carbon = go.Figure()
 
-for i in range(0,1):
+for i in range(0, 1):
     fig_carbon.add_trace(go.Scatter(
-        x=x_data[i],
-        y=df_goals['Carbon'], mode='lines',
+        x=x_data_carbon[i],
+        y=y_data_carbon_footprint[i], mode='lines+markers',
         name='Carbon footprint',
         line=dict(color=colors[i], width=line_size[i]),
         connectgaps=True
@@ -173,10 +177,10 @@ fig_carbon.update_layout(
     showlegend=True,
     plot_bgcolor='white'
 )
-annotations_1 = []
+annotations = []
 
 # Title chart carbon
-annotations_1.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
                         xanchor='left', yanchor='bottom',
                         text='Carbon footprint',
                         font=dict(family='Arial',
@@ -184,13 +188,15 @@ annotations_1.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
                                   color='rgb(37,37,37)'),
                         showarrow=False))
 
-fig_carbon.update_layout(annotations=annotations_1)
+fig_carbon.update_layout(annotations=annotations)
 
 # line chart costs
 fig_costs = go.Figure()
 
 for i in range(0, 4):
-    fig_costs.add_trace(go.Scatter(x=x_data[i], y=y_data[i], mode='lines',
+    fig_costs.add_trace(go.Scatter(
+        x=x_data[i],
+        y=y_data[i], mode='lines',
         name=labels_costs[i],
         line=dict(color=colors[i], width=line_size[i]),
         connectgaps=True,
@@ -242,11 +248,11 @@ annotations = []
 for y_trace, label, color in zip(y_data, labels_costs, colors):
     # labeling the left_side of the plot
     annotations.append(dict(xref='paper', x=0.05, y=y_trace[0],
-                                  xanchor='right', yanchor='middle',
-                                  text=label,
-                                  font=dict(family='Arial',
-                                            size=16),
-                                  showarrow=False))
+                            xanchor='right', yanchor='middle',
+                            text=label,
+                            font=dict(family='Arial',
+                                      size=16),
+                            showarrow=False))
     # labeling the right_side of the plot
     annotations.append(dict(xref='paper', x=0.95, y=y_trace[11],
                             xanchor='left', yanchor='middle',
@@ -353,14 +359,6 @@ layout = html.Div([
                                                      for i in df_table.vid.unique()],
                                             placeholder="Choose vehicle id",
                                         ),
-                                        #dcc.RadioItems(
-                                        #    id='page-controlling-radios-2',
-                                        #    options=[{'label': i, 'value': i}
-                                        #             for i in ['Overall', 'Fuel', 'Maintenance', 'Insurance']],
-                                        #    value='Overall',
-                                        #    labelStyle={'display': 'inline-block'}
-                                        #),
-
                                     ],
                                         style={'width': '49%', 'display': 'inline-block'}),
                                     dcc.Graph(id='indicator-graphic', figure=fig_costs)
@@ -462,21 +460,6 @@ layout = html.Div([
 #    return figure
 
 
-
-#@app.callback(
-#    dash.dependencies.Output('graph-goals', 'value'),
-#    [dash.dependencies.Input('graph-goals', 'figure')])
-#def set_graph_value(available_options):
-#    return available_options[0]['value']
-
-
-#@app.callback(
-#    dash.dependencies.Output('display-selected-values', 'children'),
-#    [dash.dependencies.Input('page_controlling_radio', 'value'),
-#     dash.dependencies.Input('graph-goals', 'value')])
-#def set_display_children(selected_filter, selected_output):
-#    return selected_filter, selected_output
-
 # callback fill dropdown with fleet_data values; working
 @app.callback(
     Output('dd-output-container', 'children'),
@@ -504,7 +487,3 @@ def update_output(start_date, end_date):
         return 'Select a date to see it displayed here'
     else:
         return string_prefix
-
-
-#if __name__ == '__main__':
-#    app.run_server(debug=True)
