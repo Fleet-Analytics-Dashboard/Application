@@ -4,7 +4,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table as dt
-import plotly.graph_objects as go
+from dash.exceptions import PreventUpdate
+from plotly import graph_objs as go
+
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
@@ -61,7 +63,7 @@ def make_table(data, output):
             dt.DataTable(
                 id=output,
                 data=data.to_dict('rows'),
-                columns=[{'id': c, 'name': c} for c in data.columns],
+                columns=[{'id': c, 'name': c, "selectable": True} for c in data.columns],
                 selected_rows=[],
                 style_cell={'padding': '5px',
                             'whiteSpace': 'no-wrap',
@@ -70,13 +72,12 @@ def make_table(data, output):
                             'maxWidth': 100,
                             'height': 30,
                             'textAlign': 'left'},
-                style_header={
-                    'backgroundColor': 'white',
-                    'fontWeight': 'bold',
-                    'color': 'black'
-
-                },
-
+                editable=True,
+                filter_action="native",
+                sort_action="native",
+                sort_mode="multi",
+                selected_columns=[],
+                page_action="native",
             ),
         ], className="seven columns", style={'margin-top': '35',
                                              'margin-left': '15',
@@ -90,20 +91,11 @@ def make_chart(df, x, y, label='Author', size='Size'):
         s = 15
     else:
         s = df[size]
-    graph.append(go.Scatter(
-        x=df[x],
-        y=df[y],
-        mode='markers',
-        text=['{}: {}'.format(label, a) for a in df[label]],
-        opacity=0.7,
-        marker={
-            'size': s,
-            'line': {'width': 0.5, 'color': 'white'}
-        },
-        name='X'
-    ))
+    graph.append(go.Bar(
+            x=df[x],
+            y=df[y],
+        ))
 
-    return graph
 
 
 # Callbacks and functions
@@ -123,12 +115,11 @@ def tab(sel, table, state):
 
     # store information of selected rows to retrieve them when back button is clicked
     # information is stored in json format
-    #
     if sel:
-        if 'vid' in table[0].keys():
-            state['vid'] = table[0]['vid']
-        if 'vehicle_class' in table[0].keys() and table is not None:
-            state['vehicle_class'] = table[0]['vehicle_class']
+        if 'anzahl' in table[0].keys():
+            state['anzahl'] = table[0]['Klasse']
+        if 'vocation' in table[0].keys() and table is not None:
+            state['vocation'] = table[0]['vehicle_class']
 
     return state
 
@@ -137,15 +128,16 @@ def tab(sel, table, state):
     dash.dependencies.Output('table-box', 'children'),
     [dash.dependencies.Input('filter_x', 'value'),
      dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')],
     [dash.dependencies.State('memory', 'data')])
-def update_image_src(fx, fy, button, back, selected_cell, current_table):
+def update_table(fx, fy, back, selected_cell, current_table):
+    df_vehicle_new = df_vehicle.copy()
     if fx == '':
         res = df_group_vehicle_class
     else:
         res = df_vehicle[df_vehicle['vid'] == fx]
+
 
     if selected_cell:
         print(current_table)
@@ -154,6 +146,8 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
                 df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
         if 'pid' in current_table['data'][0].keys():
             res = df_driver[df_driver['pp'] == current_table['data'][list(selected_cell)[0]['row']]['pid']]
+        if 'last_name' in current_table['data'][0].keys():
+            raise PreventUpdate
 
     return make_table(res, 'table')
 
@@ -162,16 +156,16 @@ def update_image_src(fx, fy, button, back, selected_cell, current_table):
     dash.dependencies.Output('graph', 'figure'),
     [dash.dependencies.Input('filter_x', 'value'),
      dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
      dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
      dash.dependencies.Input('table', 'selected_cells')])
-def update_graph(fx, fy, back, selected_cell, current_table):
+def update_graph(fx, fy, back, selected_cell):
     if fx == '':
         return {
-            'data': [{
-                'x': df_group_vehicle_class['Klasse'],
-                'y': df_group_vehicle_class['anzahl']
-            }]
+            'data':
+                [go.Bar({
+                    'x': df_group_vehicle_class['Klasse'],
+                    'y': df_group_vehicle_class['anzahl']
+            })]
         }
 
 
