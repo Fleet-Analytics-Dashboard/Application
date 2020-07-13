@@ -18,7 +18,7 @@ fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
 
-
+vehicle_data = vehicle_data.round(decimals=2)
 
 
 # Daten
@@ -147,12 +147,24 @@ layout = html.Div([
 
                             dash_table.DataTable(
                                 id="downtime_table",
+
                                 style_table={
                                     'maxHeight': '',
                                     'maxWidth': '',
                                     'overflowY': ''
                                 },
                                 data=vehicle_data.to_dict('records'),
+                                editable=True,
+                                filter_action="native",
+                                sort_action="native",
+                                sort_mode="multi",
+
+
+
+                                selected_columns=[],
+                                selected_rows=[],
+                                page_action="native",
+
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'vehicle_status']]],
                                 page_size=10,
@@ -278,27 +290,7 @@ layout = html.Div([
 
                 # Overstepping speed limit table
 
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Overstepping Speed Limit'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=vehicle_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                            columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
-                            page_size=5,
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
 
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
 
                 # Oldest Vehicles table
 

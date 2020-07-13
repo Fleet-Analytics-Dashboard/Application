@@ -9,7 +9,6 @@ from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
 from apps.downtimes import vehicle_data
 
-
 app = dash.Dash(__name__, suppress_callback_exceptions=True,
                 external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -80,6 +79,35 @@ def make_table(data, output):
         ], className="seven columns", style={'margin-top': '35',
                                              'margin-left': '15',
                                              'border': '1px solid #C6CCD5'}
+    )
+
+
+##########Make downtime table##################
+
+def make_table_downtime(data, output):
+    return html.Div(
+        [
+            dt.DataTable(
+                id=output,
+                data=data.to_dict('rows'),
+                columns=[{'vid': c, 'vehicle_status': c} for c in data.columns],
+                selected_rows=[],
+                style_cell={'padding': '5px',
+                            'whiteSpace': 'no-wrap',
+                            'overflow': 'hidden',
+                            'textOverflow': 'ellipsis',
+                            'maxWidth': 100,
+                            'height': 30,
+                            'textAlign': 'left'},
+                style_header={
+                    'backgroundColor': 'white',
+                    'fontWeight': 'bold',
+                    'color': 'black'
+
+                },
+
+            ),
+        ],
     )
 
 
@@ -175,19 +203,27 @@ def update_graph(fx, fy, back, selected_cell, current_table):
 
 
 ################### Callback downtimes table####################
-@app.callback(
-    dash.dependencies.Output('downtime_table', 'children'),
-    [dash.dependencies.Input('searchbox_downtime_table', 'value'),
-     ])
-def update_table(value):
-    if value == '':
-        return {
-            'data': [{
-                'x': vehicle_data.vid,
-                'y': vehicle_data.vehicle_status,
-            }]
-        }
-
+# @app.callback(
+#     dash.dependencies.Output('downtime_table', 'children'),
+#     [dash.dependencies.Input('searchbox_downtime_table', 'value'),
+#      ])
+#
+# def update_downtime_table(value):
+#     return
+#
+#
+# @app.callback(
+#     Output('downtime_table', 'rows'),
+#     [Input('searchbox_downtime_table', 'value'),
+#      ])
+# def update_selected_row_indices(value):
+#     map_aux = vehicle_data.copy()
+#
+#     # Type filter
+#     map_aux = map_aux[map_aux['Type'].isin(value)]
+#
+#     data = map_aux.to_dict('records')
+#     return data
 
 # server
 if __name__ == '__main__':
