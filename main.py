@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table as dt
+import plotly.graph_objects as go
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
