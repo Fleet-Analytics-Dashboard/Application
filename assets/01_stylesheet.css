@@ -1,26 +1,71 @@
 body {
     font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif;
     color: #444444;
-    margin: 0 auto;
-    padding: 40px;
+    margin: 0;
 }
 
-.container {
-    border-radius: 5px;
-    background-color: #efefef;
+.container-downtimes {
+    background-color: #f8f8f8;
     margin: 5px;
     padding: 15px;
     position: relative;
     box-shadow: 2px 2px 2px lightgrey;
 }
 
+.content-overview {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+.controlling-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+.controlling-content {
+    margin: 0 auto;
+}
+
+.content-verhiclestables {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+
+.dash-table-container {
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.logo-text {
+    top: 4px !important;
+    position: relative;
+    margin: 0 !important;
+    padding: 0 18px !important;
+}
+
+.header {
+    background-color: #f8f8f8;
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.header * {
+    display: inline-block;
+}
+
+
 div {
     padding: 0;
 }
+
 /*Map*/
 
 /*PieCharts*/
-
 
 
 /*Calender*/
@@ -38,7 +83,7 @@ div {
 .vehicles-tables-content {
     max-width: 900px;
     border-radius: 5px;
-    background-color: #efefef;
+    background-color: #F8F8F8;
     margin: 5px;
     padding: 15px;
     position: relative;
@@ -71,7 +116,6 @@ div {
 }
 
 
-/* */
 .overview-welcome-text {
     margin-bottom: 20px;
 }

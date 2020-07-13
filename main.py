@@ -7,30 +7,49 @@ import dash_table as dt
 from dash.exceptions import PreventUpdate
 from plotly import graph_objs as go
 
-
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
 from apps.downtimes import vehicle_data
 
+external_scripts = [
+    {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
+    {'src': 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'}
+]
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True,
-                external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__,
+                suppress_callback_exceptions=True,
+                external_scripts=external_scripts,
+                external_stylesheets=[dbc.themes.BOOTSTRAP],
+                meta_tags=[
+                    {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+                ]
+                )
 
 # navigation
 app.layout = html.Div([
 
     dcc.Location(id='url', refresh=False),
-    html.H1('Fleetboard'),
 
-    # TODO fix active=True
-    dbc.Nav(
+    html.Div(
         [
-            dbc.NavItem(dbc.NavLink("Overview", href="/")),
-            dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
-            dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
-            dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+            html.A([
+
+                html.Img(src=app.get_asset_url('fleetboard_logo.jpg'), style={'height': '36px'}),
+                html.H4('Fleetboard', className='logo-text'),
+            ], className='align-self-center', href='/'),
+
+            dbc.Nav(
+                [
+                    dbc.NavItem(dbc.NavLink("Overview", href="/")),
+                    dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
+                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
+                    dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+                ],
+                pills=True,
+                className='nav-menu'
+            ),
         ],
-        pills=True,
+        className='header align-self-center'
     ),
 
     # page content from respective site will be loaded via this id
@@ -92,10 +111,9 @@ def make_chart(df, x, y, label='Author', size='Size'):
     else:
         s = df[size]
     graph.append(go.Bar(
-            x=df[x],
-            y=df[y],
-        ))
-
+        x=df[x],
+        y=df[y],
+    ))
 
 
 # Callbacks and functions
@@ -138,7 +156,6 @@ def update_table(fx, fy, back, selected_cell, current_table):
     else:
         res = df_vehicle[df_vehicle['vid'] == fx]
 
-
     if selected_cell:
         print(current_table)
         if 'Klasse' in current_table['data'][0].keys():
@@ -165,7 +182,7 @@ def update_graph(fx, fy, back, selected_cell):
                 [go.Bar({
                     'x': df_group_vehicle_class['Klasse'],
                     'y': df_group_vehicle_class['anzahl']
-            })]
+                })]
         }
 
 
