@@ -114,10 +114,10 @@ def tab(sel, table, state):
     # store information of selected rows to retrieve them when back button is clicked
     # information is stored in json format
     if sel:
-        if 'vid' in table[0].keys():
-            state['vid'] = table[0]['Klasse']
-        if 'vehicle_class' in table[0].keys() and table is not None:
-            state['vehicle_class'] = table[0]['vehicle_class']
+        if 'anzahl' in table[0].keys():
+            state['anzahl'] = table[0]['Klasse']
+        if 'vocation' in table[0].keys() and table is not None:
+            state['vocation'] = table[0]['vehicle_class']
 
     return state
 
