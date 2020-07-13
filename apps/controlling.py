@@ -8,18 +8,21 @@ from datetime import datetime as dt
 import re
 import plotly.graph_objects as go
 import numpy as np
-from sklearn.linear_model import LinearRegression
 from database_connection import connect, return_engine
 
 # connect to database
-#conn = connect()
-#sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
-#df_table = pd.read_sql_query(sql, conn)
-#conn = None
-df_table = pd.read_csv('cleaned-data-for-fleet-dna.csv')
+conn = connect()
+sql = "select vid, vehicel_type, fuel_type, seconds_at_speed_zero from cleaned_data_fleet_dna;"
+df_table = pd.read_sql_query(sql, conn)
+sql = "select vid, vehicel_type from cleaned_data_fleet_dna where day_id = '1' and seconds_at_speed_zero > '1800';"
+vehicle_capacity_idle = pd.read_sql_query(sql, conn)
+rows_idle = vehicle_capacity_idle['vid'].count()
+sql = "select vid, vehicel_type from cleaned_data_fleet_dna where day_id = '1' and non_recorded_time_hrs > '0';"
+vehicle_capacity_unused = pd.read_sql_query(sql, conn)
+rows_unused = vehicle_capacity_unused['vid'].count()
+conn = None
+# df_table = pd.read_csv('cleaned-data-for-fleet-dna.csv')
 
-# df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
-# column_name_dropdown = fleet_data[['vid', 'vocation']]
 
 # simulated data for the goals chart
 years = np.vstack((np.arange(2014, 2021),)*4)
@@ -31,10 +34,6 @@ y_data_liquidity = np.random.normal(7.5, 1.5, 100)
 y_data_liquidity.sort()
 y_data_goals = [y_data_revenue, y_data_profit, y_data_liquidity]
 names_goals =['Revenue', 'Profit', 'Liquidity']
-
-# regression
-#reg = LinearRegression().fit(np.vstack(df_goals_chart['X']), y_data_revenue)
-#df_goals_chart['bestfit'] = reg.predict(np.vstack(df_goals_chart['X']))
 
 
 # simulated data for the costs chart
@@ -276,8 +275,8 @@ fig_costs.update_layout(annotations=annotations)
 
 # pie chart vehicle capacity
 
-labels_capacity = ['In Time', 'Delayed', 'Downtime', 'Unused']
-values_capacity = [20, 30, 10, 40]
+labels_capacity = ['In Time', 'Delayed', 'Idle', 'Unused']
+values_capacity = [280, 120, rows_idle, rows_unused]
 pie_capacity = go.Figure(data=[go.Pie(labels=labels_capacity, values=values_capacity, hole=.3)])
 
 
@@ -324,17 +323,8 @@ layout = html.Div([
                                 ]),
 
                                 html.Div([
-                                    #dcc.Dropdown(
-                                        #id='page_controlling_radios',
-                                        #options=[{'label': i, 'value': i} for i in labels_goals],
-                                        #options=get_options(df['goals'].unique()),
-                                        #multi=True,
-                                        #value=[df['goals'].sort_values()[0]],
-                                        #className='stockselektor'),
-                                    #html.Div(id='display-selected-values'),
                                     dcc.Graph(id='graph-goals', figure=fig_goals)
                                 ],
-                                    #style={'width': '49%', 'display': 'inline-block'},
                                 ),
 
                                 #html.H2('Kept delivery dates'),
@@ -367,7 +357,7 @@ layout = html.Div([
                                 html.H2('Vehicle capacity'),
                                 html.Div([
                                     dcc.Checklist(
-                                        id='page-controlling-radios-3',
+                                        id='controlling-checklist',
                                         options=[{'label': i, 'value': i}
                                                  for i in ['In time', 'Delayed', 'Idle', 'Unused']],
                                         value=['In time']),
@@ -383,16 +373,14 @@ layout = html.Div([
                                             'height': 'auto',
                                             'align': 'right'
                                         },
-                                        columns=[{'name': i, 'id': i} for i in df_table.columns],
+                                        columns=[{'name': i, 'id': i} for i in df_table],
                                         data=df_table.to_dict('records')
                                     ),
                                     dcc.Graph(figure=pie_capacity, style={'width': '59%', 'margin': '0'}),
                                     html.Div(id='table-output-container'),
 
 
-                                ],
-                                    style={'width': '50%', 'display': 'inline-block'})
-
+                                ]),
                              ])
 
                      ])
