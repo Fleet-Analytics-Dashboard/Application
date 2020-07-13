@@ -12,15 +12,20 @@ from database_connection import connect, return_engine
 # connect to database and add files to
 conn = connect()
 sql = "select * from vehicle_data;"
+vehicle_data = pd.read_sql_query(sql, conn)
+sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
 
 
+
+
 # Daten
 # fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
-#fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
+# fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 # fleet_data.iloc[:,1:3]
+
 
 # Kalendar
 
@@ -28,39 +33,39 @@ conn = None
 
 # PieCharts
 
-# Downtimes Overview
-#dt = fleet_data[["maintenance"]]
-#for i in dt
+# Downtimes Overview graph
+# dt = fleet_data[["maintenance"]]
+# for i in dt
 
 labels = ['Accidents', 'Traffic Jams', 'Maintenance', 'Unused']
-#values = [20, 30, 10, 40]
-values = fleet_data.vehicle_status.value_counts()
-#values = fleet_data[["vehicle_status"]].groupby('vehicle_status').count()
-
+# values = [20, 30, 10, 40]
+values = vehicle_data.vehicle_status.value_counts()
+# values = fleet_data[["vehicle_status"]].groupby('vehicle_status').count()
 
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Need for Maintenance
+# Need for Maintenance graph
 
 labels = ['Need', 'Soon', 'No need']
 values = [2, 5, 10]
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Accident Probability
+# Accident Probability graph
 
 labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
 
-pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3,)])
 
-# Mapbox
+#######################Mapbox###########################
 # mapbox_access_token = open(".mapbox_token").read()
 
-fleet_lat = fleet_data.position_latitude
-fleet_lon = fleet_data.position_longitude
-fleet_vid = fleet_data.vid
+#######Vehicle  position data extraction###################
+fleet_lat = vehicle_data.position_latitude
+fleet_lon = vehicle_data.position_longitude
+fleet_vid = vehicle_data.vid
 
 fig = go.Figure(go.Scattermapbox(
 
@@ -73,7 +78,9 @@ fig = go.Figure(go.Scattermapbox(
     text=fleet_vid,
 ))
 
+
 fig.update_layout(
+    margin=dict(l=0, r=0, t=0, b=0),
     autosize=True,
     hovermode='closest',
     mapbox=dict(
@@ -89,72 +96,8 @@ fig.update_layout(
     ),
 )
 
-###Kalender###
-
-calendar.setfirstweekday(0)
-w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
-m_names = '''
-January February March April
-May June July August
-September October November December'''.split()
 
 
-class MplCalendar(object):
-
-    def __init__(self, year, month):
-        self.year = year
-        self.month = month
-        self.cal = calendar.monthcalendar(year, month)
-        # monthcalendar creates a list of lists for each week
-        # Save the events data in the same format
-        self.events = [[[] for day in week] for week in self.cal]
-
-    def _monthday_to_index(self, day):
-        for week_n, week in enumerate(self.cal):
-            try:
-                i = week.index(day)
-                return week_n, i
-            except ValueError:
-                pass
-        # couldn't find the day
-        raise ValueError("There aren't {} days in the month".format(day))
-
-    def add_event(self, day, event_str):
-        week, w_day = self._monthday_to_index(day)
-        self.events[week][w_day].append(event_str)
-
-    def show(self):
-        ##create calendar
-        f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
-        for week, ax_row in enumerate(axs):
-            for week_day, ax in enumerate(ax_row):
-                ax.set_xticks([])
-                ax.set_yticks([])
-                if self.cal[week][week_day] != 0:
-                    ax.text(.02, .98,
-                            str(self.cal[week][week_day]),
-                            verticalalignment='top',
-                            horizontalalignment='left')
-                contents = "\n".join(self.events[week][week_day])
-                ax.text(.03, .85, contents,
-                        verticalalignment='top',
-                        horizontalalignment='left',
-                        fontsize=9)
-
-        # use the titles of the first row as the weekdays
-        for n, day in enumerate(w_days):
-            axs[0][n].set_title(day)
-
-        # Place subplots in a close grid
-        f.subplots_adjust(hspace=0)
-        f.subplots_adjust(wspace=0)
-        f.suptitle(m_names[self.month] + ' ' + str(self.year),
-                   fontsize=20, fontweight='bold')
-
-    plt.show()
-
-
-plt = go.Figure(plt.show())
 
 layout = html.Div([
 
@@ -180,8 +123,10 @@ layout = html.Div([
                         ),
                     ),
                     dbc.Row([
-                        dbc.Col(dcc.Graph(figure=pie1)),
+                        dbc.Col(dcc.Graph(figure=pie1), className='piechart'),
                         dbc.Col([
+
+##################Radiobuttons Downtimes###################
 
                             dcc.Checklist(
                                 id='page-controlling-radios-2',
@@ -189,22 +134,27 @@ layout = html.Div([
                                          for i in ['Unused', 'Traffic Jams', 'Accidents', 'Maintenance']],
                                 value=['Unused', 'Traffic Jams', 'Accidents', 'Maintenance']),
 
+##################Searchbox Downtimes###################
+
                             dcc.Dropdown(
-                                id='filter_x',
-                                options=[{'label': i, 'value': i} for i in sorted(fleet_data['vid'])],
+                                id='searchbox_downtime_table',
+                                options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
                                 value='',
                                 placeholder='Search for vehicle...'
                             ),
 
+##################Table Downtimes#########################
+
                             dash_table.DataTable(
+                                id="downtime_table",
                                 style_table={
                                     'maxHeight': '',
                                     'maxWidth': '',
                                     'overflowY': ''
                                 },
-                                data=fleet_data.to_dict('records'),
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_status']]],
+                                data=vehicle_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'vehicle_status']]],
                                 page_size=10,
                                 style_cell={'textAlign': 'left'},
                                 style_cell_conditional=[
@@ -215,6 +165,8 @@ layout = html.Div([
                     ]),
                 ], className='container', width=True),
 
+##################Map Accidents#########################
+
                 dbc.Col(html.Div([
                     html.Div([
                         html.Div(
@@ -222,7 +174,7 @@ layout = html.Div([
                             style={'text-align': 'center'}
                         ),
                         html.Div(
-                            dcc.Graph(figure=fig),
+                            dcc.Graph(figure=fig, className='accidentsmap'),
                         ),
                     ]),
 
@@ -230,7 +182,7 @@ layout = html.Div([
 
             ]),
 
-            ################# Row 2 ###########################
+################# Row 2 ###########################
 
             dbc.Row([
 
@@ -247,27 +199,27 @@ layout = html.Div([
                         dbc.Col(dcc.Graph(figure=pie2)),
                         dbc.Col([
 
-##################Radio-Buttons Maintenance################
+                            ##################Radio-Buttons Maintenance################
 
-                            dcc.RadioItems(
+                            dcc.Checklist(
                                 id='page-controlling-radios-2',
                                 options=[{'label': i, 'value': i}
                                          for i in ['Need', 'Soon', 'No need']],
-                                value='Overall'),
+                                value=['Need', 'Soon', 'No need']),
 
-##################Searchbox Maintenance###################
+                            ##################Searchbox Maintenance###################
 
                             dcc.Dropdown(
                                 id='filter_x',
-                                options=[{'label': i, 'value': i} for i in sorted(fleet_data['vid'])],
+                                options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
                                 value='',
                                 placeholder='Search for vehicle...'
                             ),
 
                             dash_table.DataTable(
-                                data=fleet_data.to_dict('records'),
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                                data=vehicle_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=10,
                                 style_cell={'textAlign': 'left'},
                                 style_cell_conditional=[
@@ -289,27 +241,27 @@ layout = html.Div([
                     dbc.Row([
                         dbc.Col(dcc.Graph(figure=pie3)),
                         dbc.Col([
-##################Searchbox Accidents###################
+                            ##################Searchbox Accidents###################
 
-                            dcc.RadioItems(
+                            dcc.Checklist(
                                 id='page-controlling-radios-2',
                                 options=[{'label': i, 'value': i}
                                          for i in ['Category 1', 'Category 2', 'Category 3']],
-                                value='Overall'),
+                                value=['Category 1', 'Category 2', 'Category 3']),
 
-##################Searchbox Accidents###################
+                            ##################Searchbox Accidents###################
 
                             dcc.Dropdown(
                                 id='filter_x',
-                                options=[{'label': i, 'value': i} for i in sorted(fleet_data['vid'])],
+                                options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
                                 value='',
                                 placeholder='Search for vehicle...'
                             ),
 
                             dash_table.DataTable(
-                                data=fleet_data.to_dict('records'),
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                                data=vehicle_data.to_dict('records'),
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=10,
                                 style_cell={'textAlign': 'left'},
                                 style_cell_conditional=[
@@ -337,9 +289,9 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                            data=vehicle_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                            columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                             page_size=5,
                             style_cell={'textAlign': 'left'},
                             style_cell_conditional=[
@@ -361,9 +313,10 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
+                            data=vehicle_data.to_dict('records'),
                             # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                            columns=[{'name': i, 'id': i} for i in
+                                     vehicle_data.loc[:, ['vid', 'vehicle_construction_year']]],
                             page_size=5,
                             style_cell={'textAlign': 'left'},
                             style_cell_conditional=[
@@ -385,9 +338,9 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                            data=vehicle_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                            columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                             page_size=5,
                             style_cell={'textAlign': 'left'},
                             style_cell_conditional=[
@@ -409,9 +362,9 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                            data=vehicle_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                            columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                             page_size=5,
                             style_cell={'textAlign': 'left'},
                             style_cell_conditional=[
@@ -433,9 +386,9 @@ layout = html.Div([
                     ),
                     dbc.Row([
                         dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'maintenance']]],
+                            data=vehicle_data.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                            columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                             page_size=5,
                             style_cell={'textAlign': 'left'},
                             style_cell_conditional=[
@@ -462,8 +415,8 @@ layout = html.Div([
             dcc.Graph(figure=fig),
 
             dash_table.DataTable(
-                data=fleet_data.to_dict('records'),
-                columns=[{'id': c, 'name': c} for c in fleet_data.columns],
+                data=vehicle_data.to_dict('records'),
+                columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                 style_cell={'textAlign': 'left'},
                 style_cell_conditional=[
                     {

@@ -7,6 +7,8 @@ import dash_table as dt
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
+from apps.downtimes import vehicle_data
+
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True,
                 external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -168,6 +170,21 @@ def update_graph(fx, fy, back, selected_cell, current_table):
             'data': [{
                 'x': df_group_vehicle_class['Klasse'],
                 'y': df_group_vehicle_class['anzahl']
+            }]
+        }
+
+
+################### Callback downtimes table####################
+@app.callback(
+    dash.dependencies.Output('downtime_table', 'children'),
+    [dash.dependencies.Input('searchbox_downtime_table', 'value'),
+     ])
+def update_table(value):
+    if value == '':
+        return {
+            'data': [{
+                'x': vehicle_data.vid,
+                'y': vehicle_data.vehicle_status,
             }]
         }
 
