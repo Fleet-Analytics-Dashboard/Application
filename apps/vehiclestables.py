@@ -2,122 +2,86 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table as dt
 import pandas as pd
+from database_connection import connect, return_engine
 
 # Datasets
+# fleet_data = pd.read_csv('cleaned-data-for-fleet-dna_v3.csv')
 
-
-fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
-fleet_data.drop_duplicates(keep=False, inplace=True)
+# Connect to database and add files to
+conn = connect()
+sql = "select * from cleaned_data_fleet_dna;"
+fleet_data = pd.read_sql_query(sql, conn)
+conn = None
 
 dfnames = pd.read_csv('names.csv')
 
-# rounded data
+# Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
-df_vehicle = fleet_data[['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'drivetrain_type', 'pid']].copy()
-df_vehicle = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
+df_vehicle = fleet_data[
+    ['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'fuel_type', 'drivetrain_type', 'pid']].copy()
 
 df_vehicle_class = fleet_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicel_type']].copy()
-df_vehicle_class = df_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
-
-df_group_vehicle_class = fleet_data.groupby(["vehicle_class"], as_index=False)["vid"].count()
-df_group_vehicle_class.columns = (["Klasse", "anzahl"])
-df_group_vehicle_class = df_group_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
+df_vehicle_class = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
+df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicel_type'])[
+    'vid'].count().reset_index()
+df_group_vehicle_class.columns = (["Klasse", 'Vocation', 'Typ', "anzahl"])
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
-df_driver = df_driver.rename(columns={"pid": "pp"}).copy()
-
-# available_vid = fleet_data_rounded['vid'].unique()
-
+df_driver = df_driver.drop(columns=['ip_address'])
+df_group_driver = df_driver.groupby(['vid', 'last_name'])['pid'].count().reset_index()
+df_group_driver.columns = (['Nummer', 'Name', 'anzahl'])
 
 # Layout
-layout = html.Div([
 
-    # dict(
-    #   autosize=True,
-    #  height=450,
-    # font=dict(color="#191A1A"),
-    # titlefont=dict(color="#191A1A", size='14'),
-    # margin=dict(
-    #   l=45,
-    #  r=15,
-    # b=45,
-    # t=35
-    # )
-    # ),
-    # Title - Row
-    html.Div(
-        [
-            html.H1(
-                'Test App',
-                className='example',
-            )
-        ],
-        className='example'
-    ),
-
-    # block 2
-    html.Div([
-        dcc.Store(id='memory'),
-        html.H3('Vehicle Overview'),
-        html.Div(
-            [
-                html.Div(
-                    [
-                        dcc.Graph(id='graph'
-                                  ),
-                    ], className="four-columns"
-                ),
-                html.Div(
-                    [
-                        html.P('Insert the vehicle number here:'),
-                        dcc.Dropdown(
-                            id='filter_x',
-                            options=[{'label': i, 'value': i} for i in sorted(df_vehicle['vid'])],
-                            value=''
-                        ),
-                    ],
-                    className='three-columns'
-                ),
-                html.Div(
-                    [
-                        html.P('Filter for vehicle type:'),
-                        dcc.Dropdown(
-                            id='filter_y',
-                            options=[
-                                {'label': 'No filter', 'value': 0},
-                                {'label': '1 to 20k', 'value': 1},
-                                {'label': '20k to 30k', 'value': 2},
-                                {'label': '30k+', 'value': 3}
-                            ],
-                            value='0'
-                        )
-                    ],
-                    className='vehicles-tables-filter'
-                ),
-                html.Div( 
-                    [
-                        html.Button('Reset Chart',
-                                    id='button_chart',
-                                    className='vehicles-tables-button-reset')
-                    ],
-                ),
-                html.Div(
-                    [
-                        html.Button('Previous Level',
-                                    id='back_button',
-                                    className='vehicles-tables-button-previous-level')
-                    ],
-                )
+layout = html.Div(
+    className='vehiclestables-content',
+    children=[
+        html.Span('Select one of the following options:'),
+        dcc.RadioItems(
+            id='graph-filter',
+            options=[
+                {'label': ' Transport Goals   ', 'value': 'Voc'},
+                {'label': ' Vehicles   ', 'value': 'vic_type'},
+                {'label': ' Drivers   ', 'value': 'person'}
             ],
-            className='example'
+            value='Voc',
         ),
-
-        html.Div(
-            [
-                html.Div(id='table-box'),
-                html.Div(dt.DataTable(id='table', data=[{}]))
-            ], className='vehicles-tables-data-table'
-        )
-    ], className='chart')
-], className='vehicles-tables-content')
+        dcc.Graph(
+            id='graph'
+        ),
+        dcc.Dropdown(
+            id='vocation-dropdown-table',
+            options=[{'label': i, 'value': i} for i in sorted(df_driver['vocation'].unique())],
+            value=df_driver['vocation'].unique(),
+            multi=True,
+        ),
+        html.A(html.Button('Resets table'), id='back_button', className='vehicles-tables-button-previous-level',
+               href='/vehicles-tables'),
+        html.Span('(resets the whole page)'),
+        dt.DataTable(
+            id='vehicle-table2',
+            data=[{}],
+            columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in df_driver.columns],
+            filter_action="native",
+            editable=True,
+            sort_action="native",
+            sort_mode="multi",
+            page_action="native",
+            page_current=0,
+            page_size=40,
+            style_as_list_view=True,
+            style_cell={'padding': '5px'},
+            style_header={
+                'backgroundColor': 'white',
+                'fontWeight': 'bold'
+            },
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': c},
+                    'textAlign': 'left'
+                } for c in ['Date', 'Region']
+            ],
+        ),
+        html.Div(id='year-table')
+    ])
