@@ -22,10 +22,9 @@ fleet_data_rounded = fleet_data.round(decimals=2)
 df_vehicle = fleet_data[['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'fuel_type', 'drivetrain_type', 'pid']].copy()
 
 df_vehicle_class = fleet_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicel_type']].copy()
-
-
-df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class','vocation'])['vid'].count().reset_index()
-df_group_vehicle_class.columns = (["Klasse", 'Typ',"anzahl"])
+df_vehicle_class = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
+df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class','vocation','vehicel_type'])['vid'].count().reset_index()
+df_group_vehicle_class.columns = (["Klasse", 'Vocation','Typ',"anzahl"])
 
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
@@ -39,12 +38,10 @@ layout = html.Div([
         id='graph-filter',
         options=[
             {'label': 'Vocation', 'value': 'Voc'},
-            {'label': 'Vehicle Class', 'value': 'Vic_clas'},
-            {'label': 'Vehicle Type', 'value': 'vic_tipe'},
+            {'label': 'Vehicle Type', 'value': 'vic_type'},
             {'label': 'Person per Fahrzeug', 'value': 'person'}
         ],
-        value=df_driver['vocation'].unique(),
-        multi=True,
+        value='Voc',
     ),
     dcc.Graph(
         id='graph'
@@ -64,8 +61,6 @@ layout = html.Div([
         editable=True,
         sort_action="native",
         sort_mode="multi",
-        column_selectable="single",
-        selected_columns=[],
         page_action="native",
         page_current= 0,
         page_size= 40,

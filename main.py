@@ -77,8 +77,8 @@ def create_table(selected_vocation):
 def create_graph(selected_column):
 
     if selected_column is not None:
-
-      figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl")
+        figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
+                        hover_data=['Vocation'], color='Vocation')
 
     return figure
 
