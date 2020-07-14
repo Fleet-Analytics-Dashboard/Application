@@ -24,7 +24,6 @@ app = dash.Dash(__name__,
                 ]
                 )
 
-
 # navigation
 app.layout = html.Div([
 
@@ -92,16 +91,16 @@ def create_table(selected_vocation):
     [Input('graph-filter', 'value')])
 def create_graph(selected_column):
     if selected_column == 'Voc':
-        figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
-                        hover_data=['Vocation'], color='Vocation')
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
+                        hover_data=['Transport Goal'], color='Transport Goal')
 
     if selected_column == 'vic_type':
-        figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
                         hover_data=['Typ'], color='Typ')
 
     if selected_column == 'person':
-        figure = px.bar(df_group_driver, x="Name", y="anzahl",
-                        hover_data=['Nummer'], color='Nummer')
+        figure = px.bar(df_group_driver, x="Name", y="Amount",
+                        hover_data=['License Plate'], color='License Plate')
     return figure
 
 

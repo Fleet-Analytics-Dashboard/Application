@@ -22,19 +22,49 @@ div {
     padding: 0;
 }
 
+.button {
+    display: block;
+    padding: 12px 24px;
+    margin-left: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .card {
     padding: 12px 12px;
-    margin: 6px;
     border-radius: 6px;
     border: none;
     background: white;
 }
 
-#button-reset-table {
-    border: none;
-    background: #007bff;
-    color: white;
+.last-page {
+    font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif !important;
+    font-size: 12px !important;
 }
+
+.table-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+    margin: 12px;
+}
+
+
+#vocation-dropdown-table .Select {
+    border: solid 2px #eeeeee;
+    border-radius: 6px;
+}
+
+.Select-control {
+    min-height: 50px !important;
+}
+
 
 /* TEXT */
 h1 {
@@ -109,6 +139,10 @@ h4 {
 
 
 /* CONTROLLING */
+.tab-content {
+    margin: 18px;
+}
+
 .controlling-content {
     padding: 12px 36px;
     margin: 0 auto;
@@ -124,15 +158,14 @@ h4 {
     align-content: stretch;
 }
 
-.DateRangePickerInput__withBorder {
-    border-radius: 3px;
-    padding: 3px;
-    border: solid 2px #f1f1f1;
-}
 
 /* DOWNTIMES */
 .downtimes-content {
     margin: 0 auto;
+}
+
+.card-tab {
+    margin: 18px;
 }
 
 .dash-table-container {
@@ -146,6 +179,10 @@ h4 {
 .cal-container {
     width: 100%;
     height: 700px;
+}
+
+.dash-graph {
+    margin-bottom: 24px;
 }
 
 /* VEHICLES TABLES */
@@ -175,23 +212,3 @@ h4 {
     padding: 12px;
 }
 
-.vehicles-tables-button-reset {
-    display: inline-block;
-    padding: 12px 24px;
-    font-weight: 500;
-    border: none;
-    background: white;
-    color: #1a1a1b;
-    margin: 12px;
-}
-
-.vehicles-tables-button-previous-level {
-    display: inline-block;
-    padding: 12px 24px;
-    font-weight: 500;
-    border: none;
-    border-radius: 3px;
-    background: white;
-    color: #1a1a1b;
-    margin: 12px;
-}

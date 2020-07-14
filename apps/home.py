@@ -17,7 +17,7 @@ fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 
 
 layout = html.Div(
-    className='home-content',
+    className='home-content card',
     children=[
         html.H1(children='Home'),
 
@@ -32,6 +32,17 @@ layout = html.Div(
         html.Div(dash_table.DataTable(
             id='table-2',
             data=fleet_data.to_dict('records'),
+            style_header={
+                'backgroundColor': '#f1f1f1',
+                'fontWeight': 'bold',
+                'fontSize': 12,
+                'fontFamily': 'Open Sans'
+            },
+            style_cell={
+                'padding': '5px',
+                'fontSize': 13,
+                'fontFamily': 'sans-serif'
+            },
             columns=[{'name': i, 'id': i} for i in fleet_data.loc[:]
                      ],
         ), )

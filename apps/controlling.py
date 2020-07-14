@@ -132,7 +132,7 @@ for i in range(0, 1):
         y=y_data_carbon_footprint[i], mode='lines+markers',
         name='Carbon Footprint',
         line=dict(color=colors[i], width=line_size[i]),
-        connectgaps=True
+        connectgaps=True,
     ))
 
 fig_carbon.update_layout(
@@ -162,7 +162,7 @@ fig_carbon.update_layout(
     legend=dict(
         x=0,
         y=1.0),
-    autosize=False,
+    autosize=True,
     margin=dict(
         autoexpand=False,
         l=100,
@@ -226,7 +226,7 @@ fig_costs.update_layout(
         showline=False,
         showticklabels=False,
     ),
-    autosize=False,
+    autosize=True,
     margin=dict(
         autoexpand=False,
         l=100,
@@ -380,6 +380,17 @@ layout = html.Div(
                                              'whiteSpace': 'normal',
                                              'height': 'auto',
                                              'align': 'right'
+                                         },
+                                         style_header={
+                                             'backgroundColor': '#f1f1f1',
+                                             'fontWeight': 'bold',
+                                             'fontSize': 12,
+                                             'fontFamily': 'Open Sans'
+                                         },
+                                         style_cell={
+                                             'padding': '5px',
+                                             'fontSize': 13,
+                                             'fontFamily': 'sans-serif'
                                          },
                                          columns=[{'name': i, 'id': i} for i in df_table.columns],
                                          data=df_table.to_dict('records')

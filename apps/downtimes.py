@@ -100,7 +100,7 @@ layout = html.Div(
 
         dcc.Tabs([
 
-            # Downtimes View
+            # Downtimes Home
 
             dcc.Tab(label='Downtimes', children=[
 
@@ -112,8 +112,7 @@ layout = html.Div(
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Vehicle Downtimes'),
-                                    style={'textAlign': 'center'}
+                                    html.H1('Vehicle Downtimes'),
                                 ),
                             ),
                         ),
@@ -152,29 +151,37 @@ layout = html.Div(
                                     columns=[{'name': i, 'id': i} for i in
                                              vehicle_data.loc[:, ['vid', 'vehicle_status']]],
                                     page_size=10,
-                                    style_cell={'textAlign': 'left'},
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
                                     style_cell_conditional=[
 
                                     ]),
-
                             ]),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     ##################Map Accidents#########################
 
                     dbc.Col(html.Div([
                         html.Div([
                             html.Div(
-                                html.H3('Accidents'),
-                                style={'textAlign': 'center'}
+                                html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
                                 dcc.Graph(figure=fig, className='accidentsmap'),
                             ),
                         ]),
 
-                    ]), className='card', width=True),
+                    ]), className='card-tab card', width=True),
 
                 ]),
 
@@ -186,8 +193,7 @@ layout = html.Div(
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Need for Maintenance'),
-                                    style={'textAlign': 'center'}
+                                    html.H1('Need for Maintenance'),
                                 ),
                             ),
                         ),
@@ -217,20 +223,29 @@ layout = html.Div(
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                     page_size=10,
-                                    style_cell={'textAlign': 'left'},
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
                                     style_cell_conditional=[
 
                                     ]),
                             ]),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     dbc.Col([
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Accident Probability'),
-                                    style={'textAlign': 'center'}
+                                    html.H1('Accident Probability'),
                                 ),
                             ),
                         ),
@@ -259,12 +274,22 @@ layout = html.Div(
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                     page_size=10,
-                                    style_cell={'textAlign': 'left'},
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
                                     style_cell_conditional=[
                                     ]),
                             ]),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                 ]),
 
@@ -279,7 +304,6 @@ layout = html.Div(
                             dbc.Col(
                                 html.Div(
                                     html.H3('Overstepping Speed Limit'),
-                                    style={'textAlign': 'center'}
                                 ),
                             ),
                         ),
@@ -289,12 +313,22 @@ layout = html.Div(
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
-                                style_cell={'textAlign': 'left'},
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
-
-                                ]), ),
+                                ]),
+                            ),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     # Oldest Vehicles table
 
@@ -303,7 +337,6 @@ layout = html.Div(
                             dbc.Col(
                                 html.Div(
                                     html.H3('Oldest Vehicles'),
-                                    style={'textAlign': 'center'}
                                 ),
                             ),
                         ),
@@ -314,12 +347,22 @@ layout = html.Div(
                                 columns=[{'name': i, 'id': i} for i in
                                          vehicle_data.loc[:, ['vid', 'vehicle_construction_year']]],
                                 page_size=5,
-                                style_cell={'textAlign': 'left'},
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
 
                                 ]), ),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     # Excessive speeding table
 
@@ -328,7 +371,6 @@ layout = html.Div(
                             dbc.Col(
                                 html.Div(
                                     html.H3('Excessive Speeding'),
-                                    style={'textAlign': 'center'}
                                 ),
                             ),
                         ),
@@ -338,12 +380,22 @@ layout = html.Div(
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
-                                style_cell={'textAlign': 'left'},
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
 
                                 ]), ),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     # Excessive acceleration table
 
@@ -352,7 +404,6 @@ layout = html.Div(
                             dbc.Col(
                                 html.Div(
                                     html.H3('Excessive Acceleration'),
-                                    style={'textAlign': 'center'}
                                 ),
                             ),
                         ),
@@ -362,12 +413,22 @@ layout = html.Div(
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
-                                style_cell={'textAlign': 'left'},
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
 
                                 ]), ),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
 
                     # Excessive breaking table
 
@@ -376,7 +437,6 @@ layout = html.Div(
                             dbc.Col(
                                 html.Div(
                                     html.H3('Excessive Breaking'),
-                                    style={'textAlign': 'center'}
                                 ),
                             ),
                         ),
@@ -386,40 +446,63 @@ layout = html.Div(
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
-                                style_cell={'textAlign': 'left'},
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
 
                                 ]), ),
                         ]),
-                    ], className='card', width=True),
+                    ], className='card-tab card', width=True),
                 ]),
 
             ]),
 
-            ################### Maintenance Calendar View ##################
+            # Maintenance Calendar
             dcc.Tab(label='Maintenance Calendar', children=[
+
                 # dcc.Graph(figure=calenderview),
+
                 html.Div([
                     html.Embed(src='assets/calendar.html', className="cal-container")
                 ])
             ]),
 
-            # Fleet location map view
+            # Fleet Location Map
             dcc.Tab(label='Realtime Map', children=[
 
                 dcc.Graph(figure=fig),
 
+                html.H3('Vehicle Details'),
+
                 dash_table.DataTable(
                     data=vehicle_data.to_dict('records'),
                     columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                    style_cell={'textAlign': 'left'},
+                    style_header={
+                        'backgroundColor': 'lightgrey',
+                        'fontWeight': 'bold',
+                        'fontSize': 12,
+                        'fontFamily': 'Open Sans'
+                    },
+                    style_cell={
+                        'padding': '5px',
+                        'fontSize': 13,
+                        'fontFamily': 'sans-serif'
+                    },
                     style_cell_conditional=[
                         {
                             'if': {'column_id': 'Region'},
                             'textAlign': 'left'
                         }
                     ])
-
             ]),
         ])
     ])

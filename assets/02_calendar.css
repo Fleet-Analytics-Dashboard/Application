@@ -19,7 +19,7 @@ td.fc-today {
 
 .fc-first th{
 	font-family: 'Roboto', sans-serif;
-    background:#9675ce !important;
+    background: #2690ff !important;
 	color:#FFF;
 	font-size:14px !important;
 	font-weight:500 !important;
@@ -27,7 +27,7 @@ td.fc-today {
 	}
 .fc-event-inner {
 	font-family: 'Roboto', sans-serif;
-    background: #03a9f3!important;
+    background: #2690ff!important;
     color: #FFF!important;
     font-size: 12px!important;
     font-weight: 500!important;
@@ -97,11 +97,11 @@ html .fc,
 }
 	span.fc-button {
     font-family: 'Roboto', sans-serif;
-    border-color: #9675ce;
-	color: #9675ce;
+    border-color: #2690ff;
+	color: #2690ff;
 }
 .fc-state-down, .fc-state-active {
-    background-color: #9675ce !important;
+    background-color: #2690ff !important;
 	color: #FFF !important;
 }
 .fc .fc-header-space {
@@ -264,7 +264,7 @@ html .fc,
 .fc-state-active,
 .fc-state-disabled {
 	color: #333333;
-	background-color: #FFE3E3;
+	background-color: #d8faff;
 	}
 
 .fc-state-hover {
@@ -288,10 +288,10 @@ html .fc,
 .fc-state-disabled {
 	cursor: default;
 	background-image: none;
-	background-color: #FFE3E3;
+	background-color: #dbfaff;
 	filter: alpha(opacity=65);
 	box-shadow: none;
-	border:1px solid #FFE3E3;
+	border:1px solid #dbfaff;
 	color: #ff3b30;
 	}
 

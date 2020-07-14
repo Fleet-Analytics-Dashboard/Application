@@ -25,12 +25,12 @@ df_vehicle_class = fleet_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 
 df_vehicle_class = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
 df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicel_type'])[
     'vid'].count().reset_index()
-df_group_vehicle_class.columns = (["Klasse", 'Vocation', 'Typ', "anzahl"])
+df_group_vehicle_class.columns = (["Vehicle Typ", 'Transport Goal', 'Typ', "Amount"])
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 df_driver = df_driver.drop(columns=['ip_address'])
 df_group_driver = df_driver.groupby(['vid', 'last_name'])['pid'].count().reset_index()
-df_group_driver.columns = (['Nummer', 'Name', 'anzahl'])
+df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
 
 # Layout
 
@@ -58,16 +58,21 @@ layout = html.Div(
             className='card',
             children=[
                 html.H1('Table'),
-                dcc.Dropdown(
-                    id='vocation-dropdown-table',
-                    options=[{'label': i, 'value': i} for i in
-                             sorted(df_driver['vocation'].unique())],
-                    value=df_driver['vocation'].unique(),
-                    multi=True,
-                ),
-                html.A(html.Button('Reset table (Refresh)'), id='button-reset-table',
-                       className='vehicles-tables-button-previous-level',
-                       href='/vehicles-tables'),
+                html.Div('In the following bar, a certain vehicle, driver, or other information can be searched.'
+                         'Further, one of the following transport goals can be exclude.'
+                         'Lastly, the table can be resetted via the reset button'),
+
+                html.Div([
+                    dcc.Dropdown(
+                        id='vocation-dropdown-table',
+                        options=[{'label': i, 'value': i} for i in
+                                 sorted(df_driver['vocation'].unique())],
+                        value=df_driver['vocation'].unique(),
+                        multi=True,
+                    ),
+                    html.A('Reset table (Refresh)', className='button', href='/vehicles-tables'),
+                ], className='table-menu'),
+
                 dt.DataTable(
                     id='vehicle-table2',
                     data=[{}],
@@ -82,7 +87,7 @@ layout = html.Div(
                     page_size=40,
                     style_as_list_view=True,
                     style_header={
-                        'backgroundColor': 'white',
+                        'backgroundColor': '#f1f1f1',
                         'fontWeight': 'bold',
                         'fontSize': 12,
                         'fontFamily': 'Open Sans'
