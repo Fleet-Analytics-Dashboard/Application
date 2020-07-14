@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 from plotly import graph_objs as go
 
-from apps import vehiclestables, downtimes, controlling, overview
+from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import vehicle_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
@@ -24,6 +24,7 @@ app = dash.Dash(__name__,
                 ]
                 )
 
+
 # navigation
 app.layout = html.Div([
 
@@ -39,7 +40,7 @@ app.layout = html.Div([
 
             dbc.Nav(
                 [
-                    dbc.NavItem(dbc.NavLink("Overview", href="/")),
+                    dbc.NavItem(dbc.NavLink("Home", href="/")),
                     dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
                     dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
                     dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
@@ -63,7 +64,7 @@ server = app.server
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return overview.layout
+        return home.layout
     elif pathname == '/controlling':
         return controlling.layout
     elif pathname == '/downtimes':

@@ -96,7 +96,7 @@ fig.update_layout(
 )
 
 layout = html.Div(
-    className='content-downtimes',
+    className='downtimes-content',
     children=[
 
         ###### Tab-Layout ############

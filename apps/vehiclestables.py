@@ -35,7 +35,7 @@ df_group_driver.columns = (['Nummer', 'Name', 'anzahl'])
 # Layout
 
 layout = html.Div(
-    className='content-verhiclestables',
+    className='vehiclestables-content',
     children=[
         html.Span('Select one of the following options:'),
         dcc.RadioItems(
@@ -45,7 +45,7 @@ layout = html.Div(
                 {'label': ' Vehicles   ', 'value': 'vic_type'},
                 {'label': ' Drivers   ', 'value': 'person'}
             ],
-            value='Voc',  # TODO fix
+            value='Voc',
         ),
         dcc.Graph(
             id='graph'
@@ -70,6 +70,18 @@ layout = html.Div(
             page_action="native",
             page_current=0,
             page_size=40,
+            style_as_list_view=True,
+            style_cell={'padding': '5px'},
+            style_header={
+                'backgroundColor': 'white',
+                'fontWeight': 'bold'
+            },
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': c},
+                    'textAlign': 'left'
+                } for c in ['Date', 'Region']
+            ],
         ),
         html.Div(id='year-table')
     ])
