@@ -37,51 +37,68 @@ df_group_driver.columns = (['Nummer', 'Name', 'anzahl'])
 layout = html.Div(
     className='vehiclestables-content',
     children=[
-        html.Span('Select one of the following options:'),
-        dcc.RadioItems(
-            id='graph-filter',
-            options=[
-                {'label': ' Transport Goals   ', 'value': 'Voc'},
-                {'label': ' Vehicles   ', 'value': 'vic_type'},
-                {'label': ' Drivers   ', 'value': 'person'}
-            ],
-            value='Voc',
-        ),
-        dcc.Graph(
-            id='graph'
-        ),
-        dcc.Dropdown(
-            id='vocation-dropdown-table',
-            options=[{'label': i, 'value': i} for i in sorted(df_driver['vocation'].unique())],
-            value=df_driver['vocation'].unique(),
-            multi=True,
-        ),
-        html.A(html.Button('Resets table'), id='back_button', className='vehicles-tables-button-previous-level',
-               href='/vehicles-tables'),
-        html.Span('(resets the whole page)'),
-        dt.DataTable(
-            id='vehicle-table2',
-            data=[{}],
-            columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in df_driver.columns],
-            filter_action="native",
-            editable=True,
-            sort_action="native",
-            sort_mode="multi",
-            page_action="native",
-            page_current=0,
-            page_size=40,
-            style_as_list_view=True,
-            style_cell={'padding': '5px'},
-            style_header={
-                'backgroundColor': 'white',
-                'fontWeight': 'bold'
-            },
-            style_cell_conditional=[
-                {
-                    'if': {'column_id': c},
-                    'textAlign': 'left'
-                } for c in ['Date', 'Region']
-            ],
-        ),
-        html.Div(id='year-table')
+        html.Div(
+            className='card',
+            children=[
+                html.H1('Select One Option'),
+                dcc.RadioItems(
+                    id='graph-filter',
+                    options=[
+                        {'label': ' Transport Goals   ', 'value': 'Voc'},
+                        {'label': ' Vehicles   ', 'value': 'vic_type'},
+                        {'label': ' Drivers   ', 'value': 'person'}
+                    ],
+                    value='Voc',
+                ),
+                dcc.Graph(
+                    id='graph'
+                ),
+            ]),
+        html.Div(
+            className='card',
+            children=[
+                html.H1('Table'),
+                dcc.Dropdown(
+                    id='vocation-dropdown-table',
+                    options=[{'label': i, 'value': i} for i in
+                             sorted(df_driver['vocation'].unique())],
+                    value=df_driver['vocation'].unique(),
+                    multi=True,
+                ),
+                html.A(html.Button('Reset table (Refresh)'), id='button-reset-table',
+                       className='vehicles-tables-button-previous-level',
+                       href='/vehicles-tables'),
+                dt.DataTable(
+                    id='vehicle-table2',
+                    data=[{}],
+                    columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in
+                             df_driver.columns],
+                    filter_action="native",
+                    editable=True,
+                    sort_action="native",
+                    sort_mode="multi",
+                    page_action="native",
+                    page_current=0,
+                    page_size=40,
+                    style_as_list_view=True,
+                    style_header={
+                        'backgroundColor': 'white',
+                        'fontWeight': 'bold',
+                        'fontSize': 12,
+                        'fontFamily': 'Open Sans'
+                    },
+                    style_cell={
+                        'padding': '5px',
+                        'fontSize': 13,
+                        'fontFamily': 'sans-serif'
+                    },
+                    style_cell_conditional=[
+                        {
+                            'if': {'column_id': c},
+                            'textAlign': 'left'
+                        } for c in ['Date', 'Region']
+                    ],
+                ),
+                html.Div(id='year-table')
+            ])
     ])

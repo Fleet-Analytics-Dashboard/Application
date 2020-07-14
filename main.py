@@ -33,9 +33,8 @@ app.layout = html.Div([
     html.Div(
         [
             html.A([
-
                 html.Img(src=app.get_asset_url('fleetboard_logo.jpg'), style={'height': '36px'}),
-                html.H4('Fleetboard', className='logo-text'),
+                html.Span('Fleetboard', className='logo-text'),
             ], className='align-self-center', href='/'),
 
             dbc.Nav(

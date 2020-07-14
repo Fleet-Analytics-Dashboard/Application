@@ -9,6 +9,7 @@ import re
 import plotly.graph_objects as go
 import numpy as np
 from database_connection import connect, return_engine
+import dash_bootstrap_components as dbc
 
 # connect to database
 conn = connect()
@@ -111,7 +112,7 @@ fig_goals.update_layout(
 
 annotations_1 = [dict(xref='paper', yref='paper', x=0.0, y=1.05,
                       xanchor='left', yanchor='bottom',
-                      text='Business Goals',
+                      text='',
                       font=dict(family='Arial',
                                 size=30,
                                 color='rgb(37,37,37)'),
@@ -129,7 +130,7 @@ for i in range(0, 1):
     fig_carbon.add_trace(go.Scatter(
         x=x_data_carbon[i],
         y=y_data_carbon_footprint[i], mode='lines+markers',
-        name='Carbon footprint',
+        name='Carbon Footprint',
         line=dict(color=colors[i], width=line_size[i]),
         connectgaps=True
     ))
@@ -172,9 +173,10 @@ fig_carbon.update_layout(
     showlegend=True,
     plot_bgcolor='white'
 )
+
 annotations = [dict(xref='paper', yref='paper', x=0.0, y=1.05,
                     xanchor='left', yanchor='bottom',
-                    text='Carbon footprint',
+                    text='',
                     font=dict(family='Arial',
                               size=30,
                               color='rgb(37,37,37)'),
@@ -257,7 +259,7 @@ for y_trace, label, color in zip(y_data, labels_costs, colors):
 # Title chart costs
 annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
                         xanchor='left', yanchor='bottom',
-                        text='Costs',
+                        text='',
                         font=dict(family='Arial',
                                   size=30,
                                   color='rgb(37,37,37)'),
@@ -297,96 +299,106 @@ def generate_table(dataframe, max_rows=10):
     ])
 
 
-layout = html.Div([
-    html.Div(
-        className='controlling-content',
-        children=[
-            html.Div(className='left part',
-                     children=[
-                         html.Div([
-                             dcc.DatePickerRange(
-                                 id='controlling-date-picker-range',
-                                 min_date_allowed=dt(1995, 8, 5),
-                                 max_date_allowed=dt(2020, 6, 19),
-                                 initial_visible_month=dt(2020, 6, 5),
-                                 end_date=dt(2020, 6, 5).date()
-                             ),
-                             html.Div(id='output-container-date-picker-range')
-                         ]),
+layout = html.Div(
+    className='controlling-content',
+    children=[
 
-                         html.Div([
-                             # dcc.Dropdown(
-                             # id='page_controlling_radios',
-                             # options=[{'label': i, 'value': i} for i in labels_goals],
-                             # options=get_options(df['goals'].unique()),
-                             # multi=True,
-                             # value=[df['goals'].sort_values()[0]],
-                             # className='stockselektor'),
-                             # html.Div(id='display-selected-values'),
-                             dcc.Graph(id='graph-goals', figure=fig_goals)
-                         ],
-                             # style={'width': '49%', 'display': 'inline-block'},
-                         ),
+        # Date Picker
+        html.Div(
+            [
+                dcc.DatePickerRange(
+                    id='controlling-date-picker-range',
+                    min_date_allowed=dt(1995, 8, 5),
+                    max_date_allowed=dt(2020, 6, 19),
+                    initial_visible_month=dt(2020, 6, 5),
+                    end_date=dt(2020, 6, 5).date()
+                ),
+                html.Div(id='output-container-date-picker-range')
+            ], className='data-picker',
+        ),
 
-                         # html.H1('Kept delivery dates'),
-                         # html.Div([
-                         # dcc.Graph(id='graph-delivery-date',
-                         # config={'displayModeBar': False},
-                         # animate=True)
-                         # ], style={'width': '25%', 'display': 'inline-block'}),
+        dbc.Row([
+            # Business Goals
+            dbc.Col(html.Div([
+                html.H1('Business Goals'),
+                dcc.Dropdown(
+                    id='page_controlling_radios',
+                    # options=[{'label': i, 'value': i} for i in labels_goals],
+                    # options=get_options(df['goals'].unique()),
+                    # multi=True,
+                    # value=[df['goals'].sort_values()[0]],
+                    className='stockselektor'),
+                html.Div(id='display-selected-values'),
+                dcc.Graph(id='graph-goals', figure=fig_goals)
+            ], className='card'), width=True),
 
-                         html.Div([
+            # Costs
+            dbc.Col(html.Div([
+                html.H1('Costs'),
+                dcc.Dropdown(
+                    id='controlling-dropdown',
+                    options=[{'label': i, 'value': i}
+                             for i in df_table.vid.unique()],
+                    placeholder="Choose vehicle id",
+                ),
+                dcc.Graph(id='indicator-graphic', figure=fig_costs)
+            ], className='card'), width=True),
+        ]),
+
+        html.Div(className='bottom-cards around',
+                 children=[
+
+                     dbc.Row([
+                         # Carbon Footprint
+                         dbc.Col(html.Div([
+                             html.H1('Carbon Footprint'),
                              dcc.Graph(id='graph-carbon-footprint', figure=fig_carbon)
-                         ],
-                             style={'width': '25%', 'display': 'inline-block'})
-                     ]),
-            html.Div(className='right part',
-                     children=[
-                         html.Div([
-                             html.Div([
-                                 dcc.Dropdown(
-                                     id='controlling-dropdown',
-                                     options=[{'label': i, 'value': i}
-                                              for i in df_table.vid.unique()],
-                                     placeholder="Choose vehicle id",
+                         ], className='card'), width=True),
+
+                         # Vehicle capacity
+                         dbc.Col(html.Div([
+                             html.H1('Vehicle Capacity'),
+                             dbc.Row([
+                                 dbc.Col(html.Div([
+                                     dcc.Graph(figure=pie_capacity),
+                                     html.Div(id='table-output-container'),
+                                 ]),
                                  ),
-                             ],
-                                 style={'width': '49%', 'display': 'inline-block'}),
-                             dcc.Graph(id='indicator-graphic', figure=fig_costs)
-                         ]),
+                                 dbc.Col(html.Div([
+                                     dcc.Checklist(
+                                         id='page-controlling-radios-3',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in ['In time', 'Delayed', 'Idle', 'Unused']],
+                                         value=['In time']),
+                                     dash_table.DataTable(
+                                         id='table-for-capacity',
+                                         style_table={
+                                             'maxHeight': '400px',
+                                             'overflowY': 'scroll'
+                                         },
+                                         style_data={
+                                             'whiteSpace': 'normal',
+                                             'height': 'auto',
+                                             'align': 'right'
+                                         },
+                                         columns=[{'name': i, 'id': i} for i in df_table.columns],
+                                         data=df_table.to_dict('records')
+                                     ), ])
+                                 ),
+                             ]),
 
-                         html.H1('Vehicle capacity'),
-                         html.Div([
-                             dcc.Checklist(
-                                 id='page-controlling-radios-3',
-                                 options=[{'label': i, 'value': i}
-                                          for i in ['In time', 'Delayed', 'Idle', 'Unused']],
-                                 value=['In time']),
-                             dash_table.DataTable(
-                                 id='table-for-capacity',
-                                 style_table={
-                                     'maxHeight': '400px',
-                                     'maxWidth': '800px',
-                                     'overflowY': 'scroll'
-                                 },
-                                 style_data={
-                                     'whiteSpace': 'normal',
-                                     'height': 'auto',
-                                     'align': 'right'
-                                 },
-                                 columns=[{'name': i, 'id': i} for i in df_table.columns],
-                                 data=df_table.to_dict('records')
-                             ),
-                             dcc.Graph(figure=pie_capacity, style={'width': '59%', 'margin': '0'}),
-                             html.Div(id='table-output-container'),
+                         ], className='card'), width=True)
+                     ]),
 
-                         ],
-                             style={'width': '50%', 'display': 'inline-block'})
+                     # html.H1('Kept Delivery Dates'),
+                     # html.Div([
+                     #     dcc.Graph(id='graph-delivery-date',
+                     #               config={'displayModeBar': False},
+                     #               animate=True)
+                     # ]),
 
-                     ])
-
-        ])
-])
+                 ])
+    ])
 
 
 # callback chart costs; still not working

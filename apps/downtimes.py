@@ -41,7 +41,6 @@ values = vehicle_data.vehicle_status.value_counts()
 
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-pie1.layout.paper_bgcolor = '#f8f8f8'
 
 # Need for Maintenance graph
 
@@ -49,7 +48,6 @@ labels = ['Need', 'Soon', 'No need']
 values = [2, 5, 10]
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-pie2.layout.paper_bgcolor = '#f8f8f8'
 
 # Accident Probability graph
 
@@ -57,7 +55,6 @@ labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
 
 pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
-pie3.layout.paper_bgcolor = '#f8f8f8'
 
 ####################### Mapbox ###########################
 # mapbox_access_token = open(".mapbox_token").read()
@@ -162,7 +159,7 @@ layout = html.Div(
 
                             ]),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     ##################Map Accidents#########################
 
@@ -177,7 +174,7 @@ layout = html.Div(
                             ),
                         ]),
 
-                    ]), className='container-downtimes', width=True),
+                    ]), className='card', width=True),
 
                 ]),
 
@@ -226,7 +223,7 @@ layout = html.Div(
                                     ]),
                             ]),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     dbc.Col([
                         dbc.Row(
@@ -267,7 +264,7 @@ layout = html.Div(
                                     ]),
                             ]),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                 ]),
 
@@ -297,7 +294,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     # Oldest Vehicles table
 
@@ -322,7 +319,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     # Excessive speeding table
 
@@ -346,7 +343,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     # Excessive acceleration table
 
@@ -370,7 +367,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
 
                     # Excessive breaking table
 
@@ -394,7 +391,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                    ], className='container-downtimes', width=True),
+                    ], className='card', width=True),
                 ]),
 
             ]),
@@ -403,9 +400,8 @@ layout = html.Div(
             dcc.Tab(label='Maintenance Calendar', children=[
                 # dcc.Graph(figure=calenderview),
                 html.Div([
-                    html.Embed(src='assets/calendar.html', className="calcontainer-downtimes")
-                ], className="")
-
+                    html.Embed(src='assets/calendar.html', className="cal-container")
+                ])
             ]),
 
             # Fleet location map view
