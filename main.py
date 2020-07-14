@@ -4,14 +4,11 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from dash.exceptions import PreventUpdate
 from plotly import graph_objs as go
-
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.downtimes import vehicle_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
-
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
@@ -84,11 +81,9 @@ def display_page(pathname):
     Output('vehicle-table2', 'data'),
     [Input('vocation-dropdown-table', 'value')])
 def create_table(selected_vocation):
-
     if selected_vocation is not None:
-         filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
-         data=filtered_df.to_dict("records")
-
+        filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
+        data = filtered_df.to_dict("records")
     return data
 
 
@@ -96,7 +91,6 @@ def create_table(selected_vocation):
     Output('graph', 'figure'),
     [Input('graph-filter', 'value')])
 def create_graph(selected_column):
-
     if selected_column == 'Voc':
         figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
                         hover_data=['Vocation'], color='Vocation')
@@ -108,8 +102,8 @@ def create_graph(selected_column):
     if selected_column == 'person':
         figure = px.bar(df_group_driver, x="Name", y="anzahl",
                         hover_data=['Nummer'], color='Nummer')
-
     return figure
+
 
 # server
 if __name__ == '__main__':
