@@ -29,6 +29,8 @@ df_group_vehicle_class.columns = (["Klasse", 'Vocation','Typ',"anzahl"])
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 df_driver = df_driver.drop(columns=['ip_address'])
+df_group_driver = df_driver.groupby(['vid','last_name'])['pid'].count().reset_index()
+df_group_driver.columns = (['Nummer', 'Name', 'anzahl'])
 
 
 # Layout

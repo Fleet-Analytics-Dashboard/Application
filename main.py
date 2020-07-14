@@ -10,7 +10,7 @@ from plotly import graph_objs as go
 
 
 from apps import vehiclestables, downtimes, controlling, overview
-from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
+from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True,
@@ -76,9 +76,17 @@ def create_table(selected_vocation):
     [Input('graph-filter', 'value')])
 def create_graph(selected_column):
 
-    if selected_column is not None:
+    if selected_column == 'Voc':
         figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
                         hover_data=['Vocation'], color='Vocation')
+
+    if selected_column == 'vic_type':
+        figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl",
+                        hover_data=['Typ'], color='Typ')
+
+    if selected_column == 'person':
+        figure = px.bar(df_group_driver, x="Name", y="anzahl",
+                        hover_data=['Nummer'], color='Nummer')
 
     return figure
 
