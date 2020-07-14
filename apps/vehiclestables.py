@@ -31,6 +31,7 @@ df_group_vehicle_class.columns = (["Klasse", 'Typ',"anzahl"])
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 df_driver = df_driver.drop(columns=['ip_address'])
 
+
 # Layout
 
 layout = html.Div([
@@ -54,9 +55,9 @@ layout = html.Div([
         value=df_driver['vocation'].unique(),
         multi=True,
     ),
-    html.A(html.Button('Refresh Settings'),id='back_button',className='vehicles-tables-button-previous-level', href='/'),
+    html.A(html.Button('Refresh Settings'),id='back_button',className='vehicles-tables-button-previous-level', href='/vehicles-tables'),
     dt.DataTable(
-        id='year-table2',
+        id='vehicle-table2',
         data=[{}],
         columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in df_driver.columns],
         filter_action="native",

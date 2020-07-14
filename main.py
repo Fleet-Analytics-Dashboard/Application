@@ -3,13 +3,15 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-import dash_table as dt
+import pandas as pd
+import plotly.express as px
 from dash.exceptions import PreventUpdate
 from plotly import graph_objs as go
 
 
 from apps import vehiclestables, downtimes, controlling, overview
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
+
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True,
                 external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -58,7 +60,7 @@ def display_page(pathname):
 
 
 @app.callback(
-    Output('year-table2', 'data'),
+    Output('vehicle-table2', 'data'),
     [Input('vocation-dropdown-table', 'value')])
 def create_table(selected_vocation):
 
@@ -72,17 +74,13 @@ def create_table(selected_vocation):
 @app.callback(
     Output('graph', 'figure'),
     [Input('graph-filter', 'value')])
-def create_graph(selected_filter):
+def create_graph(selected_column):
 
-    if selected_filter is 'voc':
-        fig = px.scatter(df_vehicle, x="vocation", y="vid",
-                     size="pop", color="continent", hover_name="vocation",
-                     log_x=True, size_max=55),
+    if selected_column is not None:
 
-    return fig
+      figure = px.bar(df_group_vehicle_class, x="Klasse", y="anzahl")
 
-
-
+    return figure
 
 # server
 if __name__ == '__main__':
