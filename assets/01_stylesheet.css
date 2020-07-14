@@ -1,54 +1,90 @@
+/* STRUCTURE
+
+    GENERAL
+    TEXT
+    NAVIGATION
+    HOME
+    CONTROLLING
+    DOWNTIMES
+    VEHICLESTABLE
+ */
+
+
+/* GENERAL */
 body {
     font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif;
     color: #444444;
     margin: 0;
+    background: #f4f4f4;
 }
 
-.container {
-    padding: 12px 36px;
-    margin: 0 auto;
+div {
+    padding: 0;
 }
 
-.home-content {
-    background-color: #f8f8f8;
-    margin: 5px;
-    padding: 15px;
-    position: relative;
-    box-shadow: 2px 2px 2px lightgrey;
+.card {
+    padding: 12px 12px;
+    margin: 6px;
+    border-radius: 6px;
+    border: none;
+    background: white;
 }
 
-.controlling-content {
-    padding: 12px 36px;
-    margin: 0 auto;
+#button-reset-table {
+    border: none;
+    background: #007bff;
+    color: white;
 }
 
-.downtimes-content {
-    margin: 0 auto;
+/* TEXT */
+h1 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.8em;
+    padding-top: 6px;
+    padding-bottom: 12px;
 }
 
-.vehiclestables-content {
-    padding: 12px 36px;
-    margin: 0 auto;
+h2 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.5em;
+    padding-top: 6px;
+    padding-bottom: 12px;
 }
 
-
-.dash-table-container {
-    margin: 0;
+h3 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.2em;
+    padding-top: 6px;
+    padding-bottom: 12px;
 }
 
-.row {
-    margin: 0;
+h4 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 0.9em;
+    padding-top: 6px;
+    padding-bottom: 12px;
 }
 
+/* HEADER */
 .logo-text {
-    top: 4px !important;
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
     position: relative;
+    top: 4px;
     margin: 0 !important;
     padding: 0 18px !important;
 }
 
 .header {
-    background-color: #f8f8f8;
     padding: 12px;
     border-radius: 5px;
     box-shadow: 2px 2px 2px lightgrey;
@@ -59,23 +95,69 @@ body {
 }
 
 
-div {
-    padding: 0;
+/* HOME */
+.home-content {
+    margin: 5px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
 }
 
-/*Map*/
+.home-welcome-text {
+    margin-bottom: 20px;
+}
 
-/*PieCharts*/
 
+/* CONTROLLING */
+.controlling-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
 
-/*Calender*/
+.data-picker {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: stretch;
+    align-content: stretch;
+}
 
-.calContainer {
+.DateRangePickerInput__withBorder {
+    border-radius: 3px;
+    padding: 3px;
+    border: solid 2px #f1f1f1;
+}
+
+/* DOWNTIMES */
+.downtimes-content {
+    margin: 0 auto;
+}
+
+.dash-table-container {
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.cal-container {
     width: 100%;
     height: 700px;
 }
 
 /* VEHICLES TABLES */
+.vehiclestables-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+#graph-filter label {
+    padding-right: 12px;
+}
+
 .vehicles-tables-filter {
     width: 200px;
 }
@@ -83,7 +165,6 @@ div {
 .vehicles-tables-content {
     max-width: 900px;
     border-radius: 5px;
-    background-color: #F8F8F8;
     margin: 5px;
     padding: 15px;
     position: relative;
@@ -113,25 +194,4 @@ div {
     background: white;
     color: #1a1a1b;
     margin: 12px;
-}
-
-
-.overview-welcome-text {
-    margin-bottom: 20px;
-}
-
-h1 {
-
-}
-
-h2 {
-
-}
-
-h3 {
-
-}
-
-h4 {
-
 }
