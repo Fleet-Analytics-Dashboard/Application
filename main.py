@@ -104,6 +104,35 @@ def create_graph(selected_column):
     return figure
 
 
+####Callback radio buttons downtimes-table###########
+
+@app.callback(
+    Output('downtime_table', 'data'),
+    [Input('page-downtimes-radios-1', 'value')])
+def create_downtimes_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = vehicle_data[vehicle_data["vehicle_status"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
+
+####Callback radio buttons downtimes-table###########
+
+
+
+####Callback radio buttons downtimes-table###########
+
+####Callback radio buttons downtimes-table###########
+
+####Callback radio buttons downtimes-table###########
+
+####Callback radio buttons downtimes-table###########
+
+
 # server
 if __name__ == '__main__':
     app.run_server(debug=True)
