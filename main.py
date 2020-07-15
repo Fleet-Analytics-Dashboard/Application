@@ -9,6 +9,7 @@ from plotly import graph_objs as go
 from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
+from apps.controlling import *
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
