@@ -53,7 +53,7 @@ df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin
 labels = df_vehicle_status['vehicle_status'].unique()
 
 ####count values###
-values = df_vehicle_data.vehicle_status.value_counts()
+values = df_vehicle_status.vehicle_status.value_counts()
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
