@@ -34,10 +34,6 @@ df_maintenance_status['maintenance'] = np.select(conditions, choices, default='n
 
 
 
-# Calender
-
-# calenderview = open('calendar.html', 'wb')
-
 # PieCharts
 
 ######## Downtimes Overview graph#########
@@ -46,21 +42,25 @@ df_maintenance_status['maintenance'] = np.select(conditions, choices, default='n
 df_vehicle_status = df_vehicle_data.copy()
 
 ###Array with accepted values###
-vehicle_status_array = ['accident', 'unused', 'maintenance', 'traffic jam']
+accepted_vehicle_status_array = ['accident', 'unused', 'maintenance', 'traffic jam']
 
 ###filter####
-df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(vehicle_status_array)]
+df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
 
-
+####use unique values as labels###
 labels = df_vehicle_status['vehicle_status'].unique()
+
+####count values###
 values = df_vehicle_data.vehicle_status.value_counts()
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
 # Need for Maintenance graph
 
-
+####use unique values as labels###
 labels = df_maintenance_status['maintenance'].unique()
+
+####count values###
 values = df_maintenance_status.maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
