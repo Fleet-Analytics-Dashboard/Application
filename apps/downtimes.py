@@ -34,9 +34,11 @@ df_maintenance_status['maintenance'] = np.select(conditions, choices, default='n
 
 
 
+
+
 # PieCharts
 
-######## Downtimes Overview graph#########
+############### Downtimes Overview graph################
 
 ###New dataframe for filter result####
 df_vehicle_status = df_vehicle_data.copy()
@@ -55,7 +57,10 @@ values = df_vehicle_data.vehicle_status.value_counts()
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Need for Maintenance graph
+
+
+
+############################## Need for Maintenance graph###################################
 
 ####use unique values as labels###
 labels = df_maintenance_status['maintenance'].unique()
@@ -65,7 +70,10 @@ values = df_maintenance_status.maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Accident Probability graph
+
+
+
+##################### Accident Probability graph#####################################
 
 labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
