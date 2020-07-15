@@ -9,6 +9,8 @@ from database_connection import connect, return_engine
 
 # Connect to database and add files to
 conn = connect()
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
 sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
@@ -104,6 +106,5 @@ layout = html.Div(
                         } for c in ['Date', 'Region']
                     ],
                 ),
-                html.Div(id='year-table')
             ])
     ])

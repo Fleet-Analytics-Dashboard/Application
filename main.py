@@ -72,6 +72,17 @@ def display_page(pathname):
     else:
         return '404'
 
+# Overview view
+
+@app.callback(
+    Output('vehicle-table-overview', 'data'),
+    [Input('vocation-dropdown-table-overview', 'value')])
+def create_table(selected_vocation):
+    if selected_vocation is not None:
+        filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
+        data = filtered_df.to_dict("records")
+    return data
+
 
 # Table function
 
@@ -84,6 +95,7 @@ def create_table(selected_vocation):
         filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
         data = filtered_df.to_dict("records")
     return data
+
 
 
 @app.callback(
