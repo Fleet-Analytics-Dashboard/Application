@@ -26,8 +26,8 @@ df_vehicle_data = df_vehicle_data.round(decimals=2)
 df_maintenance_status = df_vehicle_data.copy()
 conditions = [
     (df_vehicle_data['maintenance'] < 50),
-    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 90),
-    (df_vehicle_data['maintenance'] >= 90)]
+    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 95),
+    (df_vehicle_data['maintenance'] >= 95)]
 choices = ['No need', 'Soon', 'Need']
 
 df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
@@ -121,11 +121,11 @@ mapbox_accidents.update_layout(
         accesstoken='pk.eyJ1IjoiamFrb2JzY2hhYWwiLCJhIjoiY2tiMWVqYnYwMDEyNDJ5bWF3YWhnMTFnNCJ9.KitYnq2a645C15FwvFdqAw',
         bearing=0,
         center=dict(
-            lat=38.92,
-            lon=-77.07
+            lat=40.92,
+            lon=-91.07
         ),
         pitch=0,
-        zoom=10,
+        zoom=3,
         style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
     ),
 )
@@ -156,10 +156,10 @@ fig.update_layout(
         bearing=0,
         center=dict(
             lat=38.92,
-            lon=-77.07
+            lon=-100.07
         ),
         pitch=0,
-        zoom=10,
+        zoom=5,
         style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
     ),
 )
@@ -197,8 +197,8 @@ layout = html.Div(
                                 dcc.Checklist(
                                     id='page-downtimes-radios-1',
                                     options=[{'label': i, 'value': i}
-                                             for i in ['unused', 'traffic jams', 'accident', 'maintenance']],
-                                    value=['unused', 'traffic jams', 'accident', 'maintenance']),
+                                             for i in ['unused', 'accident', 'maintenance']],
+                                    value=['unused', 'accident', 'maintenance']),
 
                                 ##################Searchbox Downtimes###################
 
@@ -443,7 +443,7 @@ layout = html.Div(
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Excessive Speeding'),
+                                    html.H3('Longest Distance'),
                                 ),
                             ),
                         ),
@@ -558,32 +558,32 @@ layout = html.Div(
             ]),
 
             # Fleet Location Map
-            dcc.Tab(label='Realtime Map', children=[
-
-                dcc.Graph(figure=fig),
-
-                html.H3('Vehicle Details'),
-
-                dash_table.DataTable(
-                    data=df_vehicle_data.to_dict('records'),
-                    columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
-                    style_header={
-                        'backgroundColor': 'lightgrey',
-                        'fontWeight': 'bold',
-                        'fontSize': 12,
-                        'fontFamily': 'Open Sans'
-                    },
-                    style_cell={
-                        'padding': '5px',
-                        'fontSize': 13,
-                        'fontFamily': 'sans-serif'
-                    },
-                    style_cell_conditional=[
-                        {
-                            'if': {'column_id': 'Region'},
-                            'textAlign': 'left'
-                        }
-                    ])
-            ]),
+            # dcc.Tab(label='Realtime Map', children=[
+            #
+            #     dcc.Graph(figure=fig),
+            #
+            #     html.H3('Vehicle Details'),
+            #
+            #     dash_table.DataTable(
+            #         data=df_vehicle_data.to_dict('records'),
+            #         columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
+            #         style_header={
+            #             'backgroundColor': 'lightgrey',
+            #             'fontWeight': 'bold',
+            #             'fontSize': 12,
+            #             'fontFamily': 'Open Sans'
+            #         },
+            #         style_cell={
+            #             'padding': '5px',
+            #             'fontSize': 13,
+            #             'fontFamily': 'sans-serif'
+            #         },
+            #         style_cell_conditional=[
+            #             {
+            #                 'if': {'column_id': 'Region'},
+            #                 'textAlign': 'left'
+            #             }
+            #         ])
+            # ]),
         ])
     ])
