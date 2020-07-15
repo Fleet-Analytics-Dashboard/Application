@@ -7,7 +7,7 @@ import plotly.express as px
 from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
-from apps.downtimes import vehicle_data
+from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
 external_scripts = [
@@ -114,23 +114,30 @@ def create_downtimes_table(selected_status):
         data = selected_status.to_dict("records")
 
     else:
-        filtered_df = vehicle_data[vehicle_data["vehicle_status"].isin(selected_status)]
+        filtered_df = df_vehicle_data[df_vehicle_data["vehicle_status"].isin(selected_status)]
         data = filtered_df.to_dict("records")
 
     return data
 
 
-####Callback radio buttons downtimes-table###########
+####Callback radio buttons maintenance-status-table###########
+
+@app.callback(
+    Output('maintenance_table', 'data'),
+    [Input('page-downtimes-radios-2', 'value')])
+def create_maintenance_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_maintenance_status[df_maintenance_status["maintenance"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
+####Callback radio buttons accident-probability-table###########
 
 
-
-####Callback radio buttons downtimes-table###########
-
-####Callback radio buttons downtimes-table###########
-
-####Callback radio buttons downtimes-table###########
-
-####Callback radio buttons downtimes-table###########
 
 
 # server

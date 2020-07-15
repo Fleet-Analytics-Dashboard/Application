@@ -2,6 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 # TODO are imports unused or there on purpose?
 import calendar
@@ -13,15 +14,24 @@ from database_connection import connect, return_engine
 # connect to database and add files to
 conn = connect()
 sql = "select * from vehicle_data;"
-vehicle_data = pd.read_sql_query(sql, conn)
+df_vehicle_data = pd.read_sql_query(sql, conn)
 sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
-# Data
-# fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
-# fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
-# fleet_data.iloc[:,1:3]
+df_vehicle_data = df_vehicle_data.round(decimals=2)
+
+######## Convert maintenance score to maintenance status############
+
+df_maintenance_status = df_vehicle_data.copy()
+conditions = [
+    (df_vehicle_data['maintenance'] < 50),
+    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 90),
+    (df_vehicle_data['maintenance'] >= 90)]
+choices = ['No need', 'Soon', 'Need']
+
+df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
+
 
 
 # Calender
@@ -34,9 +44,9 @@ conn = None
 # dt = fleet_data[["maintenance"]]
 # for i in dt
 # labels = vehicle_data.vehicle_status
-labels = ['Accidents', 'Traffic Jams', 'Maintenance', 'Unused']
+labels = ['Unused', 'Traffic Jams', 'Maintenance', 'Accidents']
 # values = [20, 30, 10, 40]
-values = vehicle_data.vehicle_status.value_counts()
+values = df_vehicle_data.vehicle_status.value_counts()
 # values = fleet_data[["vehicle_status"]].groupby('vehicle_status').count()
 
 
@@ -44,8 +54,9 @@ pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
 # Need for Maintenance graph
 
-labels = ['Need', 'Soon', 'No need']
-values = [2, 5, 10]
+labels = ['No Need', 'Soon', 'Need']
+#values = [2, 5, 10]
+values = df_maintenance_status.maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
@@ -60,9 +71,9 @@ pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
 # mapbox_access_token = open(".mapbox_token").read()
 
 ####### Vehicle  position data extraction ###################
-fleet_lat = vehicle_data.position_latitude
-fleet_lon = vehicle_data.position_longitude
-fleet_vid = vehicle_data.vid
+fleet_lat = df_vehicle_data.position_latitude
+fleet_lon = df_vehicle_data.position_longitude
+fleet_vid = df_vehicle_data.vid
 
 fig = go.Figure(go.Scattermapbox(
 
@@ -151,7 +162,7 @@ layout = html.Div(
                                     data=[{}],
 
                                     columns=[{'name': i, 'id': i} for i in
-                                             vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
+                                             df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -221,11 +232,12 @@ layout = html.Div(
                                 # ),
 
                                 dash_table.DataTable(
-                                    data=vehicle_data.to_dict('records'),
+                                    id='maintenance_table',
+                                    data=[{}],
                                     filter_action='native',
                                     sort_action='native',
                                     columns=[{'name': i, 'id': i} for i in
-                                             vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_maintenance_status.loc[:, ['licence_plate', 'maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -274,12 +286,12 @@ layout = html.Div(
                                 # ),
 
                                 dash_table.DataTable(
-                                    data=vehicle_data.to_dict('records'),
+                                    data=df_vehicle_data.to_dict('records'),
                                     filter_action='native',
                                     sort_action='native',
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in
-                                             vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -340,12 +352,12 @@ layout = html.Div(
                         ),
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
-                                data=vehicle_data.to_dict('records'),
+                                data=df_vehicle_data.to_dict('records'),
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -376,12 +388,12 @@ layout = html.Div(
                         ),
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
-                                data=vehicle_data.to_dict('records'),
+                                data=df_vehicle_data.to_dict('records'),
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -412,12 +424,12 @@ layout = html.Div(
                         ),
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
-                                data=vehicle_data.to_dict('records'),
+                                data=df_vehicle_data.to_dict('records'),
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -448,11 +460,11 @@ layout = html.Div(
                         ),
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
-                                data=vehicle_data.to_dict('records'),
+                                data=df_vehicle_data.to_dict('records'),
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -492,8 +504,8 @@ layout = html.Div(
                 html.H3('Vehicle Details'),
 
                 dash_table.DataTable(
-                    data=vehicle_data.to_dict('records'),
-                    columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                    data=df_vehicle_data.to_dict('records'),
+                    columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
                     style_header={
                         'backgroundColor': 'lightgrey',
                         'fontWeight': 'bold',
