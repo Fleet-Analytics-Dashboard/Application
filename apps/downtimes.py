@@ -213,15 +213,17 @@ layout = html.Div(
 
                                 ################## Searchbox Maintenance ###################
 
-                                dcc.Dropdown(
-                                    id='maintenance_filter_x',
-                                    options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
-                                    value='',
-                                    placeholder='Search for vehicle...'
-                                ),
+                                # dcc.Dropdown(
+                                #     id='maintenance_filter_x',
+                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
+                                #     value='',
+                                #     placeholder='Search for vehicle...'
+                                # ),
 
                                 dash_table.DataTable(
                                     data=vehicle_data.to_dict('records'),
+                                    filter_action='native',
+                                    sort_action='native',
                                     columns=[{'name': i, 'id': i} for i in
                                              vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
                                     page_size=10,
@@ -264,15 +266,17 @@ layout = html.Div(
 
                                 ################## Searchbox Accidents ###################
 
-                                dcc.Dropdown(
-                                    id='accident_filter_x',
-                                    options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
-                                    value='',
-                                    placeholder='Search for vehicle...'
-                                ),
+                                # dcc.Dropdown(
+                                #     id='accident_filter_x',
+                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
+                                #     value='',
+                                #     placeholder='Search for vehicle...'
+                                # ),
 
                                 dash_table.DataTable(
                                     data=vehicle_data.to_dict('records'),
+                                    filter_action='native',
+                                    sort_action='native',
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in
                                              vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
@@ -337,6 +341,8 @@ layout = html.Div(
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
                                 data=vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
                                          vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
@@ -371,6 +377,8 @@ layout = html.Div(
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
                                 data=vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
                                          vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
@@ -405,6 +413,8 @@ layout = html.Div(
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
                                 data=vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
                                          vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
@@ -439,6 +449,8 @@ layout = html.Div(
                         dbc.Row([
                             dbc.Col(dash_table.DataTable(
                                 data=vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
                                 page_size=5,
