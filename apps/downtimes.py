@@ -83,6 +83,54 @@ pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
 ####################### Mapbox ###########################
 # mapbox_access_token = open(".mapbox_token").read()
 
+
+#########Mapbox Accidents##############
+
+
+###Data filter####
+
+df_vehicle_accidents = df_vehicle_data.copy()
+
+###Array with accepted values###
+only_accidents_array = ['accident']
+
+df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
+
+
+
+fleet_lat = df_vehicle_accidents.position_latitude
+fleet_lon = df_vehicle_accidents.position_longitude
+fleet_vid = df_vehicle_accidents.vid
+
+mapbox_accidents = go.Figure(go.Scattermapbox(
+
+    lat=fleet_lat,
+    lon=fleet_lon,
+    mode='markers',
+    marker=go.scattermapbox.Marker(
+        size=9
+    ),
+    text=fleet_vid,
+))
+
+mapbox_accidents.update_layout(
+    margin=dict(l=0, r=0, t=0, b=0),
+    autosize=True,
+    hovermode='closest',
+    mapbox=dict(
+        accesstoken='pk.eyJ1IjoiamFrb2JzY2hhYWwiLCJhIjoiY2tiMWVqYnYwMDEyNDJ5bWF3YWhnMTFnNCJ9.KitYnq2a645C15FwvFdqAw',
+        bearing=0,
+        center=dict(
+            lat=38.92,
+            lon=-77.07
+        ),
+        pitch=0,
+        zoom=10,
+        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+    ),
+)
+
+######Mapbox total########
 ####### Vehicle  position data extraction ###################
 fleet_lat = df_vehicle_data.position_latitude
 fleet_lon = df_vehicle_data.position_longitude
@@ -203,7 +251,7 @@ layout = html.Div(
                                 html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
-                                dcc.Graph(figure=fig, config={'responsive': True}, className='accidentsmap'),
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
                             ),
                         ]),
 
