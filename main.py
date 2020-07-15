@@ -10,6 +10,7 @@ from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.home import df_map_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
+from apps.controlling import *
 
 
 
