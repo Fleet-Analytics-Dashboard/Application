@@ -40,7 +40,7 @@ def cleaning (df):
     # add all relevant columns from category 'Speed' (original column 17-123, 287-372)
     new['distance_total'] = df['distance_total'].copy()
     new['speed_data_duration_hrs_includes_zero'] = df['speed_data_duration_hrs'].copy()
-    new['driving_data_duration_hrs_no_zero'] = df['driving_data_duration_hrs'].copy()
+    new['driving_time_seconds_no_zero'] = df['driving_time_seconds'].copy()
     new['max_speed'] = df['max_speed'].copy()
     new['total_average_speed_includes_zero'] = df['total_average_speed'].copy()
     new['total_median_speed_includes_zero'] = df['total_median_speed'].copy()
@@ -48,7 +48,7 @@ def cleaning (df):
     new['seconds_at_speed_zero'] = df['zero_seconds'].copy()
     new['seconds_at_speed_zero_five'] = df['zero_five_seconds'].copy()
     new['seconds_at_speed_seventy_five_plus'] = df['seventy_five_plus_seconds'].copy()
-    new['driving_time_seconds'] = df['driving_time_seconds'].copy()
+
     new['percent_time_at_speed_zero'] = df['percent_zero'].copy()
     new['percent_time_at_speed_zero_five'] = df['percent_zero_five'].copy()
     new['percent_time_at_speed_seventy_five_plus'] = df['percent_seventy_five_plus'].copy()
@@ -207,7 +207,7 @@ def cleaning (df):
     new.fillna(0, inplace=True)
 
     # reset index and return cleaned dataframe new
-    new = new.reset_index()
+    new = new.reset_index(drop=True)
 
     return new
 
@@ -216,6 +216,7 @@ def seperate_vehicle_data(df):
     result = df[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
     # drop duplicates in v_df
     result = result.drop_duplicates(keep='first', ignore_index=True).sort_values('vid')
-    result = result.reset_index()
+    result = result.reset_index(drop=True)
+
 
     return result

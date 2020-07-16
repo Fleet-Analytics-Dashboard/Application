@@ -37,26 +37,74 @@ def fuel_cost(v_df, d_df):
 
 
 def cost_per_vehicle(v_df, d_df):
-    # summ up fuel cost per vehicle
-    sum = {}
+    # create new dataframe for cost per vehicle and include vid as key
+    vehicle_cost_data = pd.DataFrame()
+    vehicle_cost_data['vid'] = v_df['vid'].copy()
+    # split driving data into months
+    lst = []
     for index, row in d_df.iterrows():
-        if int(row['vid']) in sum.keys():
-            sum[int(row['vid'])] += row['fuel_cost']
+        if 0 < row['day_id'] < 4:
+            lst.append('jan')
+        elif 4 < row['day_id'] < 8:
+            lst.append('feb')
+        elif 8 < row['day_id'] < 12:
+            lst.append('mar')
+        elif 12 < row['day_id'] < 16:
+            lst.append('apr')
+        elif 16 < row['day_id'] < 20:
+            lst.append('may')
+        elif 20 < row['day_id'] < 24:
+            lst.append('jun')
         else:
-            sum[int(row['vid'])] = row['fuel_cost']
-    # ad a column with the value that needs to be added
-    v_df['fuel_cost_total'] = v_df['vid'].map(sum)
+            lst.append('jul')
 
-    # simulate insurance cost in dollar per vehicle with normal distribution around 4000$
-    v_df['insurance_cost'] = np.around(np.random.normal(4000, 1000, size=len(v_df)), decimals=2)
+    # add lst as new column
+    d_df['month'] = lst
 
-    # simulate maintenance cost with normal distribution around 15000$
-    v_df['maintenance_cost'] = np.around(np.random.normal(15000, 5000, size=len(v_df)), decimals=2)
+    grouped = d_df.groupby(d_df.month)
+    jan = grouped.get_group('jan')
+    feb = grouped.get_group('feb')
+    mar = grouped.get_group('mar')
+    apr = grouped.get_group('apr')
+    may = grouped.get_group('may')
+    jun = grouped.get_group('jun')
+    jul = grouped.get_group('jul')
 
-    # add a column with total cost per Year
-    v_df['total_cost'] = v_df['fuel_cost_total'] + v_df['insurance_cost'] + v_df['maintenance_cost']
+    # crate array with dataframes and seperate one with their names for refference in columns
+    arr = [jan, feb, mar, apr, may, jun, jul]
+    arr_name = ['01_jan', '02_feb', '03_mar', '04_apr', '05_may', '06_jun', '07_jul']
+    # summ up fuel cost per vehicle
 
-    return v_df
+    i = 0
+    sum = {}
+    for month in arr:
+        # run through each months dataframe
+        for index, row in month.iterrows():
+            if int(row['vid']) in sum.keys():
+                sum[int(row['vid'])] += row['fuel_cost']
+            else:
+                sum[int(row['vid'])] = row['fuel_cost']
+        # ad a column with the value that needs to be added
+        vehicle_cost_data[str(arr_name[i])+'_fuel_cost_total'] = vehicle_cost_data['vid'].map(sum)
+        i += 1
+    # replace nan values in fuel cost with 0 before continuing
+    vehicle_cost_data.fillna(0, inplace=True)
+
+    # simulate insurance cost in dollar per vehicle, per month with normal distribution around 4000$
+    for i in arr_name:
+        vehicle_cost_data[str(i)+'_insurance_cost'] = np.around(np.random.normal(200, 20, size=len(vehicle_cost_data)), decimals=2)
+        vehicle_cost_data[str(i) + '_maintenance_cost'] = np.around(
+            np.random.normal(1200, 100, size=len(vehicle_cost_data)), decimals=2)
+        vehicle_cost_data[str(i) + '_total_cost'] = vehicle_cost_data[str(i)+'_fuel_cost_total'] + vehicle_cost_data[str(i)+'_insurance_cost'] + vehicle_cost_data[str(i) + '_maintenance_cost']
+
+    # rearange columns by name
+    cols = vehicle_cost_data.columns.tolist()
+    cols.sort()
+    # bring 'vid' back to front
+    cols = cols[-1:] + cols[:-1]
+    vehicle_cost_data = vehicle_cost_data[cols]
+
+    return vehicle_cost_data
 
 
 def vehicle_build_year(df):
