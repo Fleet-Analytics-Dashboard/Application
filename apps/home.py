@@ -32,7 +32,7 @@ fleet_lon = df_vehicle_data.position_longitude
 fleet_vid = df_vehicle_data.vid
 fleet_status = df_vehicle_data.vehicle_status
 
-fig = go.Figure(px.scatter_mapbox(df_map_data, lat=fleet_lat, lon=fleet_lon, color="vehicle_status",
+fig = go.Figure(px.scatter_mapbox(df_map_data, text="licence_plate", lat=fleet_lat, lon=fleet_lon, color="vehicle_status",
                                   custom_data=['licence_plate'], color_continuous_scale=px.colors.cyclical.IceFire,
                                   size_max=20, zoom=10))
 
