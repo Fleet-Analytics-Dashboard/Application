@@ -8,6 +8,7 @@ from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
+from apps.home import df_map_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
 external_scripts = [
@@ -72,12 +73,20 @@ def display_page(pathname):
     else:
         return '404'
 
+
 # Overview view
+
+
+# Overview map to table filter
 
 @app.callback(
     Output('vehicle-table-overview', 'data'),
-    [Input('vocation-dropdown-table-overview', 'value')])
-def create_table(selected_vocation):
+    [Input('mapbox-overview', 'figure'),
+     Input('vocation-dropdown-table-overview', 'figure')])
+def create_table(selected_vehicle, selected_vocation):
+    if selected_vehicle is not None:
+        filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
+        data = filtered_df.to_dict("records")
     if selected_vocation is not None:
         filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
         data = filtered_df.to_dict("records")
@@ -95,7 +104,6 @@ def create_table(selected_vocation):
         filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
         data = filtered_df.to_dict("records")
     return data
-
 
 
 @app.callback(
@@ -147,9 +155,8 @@ def create_maintenance_table(selected_status):
 
     return data
 
+
 ####Callback radio buttons accident-probability-table###########
-
-
 
 
 # server
