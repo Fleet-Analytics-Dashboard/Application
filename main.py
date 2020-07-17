@@ -81,17 +81,18 @@ def display_page(pathname):
 
 @app.callback(
     Output('vehicle-table-overview', 'data'),
-    [Input('mapbox-overview', 'figure'),
-     Input('vocation-dropdown-table-overview', 'figure')])
-def create_table(selected_vehicle, selected_vocation):
+    [Input('mapbox-overview', 'clickData')])
+def create_table(selected_vehicle):
+    data = df_driver
     if selected_vehicle is not None:
         filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
         data = filtered_df.to_dict("records")
-    if selected_vocation is not None:
-        filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
-        data = filtered_df.to_dict("records")
     return data
 
+# def create_downtimes_table(selected_status):
+#     if selected_status is not None:
+#         data = df_driver
+#     return data
 
 # Table function
 
