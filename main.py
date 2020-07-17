@@ -11,6 +11,8 @@ from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.home import df_map_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
+
+
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
     {'src': 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'}
@@ -39,13 +41,14 @@ app.layout = html.Div([
 
             dbc.Nav(
                 [
-                    dbc.NavItem(dbc.NavLink("Home", href="/")),
-                    dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
-                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
-                    dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+                    dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
+                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
+                    dbc.NavItem(dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
                 ],
                 pills=True,
-                className='nav-menu'
+                className='nav-menu',
+                id='navbar',
+
             ),
         ],
         className='header align-self-center'
@@ -57,21 +60,45 @@ app.layout = html.Div([
 
 server = app.server
 
+#####Callback navigation active page########
+
 
 # routing based on navigation
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return home.layout
-    elif pathname == '/controlling':
         return controlling.layout
     elif pathname == '/downtimes':
         return downtimes.layout
-    elif pathname == '/vehicles-tables':
-        return vehiclestables.layout
+    elif pathname == '/vehicles-overview':
+        return home.layout
     else:
         return '404'
+
+
+#####Callback navigation active page########
+
+
+@app.callback(Output('-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/':
+        active = True
+        return active
+
+@app.callback(Output('downtimes-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/downtimes':
+        active = True
+        return active
+
+
+@app.callback(Output('vehicles-overview-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/vehicles-overview':
+        active = True
+        return active
+
 
 
 # Overview view
