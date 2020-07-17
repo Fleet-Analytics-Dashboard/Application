@@ -42,20 +42,18 @@ vehicle_data = simulation.vehicle_position(vehicle_data)
 # simulate vehicle status
 vehicle_data = simulation.vehicle_status(vehicle_data)
 
-# simulate vehicle consumption and fuel cost
+# simulate vehicle consumption and fuel cost per drive
 driving_data = simulation.fuel_cost(vehicle_data, driving_data)
 
 # simulate cost per vehicle
 vehicle_cost_data = simulation.cost_per_vehicle(vehicle_data, driving_data)
 
+# generate a licence plate for each vehicel
 vehicle_data = simulation.generate_licence_plate(vehicle_data)
 
 #------------ include maintenance_prediction.py -----------------------
-# add column with increase of maintenance value for each day
-driving_data = m_prediction.maintenance_increase(driving_data)
-
-# add maintenance increase to vehicle_data Dataframe
-vehicle_data = m_prediction.sum_vehicle_maintenance(driving_data, vehicle_data)
+# Prepare Data by simulating sesor data from real variables
+driving_data = m_prediction.get_sensor_data(driving_data)
 
 #------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes

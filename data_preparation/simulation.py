@@ -39,27 +39,20 @@ def fuel_cost(v_df, d_df):
 def cost_per_vehicle(v_df, d_df):
     # create new dataframe for cost per vehicle and include vid as key
     vehicle_cost_data = pd.DataFrame()
-    vehicle_cost_data['vid'] = v_df['vid'].copy()
-    # split driving data into months
-    lst = []
-    for index, row in d_df.iterrows():
-        if 0 < row['day_id'] < 4:
-            lst.append('jan')
-        elif 4 < row['day_id'] < 8:
-            lst.append('feb')
-        elif 8 < row['day_id'] < 12:
-            lst.append('mar')
-        elif 12 < row['day_id'] < 16:
-            lst.append('apr')
-        elif 16 < row['day_id'] < 20:
-            lst.append('may')
-        elif 20 < row['day_id'] < 24:
-            lst.append('jun')
-        else:
-            lst.append('jul')
+    sample = pd.DataFrame()
 
-    # add lst as new column
-    d_df['month'] = lst
+    vehicle_cost_data['vid'] = v_df['vid'].copy()
+    sample['vid'] = v_df['vid'].copy()
+
+    d_df['month'] = 0
+    # split driving data into months
+    d_df.loc[(d_df['day_id'] > 0) & (d_df['day_id'] <= 4), ['month']] = 'jan'
+    d_df.loc[(d_df['day_id'] > 4) & (d_df['day_id'] <= 8), ['month']] = 'feb'
+    d_df.loc[(d_df['day_id'] > 8) & (d_df['day_id'] <= 12), ['month']] = 'mar'
+    d_df.loc[(d_df['day_id'] > 12) & (d_df['day_id'] <= 16), ['month']] = 'apr'
+    d_df.loc[(d_df['day_id'] > 16) & (d_df['day_id'] <= 20), ['month']] = 'may'
+    d_df.loc[(d_df['day_id'] > 20) & (d_df['day_id'] <= 30), ['month']] = 'jun'
+    d_df.loc[(d_df['day_id'] > 30), ['month']] = 'jul'
 
     grouped = d_df.groupby(d_df.month)
     jan = grouped.get_group('jan')
@@ -73,8 +66,8 @@ def cost_per_vehicle(v_df, d_df):
     # crate array with dataframes and seperate one with their names for refference in columns
     arr = [jan, feb, mar, apr, may, jun, jul]
     arr_name = ['01_jan', '02_feb', '03_mar', '04_apr', '05_may', '06_jun', '07_jul']
-    # summ up fuel cost per vehicle
 
+    # summ up fuel cost per vehicle
     i = 0
     sum = {}
     for month in arr:
@@ -84,25 +77,25 @@ def cost_per_vehicle(v_df, d_df):
                 sum[int(row['vid'])] += row['fuel_cost']
             else:
                 sum[int(row['vid'])] = row['fuel_cost']
-        # ad a column with the value that needs to be added
-        vehicle_cost_data[str(arr_name[i])+'_fuel_cost_total'] = vehicle_cost_data['vid'].map(sum)
+        # ad a column with the value that needs to be added to sample dataframe
+        sample['month'] = arr_name[i]
+        sample['fuel_cost_total'] = sample['vid'].map(sum)
         i += 1
+        # append sample dataframe to vehicle_cost_data dataframe
+        if 'month' in vehicle_cost_data.columns:
+            vehicle_cost_data = vehicle_cost_data.append(sample)
+        else:
+            vehicle_cost_data['month'] = sample['month'].copy()
+            vehicle_cost_data['fuel_cost_total'] = sample['fuel_cost_total'].copy()
+
     # replace nan values in fuel cost with 0 before continuing
     vehicle_cost_data.fillna(0, inplace=True)
 
     # simulate insurance cost in dollar per vehicle, per month with normal distribution around 4000$
-    for i in arr_name:
-        vehicle_cost_data[str(i)+'_insurance_cost'] = np.around(np.random.normal(200, 20, size=len(vehicle_cost_data)), decimals=2)
-        vehicle_cost_data[str(i) + '_maintenance_cost'] = np.around(
-            np.random.normal(1200, 100, size=len(vehicle_cost_data)), decimals=2)
-        vehicle_cost_data[str(i) + '_total_cost'] = vehicle_cost_data[str(i)+'_fuel_cost_total'] + vehicle_cost_data[str(i)+'_insurance_cost'] + vehicle_cost_data[str(i) + '_maintenance_cost']
-
-    # rearange columns by name
-    cols = vehicle_cost_data.columns.tolist()
-    cols.sort()
-    # bring 'vid' back to front
-    cols = cols[-1:] + cols[:-1]
-    vehicle_cost_data = vehicle_cost_data[cols]
+    vehicle_cost_data['insurance_cost'] = np.around(np.random.normal(200, 20, size=len(vehicle_cost_data)), decimals=2)
+    vehicle_cost_data['maintenance_cost'] = np.around(
+        np.random.normal(1200, 100, size=len(vehicle_cost_data)), decimals=2)
+    vehicle_cost_data['total_cost'] = vehicle_cost_data['fuel_cost_total'] + vehicle_cost_data['insurance_cost'] + vehicle_cost_data['maintenance_cost']
 
     return vehicle_cost_data
 
