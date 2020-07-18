@@ -4,15 +4,24 @@ import pandas as pd
 def get_sensor_data(d_df):
     # take realistic variables and define a threshold for malfunction recognised by a sesor
 
-    # 'maximum_rolling_power_density_demand' for tire sensor and 320 as threshold
+    # 'maximum_rolling_power_density_demand' for tire sensor and 310 as threshold
     d_df['tire_sensor'] = 0
     d_df.loc[d_df['maximum_rolling_power_density_demand'] >= 310, ['tire_sensor']] = 1
 
-    # 'maximum_kinetic_power_density_demand' for engine sensor and 30
+    # 'maximum_kinetic_power_density_demand' for engine sensor and 60
     d_df['engine_sensor'] = 0
     d_df.loc[d_df['maximum_kinetic_power_density_demand'] >= 60, ['engine_sensor']] = 1
 
+    # 'max_deceleration_event_duration' for break sensor and 1000 as threshold
+    d_df['break_sensor'] = 0
+    d_df.loc[d_df['max_deceleration_event_duration'] >= 1200, ['break_sensor']] = 1
+
+    # define a maintenance need that alerts maintenance if 2 or more sensors show a problem
+    d_df['maintenance_need'] = 0
+    d_df.loc[(d_df['break_sensor']+d_df['engine_sensor']+d_df['tire_sensor']) >= 2, ['maintenance_need']] = 1
+
     return d_df
+
 
 def predict_maintenance(d_df, v_df):
 
