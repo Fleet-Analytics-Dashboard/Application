@@ -23,6 +23,15 @@ def get_sensor_data(d_df):
     return d_df
 
 
+def extract_prediction_data(d_df):
+    # we want to extract the last day_id of each vehicle to predict the final status of each vehicle
+    # we can achieve this by sorting the data for day_id descending first and then drop all duplicates in vid
+    pred = d_df.copy()
+    pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid')
+
+    return pred
+
+
 def predict_maintenance(d_df, v_df):
 
     return d_df
