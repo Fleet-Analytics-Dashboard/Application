@@ -1,5 +1,8 @@
 import pandas as pd
 import xgboost as xgb
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
 
 def get_sensor_data(d_df):
@@ -28,11 +31,8 @@ def extract_prediction_data(d_df):
     # we want to extract the last day_id of each vehicle to predict the final status of each vehicle
     # we can achieve this by sorting the data for day_id descending first and then drop all duplicates in vid
     pred = d_df.copy()
-    pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid')
-
-    # remove the last day_id for each vehicle from driving Data
-    d_df = d_df.append(pred)
-    d_df = d_df.drop_duplicates(['vid', 'day_id'], keep=False)
+    pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid', keep='first')
+    pred = pred.sort_values('vid', ascending=True)
 
     return pred, d_df
 
@@ -51,10 +51,26 @@ def data_preparation(d_df):
     return x, y
 
 
-def predict_maintenance(d_df, v_df):
+def predict_maintenance(x, y, v_df, d_df):
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
 
-    return d_df
+    # instantiate an XGBoost classifier object
+    xg_class = xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.3, learning_rate=0.1, max_depth=5,
+                                 alpha=10, n_estimators=10)
 
+    # train the xgboost classifier
+    xg_class.fit(X_train, y_train)
+
+    preds = xg_class.predict(X_test)
+    rmse = np.sqrt(mean_squared_error(y_test, preds))
+
+    # predict probabilities for last vehicle day and ad it to vehicle data
+    pred_prob = xg_class.predict_proba(x)
+    pred_prob_data = pd.get_dummies(d_df).idxmax(1)
+
+    v_df['predicted_maintenance_probability'] = pred_prob
+
+    return rmse, v_df
 
 
 # def calculate_maintenance(dist, decel):

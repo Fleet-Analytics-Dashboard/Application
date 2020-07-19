@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 import xgboost as xgb
 import data_preparation.data_cleaning as data_cleaning
 import data_preparation.maintenance_prediction as m_prediction
@@ -56,11 +54,10 @@ driving_data = driving_data.drop('month', axis=1)
 vehicle_data = simulation.generate_licence_plate(vehicle_data)
 
 #------------ include maintenance_prediction.py -----------------------
-# Prepare Data by simulating sesor data from real variables
+# Prepare Data by simulating sensor data from real variables
 driving_data = m_prediction.get_sensor_data(driving_data)
 
-# extract prediction data for predicting a final vehicle status later
-predict, driving_data = m_prediction.extract_prediction_data(driving_data)
+
 
 # prepare data for training the model
 x, y = m_prediction.data_preparation(driving_data)
@@ -68,20 +65,12 @@ x, y = m_prediction.data_preparation(driving_data)
 # convert to DMatrix for XGBoost
 data_dmatrix = xgb.DMatrix(data=x, label=y)
 
-# split into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
+# train a xgb modell for classifiction
+# returns rmse (route mean square error) and vehicle_data with probability for maintenance need
+rmse, vehicle_data = m_prediction.predict_maintenance(x, y, vehicle_data, driving_data)
 
-#
-xg_class = xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.3, learning_rate=0.1, max_depth=5,
-                            alpha=10, n_estimators=10)
-
-xg_class.fit(X_train, y_train)
-
-preds = xg_class.predict(X_test)
-pred_prob = xg_class.predict_proba(X_test)
-
-rmse = np.sqrt(mean_squared_error(y_test, preds))
-print("RMSE: %f" % rmse)
+# extract prediction data for predicting a final vehicle status later
+predict_data, driving_data = m_prediction.extract_prediction_data(driving_data)
 
 #------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
