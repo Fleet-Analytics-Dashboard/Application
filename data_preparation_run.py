@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+import xgboost as xgb
 import data_preparation.data_cleaning as data_cleaning
 import data_preparation.maintenance_prediction as m_prediction
 import data_preparation.simulation as simulation
@@ -62,8 +65,23 @@ predict, driving_data = m_prediction.extract_prediction_data(driving_data)
 # prepare data for training the model
 x, y = m_prediction.data_preparation(driving_data)
 
+# convert to DMatrix for XGBoost
+data_dmatrix = xgb.DMatrix(data=x, label=y)
+
 # split into training and testing data
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.2, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
+
+#
+xg_class = xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.3, learning_rate=0.1, max_depth=5,
+                            alpha=10, n_estimators=10)
+
+xg_class.fit(X_train, y_train)
+
+preds = xg_class.predict(X_test)
+pred_prob = xg_class.predict_proba(X_test)
+
+rmse = np.sqrt(mean_squared_error(y_test, preds))
+print("RMSE: %f" % rmse)
 
 #------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
