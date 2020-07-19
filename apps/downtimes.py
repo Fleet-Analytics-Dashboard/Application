@@ -2,8 +2,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import pandas as pd
+import datetime
 import numpy as np
-import plotly.figure_factory as ff
+import plotly.express as px
 import plotly.graph_objects as go
 # TODO are imports unused or there on purpose?
 import calendar
@@ -34,6 +35,8 @@ choices = ['No need', 'Soon', 'Need']
 df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
 
 ######## create random date############
+
+
 
 df_vehicle_data["Start"] = '2020-01-01'
 df_vehicle_data["Finish"] = '2021-01-01'
@@ -183,19 +186,13 @@ fig.update_layout(
 ######Gantt Chart Maintenance########
 
 
-
-#for i in range(0, 4):
-   # Start = df_vehicle_data['Start'][i]
-    #Finish = df_vehicle_data['Finish'][i]
-    #Task = df_vehicle_data['vid'][i]
+df_vehicle_data["Resource"] = 'maintenance'
 
 df = df_vehicle_data[['vid', 'Start', 'Finish']]
 
-for i in range (0,39):
-    df_maintenance_calendar = [dict(Task=df.vid[i], Start=df['Start'][i], Finish=df['Finish'][i])]
-    print(df_maintenance_calendar)
-    gantt_chart = ff.create_gantt(df_maintenance_calendar)
 
+gantt_chart = px.timeline(df, x_start=df['Start'], x_end=df['Finish'], y=df['vid'])
+gantt_chart.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
 
 layout = html.Div(
     className='downtimes-content',
