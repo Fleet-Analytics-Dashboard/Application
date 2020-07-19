@@ -13,42 +13,33 @@ import dash_bootstrap_components as dbc
 
 # connect to database
 conn = connect()
-
-sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
 sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select vid, vehicel_type, fuel_type, seconds_at_speed_zero from cleaned_data_fleet_dna;"
+sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
 df_table = pd.read_sql_query(sql, conn)
+sql = "select vid, vehicle_type, vocation from vehicle_data;"
+df_vehicle_costs = pd.read_sql_query(sql, conn)
+df_vehicle_costs = df_vehicle_costs.round(decimals=2)
+sql = "select * from vehicle_cost_data"
+df_cost_data = pd.read_sql_query(sql, conn)
+df_cost_data = df_cost_data.round(decimals=2)
 conn = None
 
-# df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
-# column_name_dropdown = fleet_data[['vid', 'vocation']]
 
-# simulated data for the goals chart
-years = np.vstack((np.arange(2014, 2021),) * 4)
+########### simulated data for the goals chart ###########
+# goals data is company data/year; data in time range 2018-2021
+years = np.vstack((np.arange(2016, 2021),) * 4)
 y_data_revenue = np.random.normal(8, 1.5, 100)
-df_vehicle_data = df_vehicle_data.round(decimals=2)
-
-# simulated data for the goals chart
-years = np.vstack((np.arange(2014, 2021),)*4)
-y_data_revenue = np.random.normal(8, 1.5, 400)
 y_data_revenue.sort()
-y_data_profit = np.random.normal(7, 1.5, 400)
+y_data_profit = np.random.normal(7, 1.5, 100)
 y_data_profit.sort()
-y_data_liquidity = np.random.normal(7.5, 1.5, 400)
+y_data_liquidity = np.random.normal(7.5, 1.5, 100)
 y_data_liquidity.sort()
 y_data_goals = [y_data_revenue, y_data_profit, y_data_liquidity]
 names_goals = ['Revenue', 'Profit', 'Liquidity']
 
-# regression
-# reg = LinearRegression().fit(np.vstack(df_goals_chart['X']), y_data_revenue)
-# df_goals_chart['bestfit'] = reg.predict(np.vstack(df_goals_chart['X']))
-y_data_goals_trendline = [[max(y_data_revenue)], [max(y_data_profit)], [max(y_data_liquidity)]]
-names_goals = ['Revenue', 'Profit', 'Liquidity']
-names_trendline = ['Trendline Revenue', 'Trendline Profit', 'Trendline Liquidity']
 
-
-# simulated data for the costs chart
+############ data for the costs chart ##############
 np.random.seed(1)
 colors = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']
 colors_trend = ['rgb(0,255,0)', 'rgb(0,0,139)', 'rgb(0,255,255)']
@@ -56,8 +47,10 @@ labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
 line_size = [2, 2, 4, 2]
 
-x_data = np.vstack((np.arange(2009, 2022),) * 4)
+# period of a year in months (in this case until july)
+x_data = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 
+# test data
 y_data = np.array([
     [132, 138, 150, 144, 129, 128, 132, 145, 137, 138, 141, 147],
     [74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69],
@@ -65,21 +58,43 @@ y_data = np.array([
     [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
 ])
 
-# simulated data for delivery dates chart
-x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July',
-                   #'August', 'September', 'October', 'November', 'December'
-                   ])
+# transform the different columns of the data frame into lists
+y_data_fuel_cost = df_cost_data['fuel_cost_total'].to_list()
+y_data_insurance_cost = df_cost_data['insurance_cost'].to_list()
+y_data_maintenance_cost = df_cost_data['maintenance_cost'].to_list()
+y_data_total_cost = df_cost_data['total_cost'].to_list()
+
+# summarise the cost lists in an array
+y_data_cost = [y_data_total_cost, y_data_fuel_cost, y_data_maintenance_cost, y_data_insurance_cost]
+
+###### chained dropdown for the filtering of chart costs ##########
+# create option for dropdown
+dropdown_options = {
+    'Beverage Delivery': ['1', '2', '3', '4', '5', '6', '7', '8', '23', '24', '25'],
+    'Food Delivery': ['47', '48', '49', '50', '51', '52', '154', '156', '573', '574'],
+    'Linen Delivery': ['58', '59', '61', '62', '124', '125', '129', '130', '241'],
+    'Parcel Delivery': ['9', '10', '11', '12', '20', '36', '37', '40', '42', '43', '108', '109', '110', '220'],
+    'Telecom': ['284', '286', '287', '288', '290', '293', '306', '307'],
+    'Utility': ['264', '242'],
+    'Warehouse Delivery': ['28', '26', '30', '31', '29', '32', '33']
+}
+
+option = list(dropdown_options.keys())
+nestedOptions = dropdown_options[option[0]]
+
+########## simulated data for the carbon footprint chart ###########
+x_data_carbon = np.vstack((np.arange(2016, 2021),) * 4)
+y_data_carbon = np.random.normal(0.5, 0.1, 100)
+# sort the data descending
+y_data_carbon = np.sort(y_data_carbon)[::-1]
+y_data_carbon_footprint = [y_data_carbon]
+
+########## simulated data for delivery dates chart ###########
+x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 y_data_delivery = np.random.random_integers(400, 450, 900)
 y_data_kept_delivery = [y_data_delivery]
 
-# simulated data for the carbon footprint chart
-x_data_carbon = np.vstack((np.arange(2014, 2021),) * 4)
-y_data_carbon = np.random.normal(0.5, 0.1, 100)
-# y_data_carbon.sort()
-# y_data_carbon = np.sort(y_data_carbon)[::-1]
-y_data_carbon_footprint = [y_data_carbon]
-
-# bar chart goals
+########## goals bar chart ############
 fig_goals = go.Figure()
 
 for i in range(0, 3):
@@ -95,7 +110,7 @@ for i in range(0, 3):
                                    ),
                                    connectgaps=True,
                                    marker_color=colors_trend[i],
-                                   name=names_trendline[i]
+                                   name=names_goals[i]
                                    ))
 
 fig_goals.update_layout(
@@ -140,7 +155,7 @@ annotations_1 = [dict(xref='paper', yref='paper', x=0.0, y=1.05,
 
 fig_goals.update_layout(annotations=annotations_1)
 
-# line chart carbon footprint
+####### line chart carbon footprint #########
 
 fig_carbon = go.Figure()
 
@@ -204,7 +219,7 @@ annotations = [dict(xref='paper', yref='paper', x=0.0, y=1.05,
 
 fig_carbon.update_layout(annotations=annotations)
 
-# line chart kept delivery dates
+######### line chart kept delivery dates #############
 
 fig_delivery_dates = go.Figure()
 
@@ -237,7 +252,7 @@ fig_delivery_dates.update_layout(
         zeroline=False,
         showline=False,
         showticklabels=True,
-        title='kept delivery date/month',
+        title='kept delivery dates/month',
         titlefont_size=16,
         tickfont_size=14,
 
@@ -256,38 +271,26 @@ fig_delivery_dates.update_layout(
     showlegend=False,
     plot_bgcolor='white'
 )
-annotations_3 = []
 
-# Title chart delivery dates
-annotations_3.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
-                        xanchor='left', yanchor='bottom',
-                        text='Kept delivery dates',
-                        font=dict(family='Arial',
-                                  size=30,
-                                  color='rgb(37,37,37)'),
-                        showarrow=False))
-
-fig_delivery_dates.update_layout(annotations=annotations_3)
-
-# line chart costs
+########### line chart costs #############
 fig_costs = go.Figure()
 
 for i in range(0, 4):
     fig_costs.add_trace(go.Scatter(
-        x=x_data[i],
-        y=y_data[i], mode='lines',
+        x=x_data,
+        y=y_data_cost[i], mode='lines+markers',
         name=labels_costs[i],
         line=dict(color=colors[i], width=line_size[i]),
         connectgaps=True,
-    ))
-
-    # endpoints
+        ))
+# endpoints
     fig_costs.add_trace(go.Scatter(
-        x=[x_data[i][0], x_data[i][-1]],
-        y=[y_data[i][0], y_data[i][-1]],
+        x=[x_data[0], x_data[4]],
+        y=[y_data_cost[i][0], y_data_cost[i][-1]],
         mode='markers',
         marker=dict(color=colors[i], size=mode_size[i])
     ))
+
 
 fig_costs.update_layout(
     xaxis=dict(
@@ -323,18 +326,18 @@ fig_costs.update_layout(
 annotations = []
 
 # Adding labels
-for y_trace, label, color in zip(y_data, labels_costs, colors):
+for y_trace, label, color in zip(y_data_cost, labels_costs, colors):
     # labeling the left_side of the plot
-    annotations.append(dict(xref='paper', x=0.05, y=y_trace[0],
+    annotations.append(dict(xref='paper', x=0.05, y=y_trace[0],  # hier stand 0 (?)
                             xanchor='right', yanchor='middle',
                             text=label,
                             font=dict(family='Arial',
                                       size=16),
                             showarrow=False))
     # labeling the right_side of the plot
-    annotations.append(dict(xref='paper', x=0.95, y=y_trace[11],
+    annotations.append(dict(xref='paper', x=0.95, y=y_trace[11],  # hier stand 11
                             xanchor='left', yanchor='middle',
-                            text='{} $'.format(y_trace[11]),
+                            text='{} $'.format(y_trace[11]),  # hier stand 11
                             font=dict(family='Arial',
                                       size=14),
                             showarrow=False))
@@ -350,45 +353,24 @@ annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
 
 fig_costs.update_layout(annotations=annotations)
 
-# pie chart vehicle capacity
+######## pie chart vehicle capacity ########
 
-labels_capacity = ['In Time', 'Delayed', 'Downtime', 'Unused']
-values_capacity = [20, 30, 10, 40]
-pie_capacity = go.Figure(data=[go.Pie(labels=labels_capacity, values=values_capacity, hole=.3)])
-
-###New dataframe for filter result####
+# new dataframe for filter result
 df_vehicle_status = df_vehicle_data.copy()
 
-###Array with accepted values###
-accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
+# array with accepted values
+accepted_vehicle_status_array = ['in time', 'delayed', 'unused', 'maintenance', 'idle']
 
-###filter####
+# filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
 
-####use unique values as labels###
+# use unique values as labels
 labels = df_vehicle_status['vehicle_status'].unique()
 
-####count values###
-values = df_vehicle_data.vehicle_status.value_counts()
+# count values
+values = df_vehicle_status.vehicle_status.value_counts()
 
-fig_pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
-
-# labels_capacity = ['In Time', 'Delayed', 'Idle', 'Unused']
-# values_capacity = [280, 120, rows_idle, rows_unused]
-# fig_pie_capacity = go.Figure(data=[go.Pie(labels=labels_capacity, values=values, hole=.3)])
-
-# Title pie chart
-annotations_2 = []
-annotations_2.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
-                        xanchor='left', yanchor='bottom',
-                        text='Vehicle Capacity',
-                        font=dict(family='Arial',
-                                  size=30,
-                                  color='rgb(37,37,37)'),
-                        showarrow=False))
-
-
-fig_pie_capacity.update_layout(annotations=annotations_2)
+pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
 
 
 # Initialize the app
@@ -439,14 +421,6 @@ layout = html.Div(
             # Business Goals
             dbc.Col(html.Div([
                 html.H1('Business Goals'),
-                dcc.Dropdown(
-                    id='page_controlling_radios',
-                    # options=[{'label': i, 'value': i} for i in labels_goals],
-                    # options=get_options(df['goals'].unique()),
-                    # multi=True,
-                    # value=[df['goals'].sort_values()[0]],
-                    className='stockselektor'),
-                html.Div(id='display-selected-values'),
                 dcc.Graph(id='graph-goals', figure=fig_goals)
             ], className='card'), width=True),
 
@@ -454,46 +428,67 @@ layout = html.Div(
             dbc.Col(html.Div([
                 html.H1('Costs'),
                 dcc.Dropdown(
-                    id='controlling-dropdown',
+                    id='dropdown-category',
+                    options=[{'label': option, 'value': option}
+                             for option in dropdown_options],
+                    value=list(dropdown_options.keys())[0],
+                    placeholder="Select vehicle category"),
+                dcc.Dropdown(
+                    id='id-dropdown',
                     options=[{'label': i, 'value': i}
-                             for i in df_table.vid.unique()],
-                    placeholder="Choose vehicle id",
-                ),
-                dcc.Graph(id='indicator-graphic', figure=fig_costs)
+                             for i in df_cost_data.vid.unique()],
+                    placeholder="Select vehicle id"),
+
+                html.Div(id='display-selected-values'),
+                dcc.Graph(id='costs-chart',
+                          figure=fig_costs
+                          ),
             ], className='card'), width=True),
         ]),
 
         html.Div(className='bottom-cards around',
                  children=[
-
                      dbc.Row([
                          # Carbon Footprint
                          dbc.Col(html.Div([
                              html.H1('Carbon Footprint'),
                              dcc.Graph(id='graph-carbon-footprint', figure=fig_carbon)
                          ], className='card'), width=True),
-
+                         # Kept delivery dates
+                         dbc.Col(html.Div([
+                            html.H1('Kept delivery dates'),
+                            dcc.Graph(id='graph-delivery-date', figure=fig_delivery_dates)
+                             ], className='card'), width=True),
+                         ]),
+                     dbc.Row([
                          # Vehicle capacity
                          dbc.Col(html.Div([
                              html.H1('Vehicle Capacity'),
                              dbc.Row([
                                  dbc.Col(html.Div([
-                                     dcc.Graph(figure=pie_capacity),
-                                     html.Div(id='table-output-container'),
-                                 ]),
-                                 ),
+                                     dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
+                                 ], className='card'), width=True),
                                  dbc.Col(html.Div([
                                      dcc.Checklist(
                                          id='page-controlling-radios-3',
                                          options=[{'label': i, 'value': i}
-                                                  for i in ['In time', 'Delayed', 'Idle', 'Unused']],
-                                         value=['In time']),
+                                                  for i in ['in time', 'delayed', 'maintenance', 'idle', 'unused']],
+                                         value=['in time', 'delayed', 'maintenance', 'idle', 'unused'],
+                                         ),
                                      dash_table.DataTable(
                                          id='table-for-capacity',
+                                         filter_action='native',
+                                         sort_action='native',
                                          style_table={
-                                             'maxHeight': '400px',
-                                             'overflowY': 'scroll'
+                                             'maxHeight': '',
+                                             'maxWidth': '',
+                                             'overflowY': '',
+
                                          },
+                                         data=[{}],
+                                         columns=[{'name': i, 'id': i} for i in
+                                                  df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
+                                         page_size=10,
                                          style_data={
                                              'whiteSpace': 'normal',
                                              'height': 'auto',
@@ -510,169 +505,14 @@ layout = html.Div(
                                              'fontSize': 13,
                                              'fontFamily': 'sans-serif'
                                          },
-                                         columns=[{'name': i, 'id': i} for i in df_table.columns],
-                                         data=df_table.to_dict('records')
-                                     ), ])
-                                 ),
+
+                                     ), ], className='card'), width=True),
                              ]),
 
                          ], className='card'), width=True)
                      ]),
-
-                     # html.H1('Kept Delivery Dates'),
-                     # html.Div([
-                     #     dcc.Graph(id='graph-delivery-date',
-                     #               config={'displayModeBar': False},
-                     #               animate=True)
-                     # ]),
-
-                 ]),
-                    html.Div(className='left part',
-                             children=[
-                                html.Div([
-                                    dcc.DatePickerRange(
-                                        id='controlling-date-picker-range',
-                                        min_date_allowed=dt(1995, 8, 5),
-                                        max_date_allowed=dt(2020, 6, 19),
-                                        initial_visible_month=dt(2020, 6, 5),
-                                        end_date=dt(2020, 6, 5).date()
-                                    ),
-                                    html.Div(id='output-container-date-picker-range')
-                                ]),
-
-                                html.Div([
-                                    dcc.Graph(id='graph-goals', figure=fig_goals)
-                                ],
-                                ),
-
-                                #html.H2('Kept delivery dates'),
-                                html.Div([
-                                    dcc.Graph(id='graph-delivery-date',
-                                              figure=fig_delivery_dates)
-                                ],
-                                    #style={'width': '25%', 'display': 'inline-block'}
-                                    ),
-
-                                html.Div([
-                                    dcc.Graph(id='graph-carbon-footprint', figure=fig_carbon)
-                                ],
-                                    style={'width': '25%', 'display': 'inline-block'})
-                             ]),
-                    html.Div(className='right part',
-                             children=[
-                                html.Div([
-                                    html.Div([
-                                        dcc.Dropdown(
-                                            id='controlling-dropdown',
-                                            options=[{'label': i, 'value': i}
-                                                     for i in df_table.vid.unique()],
-                                            placeholder="Choose vehicle id",
-                                        ),
-                                    ],
-                                        style={'width': '49%', 'display': 'inline-block'}),
-                                    dcc.Graph(id='indicator-graphic', figure=fig_costs)
-                                ]),
-
-                                # html.H2('Vehicle capacity'),
-                                html.Div([
-                                    dcc.Checklist(
-                                        id='controlling-checklist',
-                                        options=[{'label': i, 'value': i}
-                                                 for i in ['In time', 'Delayed', 'Idle', 'Unused']],
-                                        value=['In time']),
-                                    dash_table.DataTable(
-                                        id='table-for-capacity',
-                                        style_table={
-                                            'maxHeight': '400px',
-                                            'maxWidth': '800px',
-                                            'overflowY': 'scroll'
-                                        },
-                                        style_data={
-                                            'whiteSpace': 'normal',
-                                            'height': 'auto',
-                                            'align': 'right'
-                                        },
-                                        columns=[{'name': i, 'id': i} for i in df_table],
-                                        data=df_table.to_dict('records')
-                                    ),
-                                    dcc.Graph(figure=fig_pie_capacity, style={'width': '59%', 'margin': '0'}),
-                                    html.Div(id='table-output-container'),
-
-
-                                ]),
-                             ])
-
-                     ])
-
-
-# callback chart costs; still not working
-# @app.callback(
-#    dash.dependencies.Output('indicator-graphic', 'figure'),
-#    [dash.dependencies.Input('controlling-dropdown', 'value'),
-#     dash.dependencies.Input('page-controlling-radios-2', 'value')])
-# def update_graph(controlling_dropdown_name, controlling_radios_name):
-#    return {
-#        'data': [dict(
-#            x=column_name_dropdown['vid'] == x_data['value'],
-#            y=column_name_dropdown['vid'] == y_data['value'],
-#            mode='markers',
-#            marker={
-#                'size': 15,
-#                'opacity': 0.5,
-#                'line': {'width': 0.5, 'color': 'white'}
-#            }
-#        )],
-#        'layout': dict(
-#            xaxis={
-#                'title': controlling_dropdown_name,
-#                'type': 'fuel' if controlling_radios_name == 'fuel' else 'overall'
-#            },
-#            margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
-#            hovermode='closest'
-#        )
-#    }
-
-
-# callback chart goals; still not working
-# @app.callback(
-#    Output('graph-goals', 'figure'),
-#    [Input('page_controlling_radio', 'value')])
-# def update_graph_goals(selected_filter):
-#    trace1 = []
-#    df_sub = df
-#    for goals in selected_filter:
-#        trace1.append(go.Scatter(x=df_sub[df_sub['goals'] == goals].index,
-#                                 y=df_sub[df_sub['goals'] == goals]['value'],
-#                                 mode='lines',
-#                                 opacity=0.7,
-#                                 name=goals,
-#                                 textposition='bottom center'))
-#    traces = [trace1]
-#    data = [val for sublist in traces for val in sublist]
-#    figure = {'data': data,
-#              'layout': go.Layout(
-#                  colorway=["#5E0DAC", '#FF4F00', '#375CB1', '#FF7400', '#FFF400', '#FF0056'],
-#                  template='plotly_dark',
-#                  paper_bgcolor='rgba(0, 0, 0, 0)',
-#                  plot_bgcolor='rgba(0, 0, 0, 0)',
-#                  margin={'b': 15},
-#                  hovermode='x',
-#                  autosize=True,
-#                  title={'text': 'Business Goals', 'font': {'color': 'white'}, 'x': 0.5},
-#                  xaxis={'range': [df_sub.index.min(), df_sub.index.max()]},
-#              ),
-
-#              }
-
-#    return figure
-
-
-# callback fill dropdown with fleet_data values; working
-@app.callback(
-    Output('dd-output-container', 'children'),
-    [Input('controlling-dropdown', 'value')])
-def update_output(value):
-    return 'You have selected "{}"'.format(value)
+                 ])
+    ])
 
 
 # callback for date-picker

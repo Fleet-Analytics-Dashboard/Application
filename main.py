@@ -8,11 +8,8 @@ from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
-from apps.home import df_map_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 from apps.controlling import *
-
-
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
@@ -42,14 +39,13 @@ app.layout = html.Div([
 
             dbc.Nav(
                 [
-                    dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
-                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
-                    dbc.NavItem(dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
+                    dbc.NavItem(dbc.NavLink("Home", href="/")),
+                    dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
+                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
+                    dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
                 ],
                 pills=True,
-                className='nav-menu',
-                id='navbar',
-
+                className='nav-menu'
             ),
         ],
         className='header align-self-center'
@@ -61,66 +57,22 @@ app.layout = html.Div([
 
 server = app.server
 
-#####Callback navigation active page########
-
 
 # routing based on navigation
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
+        return home.layout
+    elif pathname == '/controlling':
         return controlling.layout
     elif pathname == '/downtimes':
         return downtimes.layout
-    elif pathname == '/vehicles-overview':
-        return home.layout
+    elif pathname == '/vehicles-tables':
+        return vehiclestables.layout
     else:
         return '404'
 
-
-#####Callback navigation active page########
-
-
-@app.callback(Output('-link', 'active'), [Input('url', 'pathname')])
-def set_page_1_active(pathname):
-    if pathname == '/':
-        active = True
-        return active
-
-@app.callback(Output('downtimes-link', 'active'), [Input('url', 'pathname')])
-def set_page_1_active(pathname):
-    if pathname == '/downtimes':
-        active = True
-        return active
-
-
-@app.callback(Output('vehicles-overview-link', 'active'), [Input('url', 'pathname')])
-def set_page_1_active(pathname):
-    if pathname == '/vehicles-overview':
-        active = True
-        return active
-
-
-
-# Overview view
-
-
-# Overview map to table filter
-
-@app.callback(
-    Output('vehicle-table-overview', 'data'),
-    [Input('mapbox-overview', 'clickData')])
-def create_table(selected_vehicle):
-    data = df_driver
-    if selected_vehicle is not None:
-        filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
-        data = filtered_df.to_dict("records")
-    return data
-
-# def create_downtimes_table(selected_status):
-#     if selected_status is not None:
-#         data = df_driver
-#     return data
 
 # Table function
 
@@ -169,6 +121,64 @@ def create_downtimes_table(selected_status):
     return data
 
 
+####Callback costs dropdown controlling-table###########
+@app.callback(
+    Output('id-dropdown', 'options'),
+    [Input('dropdown-category', 'value')]
+)
+def update_dropdown(option):
+    return [{'label': i, 'value': i} for i in dropdown_options[option]]
+
+
+#### Callback filter costs chart by vehicle id############
+@app.callback(
+    Output('costs-chart', 'figure'),
+    [Input('dropdown-category', 'value'),
+     Input('id-dropdown', 'value')])
+def update_chart(selected_id):
+    #filtered_df = df_cost_data[df_cost_data['vid'] == selected_id]
+    #print(filtered_df)
+    #figure = filtered_df.to_dict('records')
+    #dff = df_cost_data.loc[df_cost_data['vid'] == selected_id]
+    #return go.Scatter(x=x_data, y=filtered_df['total_cost'])
+    #for vid in selected_id:
+    traces = []
+    if selected_id is None:
+        filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
+        print(filtered_df)
+        go.Scatter(
+            x=x_data,
+            y=filtered_df['total_cost']
+        )
+    else:
+        filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
+        # filtered_df.values
+        # print(filtered_df)
+        traces.append(
+                go.Scatter(
+                    x=x_data,
+                    y=filtered_df['fuel_cost_total']
+                    )
+        )
+    figure = {'data': traces, 'layout': layout}
+    return figure
+
+
+####Callback checkboxes controlling-table###########
+
+@app.callback(
+    Output('table-for-capacity', 'data'),
+    [Input('page-controlling-radios-3', 'value')])
+def create_capacity_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_vehicle_data[df_vehicle_data["vehicle_status"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
 ####Callback radio buttons maintenance-status-table###########
 
 @app.callback(
@@ -183,7 +193,6 @@ def create_maintenance_table(selected_status):
         data = filtered_df.to_dict("records")
 
     return data
-
 
 ####Callback radio buttons accident-probability-table###########
 
