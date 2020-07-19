@@ -13,11 +13,13 @@ import dash_bootstrap_components as dbc
 
 # connect to database
 conn = connect()
+
 sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;"
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
+sql = "select vid, vehicel_type, fuel_type, seconds_at_speed_zero from cleaned_data_fleet_dna;"
 df_table = pd.read_sql_query(sql, conn)
 conn = None
-
-# df_table = pd.read_csv('cleaned-data-for-fleet-dna.csv')
 
 # df = pd.read_csv('../../batch-data/cleaned-data-for-fleet-dna.csv', index_col=0, parse_dates=True)
 # column_name_dropdown = fleet_data[['vid', 'vocation']]
@@ -25,10 +27,15 @@ conn = None
 # simulated data for the goals chart
 years = np.vstack((np.arange(2014, 2021),) * 4)
 y_data_revenue = np.random.normal(8, 1.5, 100)
+df_vehicle_data = df_vehicle_data.round(decimals=2)
+
+# simulated data for the goals chart
+years = np.vstack((np.arange(2014, 2021),)*4)
+y_data_revenue = np.random.normal(8, 1.5, 400)
 y_data_revenue.sort()
-y_data_profit = np.random.normal(7, 1.5, 100)
+y_data_profit = np.random.normal(7, 1.5, 400)
 y_data_profit.sort()
-y_data_liquidity = np.random.normal(7.5, 1.5, 100)
+y_data_liquidity = np.random.normal(7.5, 1.5, 400)
 y_data_liquidity.sort()
 y_data_goals = [y_data_revenue, y_data_profit, y_data_liquidity]
 names_goals = ['Revenue', 'Profit', 'Liquidity']
@@ -36,6 +43,9 @@ names_goals = ['Revenue', 'Profit', 'Liquidity']
 # regression
 # reg = LinearRegression().fit(np.vstack(df_goals_chart['X']), y_data_revenue)
 # df_goals_chart['bestfit'] = reg.predict(np.vstack(df_goals_chart['X']))
+y_data_goals_trendline = [[max(y_data_revenue)], [max(y_data_profit)], [max(y_data_liquidity)]]
+names_goals = ['Revenue', 'Profit', 'Liquidity']
+names_trendline = ['Trendline Revenue', 'Trendline Profit', 'Trendline Liquidity']
 
 
 # simulated data for the costs chart
@@ -55,11 +65,18 @@ y_data = np.array([
     [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
 ])
 
+# simulated data for delivery dates chart
+x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July',
+                   #'August', 'September', 'October', 'November', 'December'
+                   ])
+y_data_delivery = np.random.random_integers(400, 450, 900)
+y_data_kept_delivery = [y_data_delivery]
+
 # simulated data for the carbon footprint chart
 x_data_carbon = np.vstack((np.arange(2014, 2021),) * 4)
 y_data_carbon = np.random.normal(0.5, 0.1, 100)
 # y_data_carbon.sort()
-y_data_carbon = np.sort(y_data_carbon)[::-1]
+# y_data_carbon = np.sort(y_data_carbon)[::-1]
 y_data_carbon_footprint = [y_data_carbon]
 
 # bar chart goals
@@ -78,10 +95,11 @@ for i in range(0, 3):
                                    ),
                                    connectgaps=True,
                                    marker_color=colors_trend[i],
-                                   name=names_goals[i]
+                                   name=names_trendline[i]
                                    ))
 
 fig_goals.update_layout(
+    plot_bgcolor='white',
     xaxis=dict(
         showline=True,
         showgrid=False,
@@ -97,14 +115,14 @@ fig_goals.update_layout(
     ),
     xaxis_tickfont_size=14,
     yaxis=dict(
-        title='EUR (millions)',
+        title='Dollar (millions)',
         titlefont_size=16,
         tickfont_size=14,
     ),
-    legend=dict(
-        x=0,
-        y=1.0
-    ),
+    #legend=dict(
+    #    x=0,
+    #    y=1.0
+    #),
     barmode='group',
     bargap=0.15,  # gap between bars of adjacent location coordinates
     bargroupgap=0.1  # gap between bars of the same location coordinate
@@ -170,7 +188,7 @@ fig_carbon.update_layout(
         t=110,
     ),
 
-    showlegend=True,
+    showlegend=False,
     plot_bgcolor='white'
 )
 
@@ -185,6 +203,71 @@ annotations = [dict(xref='paper', yref='paper', x=0.0, y=1.05,
 # Title chart carbon
 
 fig_carbon.update_layout(annotations=annotations)
+
+# line chart kept delivery dates
+
+fig_delivery_dates = go.Figure()
+
+for i in range(0, 1):
+    fig_delivery_dates.add_trace(go.Scatter(
+        x=x_data_delivery,
+        y=y_data_kept_delivery[i], mode='lines+markers',
+        name='Kept delivery dates',
+        line=dict(color=colors[i], width=line_size[i]),
+        connectgaps=True
+    ))
+
+
+fig_delivery_dates.update_layout(
+    xaxis=dict(
+        showline=True,
+        showgrid=False,
+        showticklabels=True,
+        linecolor='rgb(204, 204, 204)',
+        linewidth=2,
+        ticks='outside',
+        tickfont=dict(
+            family='Arial',
+            size=12,
+            color='rgb(82, 82, 82)',
+        ),
+    ),
+    yaxis=dict(
+        showgrid=False,
+        zeroline=False,
+        showline=False,
+        showticklabels=True,
+        title='kept delivery date/month',
+        titlefont_size=16,
+        tickfont_size=14,
+
+    ),
+    legend=dict(
+        x=0,
+        y=1.0),
+    autosize=False,
+    margin=dict(
+        autoexpand=False,
+        l=100,
+        r=20,
+        t=110,
+    ),
+
+    showlegend=False,
+    plot_bgcolor='white'
+)
+annotations_3 = []
+
+# Title chart delivery dates
+annotations_3.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+                        xanchor='left', yanchor='bottom',
+                        text='Kept delivery dates',
+                        font=dict(family='Arial',
+                                  size=30,
+                                  color='rgb(37,37,37)'),
+                        showarrow=False))
+
+fig_delivery_dates.update_layout(annotations=annotations_3)
 
 # line chart costs
 fig_costs = go.Figure()
@@ -251,7 +334,7 @@ for y_trace, label, color in zip(y_data, labels_costs, colors):
     # labeling the right_side of the plot
     annotations.append(dict(xref='paper', x=0.95, y=y_trace[11],
                             xanchor='left', yanchor='middle',
-                            text='{} MEUR'.format(y_trace[11]),
+                            text='{} $'.format(y_trace[11]),
                             font=dict(family='Arial',
                                       size=14),
                             showarrow=False))
@@ -272,6 +355,41 @@ fig_costs.update_layout(annotations=annotations)
 labels_capacity = ['In Time', 'Delayed', 'Downtime', 'Unused']
 values_capacity = [20, 30, 10, 40]
 pie_capacity = go.Figure(data=[go.Pie(labels=labels_capacity, values=values_capacity, hole=.3)])
+
+###New dataframe for filter result####
+df_vehicle_status = df_vehicle_data.copy()
+
+###Array with accepted values###
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
+
+###filter####
+df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
+
+####use unique values as labels###
+labels = df_vehicle_status['vehicle_status'].unique()
+
+####count values###
+values = df_vehicle_data.vehicle_status.value_counts()
+
+fig_pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
+
+# labels_capacity = ['In Time', 'Delayed', 'Idle', 'Unused']
+# values_capacity = [280, 120, rows_idle, rows_unused]
+# fig_pie_capacity = go.Figure(data=[go.Pie(labels=labels_capacity, values=values, hole=.3)])
+
+# Title pie chart
+annotations_2 = []
+annotations_2.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+                        xanchor='left', yanchor='bottom',
+                        text='Vehicle Capacity',
+                        font=dict(family='Arial',
+                                  size=30,
+                                  color='rgb(37,37,37)'),
+                        showarrow=False))
+
+
+fig_pie_capacity.update_layout(annotations=annotations_2)
+
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -408,8 +526,83 @@ layout = html.Div(
                      #               animate=True)
                      # ]),
 
-                 ])
-    ])
+                 ]),
+                    html.Div(className='left part',
+                             children=[
+                                html.Div([
+                                    dcc.DatePickerRange(
+                                        id='controlling-date-picker-range',
+                                        min_date_allowed=dt(1995, 8, 5),
+                                        max_date_allowed=dt(2020, 6, 19),
+                                        initial_visible_month=dt(2020, 6, 5),
+                                        end_date=dt(2020, 6, 5).date()
+                                    ),
+                                    html.Div(id='output-container-date-picker-range')
+                                ]),
+
+                                html.Div([
+                                    dcc.Graph(id='graph-goals', figure=fig_goals)
+                                ],
+                                ),
+
+                                #html.H2('Kept delivery dates'),
+                                html.Div([
+                                    dcc.Graph(id='graph-delivery-date',
+                                              figure=fig_delivery_dates)
+                                ],
+                                    #style={'width': '25%', 'display': 'inline-block'}
+                                    ),
+
+                                html.Div([
+                                    dcc.Graph(id='graph-carbon-footprint', figure=fig_carbon)
+                                ],
+                                    style={'width': '25%', 'display': 'inline-block'})
+                             ]),
+                    html.Div(className='right part',
+                             children=[
+                                html.Div([
+                                    html.Div([
+                                        dcc.Dropdown(
+                                            id='controlling-dropdown',
+                                            options=[{'label': i, 'value': i}
+                                                     for i in df_table.vid.unique()],
+                                            placeholder="Choose vehicle id",
+                                        ),
+                                    ],
+                                        style={'width': '49%', 'display': 'inline-block'}),
+                                    dcc.Graph(id='indicator-graphic', figure=fig_costs)
+                                ]),
+
+                                # html.H2('Vehicle capacity'),
+                                html.Div([
+                                    dcc.Checklist(
+                                        id='controlling-checklist',
+                                        options=[{'label': i, 'value': i}
+                                                 for i in ['In time', 'Delayed', 'Idle', 'Unused']],
+                                        value=['In time']),
+                                    dash_table.DataTable(
+                                        id='table-for-capacity',
+                                        style_table={
+                                            'maxHeight': '400px',
+                                            'maxWidth': '800px',
+                                            'overflowY': 'scroll'
+                                        },
+                                        style_data={
+                                            'whiteSpace': 'normal',
+                                            'height': 'auto',
+                                            'align': 'right'
+                                        },
+                                        columns=[{'name': i, 'id': i} for i in df_table],
+                                        data=df_table.to_dict('records')
+                                    ),
+                                    dcc.Graph(figure=fig_pie_capacity, style={'width': '59%', 'margin': '0'}),
+                                    html.Div(id='table-output-container'),
+
+
+                                ]),
+                             ])
+
+                     ])
 
 
 # callback chart costs; still not working
