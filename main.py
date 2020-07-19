@@ -130,30 +130,21 @@ def update_dropdown(option):
     return [{'label': i, 'value': i} for i in dropdown_options[option]]
 
 
-#### Callback filter costs chart by vehicle id############
-'''@app.callback(
+'''#### Callback filter costs chart by vehicle id############
+@app.callback(
     Output('costs-chart', 'figure'),
     [Input('dropdown-category', 'value'),
      Input('id-dropdown', 'value')])
 def update_chart(selected_id):
-    #filtered_df = df_cost_data[df_cost_data['vid'] == selected_id]
-    #print(filtered_df)
-    #figure = filtered_df.to_dict('records')
-    #dff = df_cost_data.loc[df_cost_data['vid'] == selected_id]
-    #return go.Scatter(x=x_data, y=filtered_df['total_cost'])
-    #for vid in selected_id:
     traces = []
     if selected_id is None:
         filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
-        print(filtered_df)
         go.Scatter(
             x=x_data,
             y=filtered_df['total_cost']
         )
     else:
         filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
-        # filtered_df.values
-        # print(filtered_df)
         traces.append(
                 go.Scatter(
                     x=x_data,

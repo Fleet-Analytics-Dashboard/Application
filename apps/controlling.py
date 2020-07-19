@@ -25,6 +25,14 @@ df_cost_data = pd.read_sql_query(sql, conn)
 df_cost_data = df_cost_data.round(decimals=2)
 conn = None
 
+# colors
+colors_1 = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
+colors_2 = ['rgb(171,209,201)', 'rgb(223,220,229)', 'rgb(219,176,74)', 'rgb(151,179,208)']
+colors_3 = ['rgb(255,221,226)', 'rgb(250,160,148)', 'rgb(158,217,204)', 'rgb(0,140,118)']
+
+colors_trend_1 = ['rgb(0,255,255)', 'rgb(0,0,139)', 'rgb(0,255,0)']
+colors_trend = ['rgb(105,102,103)', 'rgb(105,102,103)', 'rgb(105,102,103)']
 
 ########### simulated data for the goals chart ###########
 # goals data is company data/year; data in time range 2018-2021
@@ -41,8 +49,6 @@ names_goals = ['Revenue', 'Profit', 'Liquidity']
 
 ############ data for the costs chart ##############
 np.random.seed(1)
-colors = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']
-colors_trend = ['rgb(0,255,0)', 'rgb(0,0,139)', 'rgb(0,255,255)']
 labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
 line_size = [2, 2, 4, 2]
@@ -109,7 +115,7 @@ for i in range(0, 3):
                                        width=3,
                                    ),
                                    connectgaps=True,
-                                   marker_color=colors_trend[i],
+                                   marker_color=colors[i],
                                    name=names_goals[i]
                                    ))
 
@@ -283,13 +289,6 @@ for i in range(0, 4):
         line=dict(color=colors[i], width=line_size[i]),
         connectgaps=True,
         ))
-# endpoints
-    fig_costs.add_trace(go.Scatter(
-        x=[x_data[0], x_data[4]],
-        y=[y_data_cost[i][0], y_data_cost[i][-1]],
-        mode='markers',
-        marker=dict(color=colors[i], size=mode_size[i])
-    ))
 
 
 fig_costs.update_layout(
@@ -371,6 +370,7 @@ labels = df_vehicle_status['vehicle_status'].unique()
 values = df_vehicle_status.vehicle_status.value_counts()
 
 pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
+pie_capacity.update_traces(marker=dict(colors=colors))
 
 
 # Initialize the app
@@ -432,18 +432,20 @@ layout = html.Div(
                     options=[{'label': option, 'value': option}
                              for option in dropdown_options],
                     value=list(dropdown_options.keys())[0],
-                    placeholder="Select vehicle category"),
+                    placeholder="Select vehicle category",
+                ),
                 dcc.Dropdown(
                     id='id-dropdown',
                     options=[{'label': i, 'value': i}
                              for i in df_cost_data.vid.unique()],
-                    placeholder="Select vehicle id"),
+                    placeholder="Select vehicle id",
+                ),
 
                 html.Div(id='display-selected-values'),
                 dcc.Graph(id='costs-chart',
                           figure=fig_costs
                           ),
-            ], className='card'), width=True),
+            ], style=dict(display='flex'), className='card'), width=True),
         ]),
 
         html.Div(className='bottom-cards around',
