@@ -1,7 +1,7 @@
 
 def cleaning (df):
     # create new dataframe with all relevant columns and add all the IDs and vehicle information
-    new = df[['vid', 'did', 'pid', 'class_id', 'voc_id', 'type_id', 'drive_id', 'fuel_id', 'day_id']].copy()
+    new = df[['vid', 'pid', 'class_id', 'voc_id', 'type_id', 'drive_id', 'fuel_id', 'day_id']].copy()
 
     # replace IDs for 'voc_id', 'type_id', 'drive_id', 'fuel_id' with their meaning
     # voc_id --> Vocation

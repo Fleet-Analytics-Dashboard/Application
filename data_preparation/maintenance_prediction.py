@@ -1,4 +1,5 @@
 import pandas as pd
+import xgboost as xgb
 
 
 def get_sensor_data(d_df):
@@ -29,12 +30,31 @@ def extract_prediction_data(d_df):
     pred = d_df.copy()
     pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid')
 
-    return pred
+    # remove the last day_id for each vehicle from driving Data
+    d_df = d_df.append(pred)
+    d_df = d_df.drop_duplicates(['vid', 'day_id'], keep=False)
+
+    return pred, d_df
+
+
+def data_preparation(d_df):
+    # encode all cathegorical values with one hot encoding
+    # variables to encode: 'vid', 'pid'
+    d_df['vid'] = pd.Categorical(d_df['vid'])
+    d_df['pid'] = pd.Categorical(d_df['pid'])
+    d_df = pd.get_dummies(d_df, ['vid', 'pid'])
+
+    # Separate the target variable maintenance_need from the rest of the variables
+    x = d_df.drop('maintenance_need', axis=1)
+    y = d_df['maintenance_need']
+
+    return x, y
 
 
 def predict_maintenance(d_df, v_df):
 
     return d_df
+
 
 
 # def calculate_maintenance(dist, decel):

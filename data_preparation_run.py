@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
 import data_preparation.data_cleaning as data_cleaning
-import data_preparation.simulation as simulation
 import data_preparation.maintenance_prediction as m_prediction
-
-from database_connection import connect, return_engine
+import data_preparation.simulation as simulation
 
 # connect to database and write raw data into dataframe
 # conn = connect()
@@ -48,6 +46,9 @@ driving_data = simulation.fuel_cost(vehicle_data, driving_data)
 # simulate cost per vehicle
 vehicle_cost_data = simulation.cost_per_vehicle(vehicle_data, driving_data)
 
+# drop the month out of driving_data to avoid problems when training XGBoost
+driving_data = driving_data.drop('month', axis=1)
+
 # generate a licence plate for each vehicel
 vehicle_data = simulation.generate_licence_plate(vehicle_data)
 
@@ -56,7 +57,13 @@ vehicle_data = simulation.generate_licence_plate(vehicle_data)
 driving_data = m_prediction.get_sensor_data(driving_data)
 
 # extract prediction data for predicting a final vehicle status later
-predict = m_prediction.extract_prediction_data(driving_data)
+predict, driving_data = m_prediction.extract_prediction_data(driving_data)
+
+# prepare data for training the model
+x, y = m_prediction.data_preparation(driving_data)
+
+# split into training and testing data
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.2, random_state=1)
 
 #------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
