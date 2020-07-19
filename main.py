@@ -39,13 +39,13 @@ app.layout = html.Div([
 
             dbc.Nav(
                 [
-                    dbc.NavItem(dbc.NavLink("Home", href="/")),
-                    dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
-                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
-                    dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+                    dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
+                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
+                    dbc.NavItem(dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
                 ],
                 pills=True,
-                className='nav-menu'
+                className='nav-menu',
+                id='navbar',
             ),
         ],
         className='header align-self-center'
@@ -63,15 +63,61 @@ server = app.server
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return home.layout
-    elif pathname == '/controlling':
         return controlling.layout
     elif pathname == '/downtimes':
         return downtimes.layout
-    elif pathname == '/vehicles-tables':
-        return vehiclestables.layout
+    elif pathname == '/vehicles-overview':
+        return home.layout
     else:
         return '404'
+
+
+
+
+
+#####Callback navigation active page########
+
+
+@app.callback(Output('-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/':
+        active = True
+        return active
+
+@app.callback(Output('downtimes-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/downtimes':
+        active = True
+        return active
+
+
+@app.callback(Output('vehicles-overview-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/vehicles-overview':
+        active = True
+        return active
+
+
+
+# Overview view
+
+
+# Overview map to table filter
+
+@app.callback(
+    Output('vehicle-table-overview', 'data'),
+    [Input('mapbox-overview', 'clickData')])
+def create_table(selected_vehicle):
+    data = df_driver
+    if selected_vehicle is not None:
+        filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
+        data = filtered_df.to_dict("records")
+    return data
+
+# def create_downtimes_table(selected_status):
+#     if selected_status is not None:
+#         data = df_driver
+#     return data
 
 
 # Table function
