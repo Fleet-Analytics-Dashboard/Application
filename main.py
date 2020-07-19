@@ -131,7 +131,7 @@ def update_dropdown(option):
 
 
 #### Callback filter costs chart by vehicle id############
-@app.callback(
+'''@app.callback(
     Output('costs-chart', 'figure'),
     [Input('dropdown-category', 'value'),
      Input('id-dropdown', 'value')])
@@ -161,7 +161,7 @@ def update_chart(selected_id):
                     )
         )
     figure = {'data': traces, 'layout': layout}
-    return figure
+    return figure'''
 
 
 ####Callback checkboxes controlling-table###########
