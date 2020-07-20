@@ -241,7 +241,7 @@ def create_maintenance_table(selected_status):
         data = selected_status.to_dict("records")
 
     else:
-        filtered_df = df_maintenance_status[df_maintenance_status["maintenance"].isin(selected_status)]
+        filtered_df = df_maintenance_status[df_maintenance_status["scheduled_maintenance"].isin(selected_status)]
         data = filtered_df.to_dict("records")
 
     return data

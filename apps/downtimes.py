@@ -30,12 +30,12 @@ df_vehicle_data = df_vehicle_data.round(decimals=2)
 
 df_maintenance_status = df_vehicle_data.copy()
 conditions = [
-    (df_vehicle_data['maintenance'] < 50),
-    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 95),
-    (df_vehicle_data['maintenance'] >= 95)]
+    (df_vehicle_data['scheduled_maintenance'] >= 8),
+    (df_vehicle_data['scheduled_maintenance'] < 8) & (df_vehicle_data['scheduled_maintenance'] > 1),
+    (df_vehicle_data['scheduled_maintenance'] <= 1)]
 choices = ['No need', 'Soon', 'Need']
 
-df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
+df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, default='null')
 
 ######## create random date############
 
@@ -86,10 +86,10 @@ pie1.update_traces(marker=dict(colors=colors))
 ############################## Need for Maintenance graph###################################
 
 ####use unique values as labels###
-labels = df_maintenance_status['maintenance'].unique()
+labels = df_maintenance_status['scheduled_maintenance'].unique()
 
 ####count values###
-values = df_maintenance_status.maintenance.value_counts()
+values = df_maintenance_status.scheduled_maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 pie2.update_traces(marker=dict(colors=colors))
@@ -334,7 +334,7 @@ layout = html.Div(
                                     filter_action='native',
                                     sort_action='native',
                                     columns=[{'name': i, 'id': i} for i in
-                                             df_maintenance_status.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_maintenance_status.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -388,7 +388,7 @@ layout = html.Div(
                                     sort_action='native',
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in
-                                             df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -490,7 +490,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -526,7 +526,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -561,7 +561,7 @@ layout = html.Div(
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
