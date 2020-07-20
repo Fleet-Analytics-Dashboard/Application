@@ -48,6 +48,7 @@ names_goals = ['Revenue', 'Profit', 'Liquidity']
 
 
 ############ data for the costs chart ##############
+ids = set(df_cost_data['vid'])
 np.random.seed(1)
 labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
@@ -170,7 +171,7 @@ for i in range(0, 1):
         x=x_data_carbon[i],
         y=y_data_carbon_footprint[i], mode='lines+markers',
         name='Carbon Footprint',
-        line=dict(color=colors[i], width=line_size[i]),
+        line=dict(color=colors[1], width=line_size[i]),
         connectgaps=True,
     ))
 
@@ -234,7 +235,7 @@ for i in range(0, 1):
         x=x_data_delivery,
         y=y_data_kept_delivery[i], mode='lines+markers',
         name='Kept delivery dates',
-        line=dict(color=colors[i], width=line_size[i]),
+        line=dict(color=colors[3], width=line_size[i]),
         connectgaps=True
     ))
 
@@ -427,25 +428,37 @@ layout = html.Div(
             # Costs
             dbc.Col(html.Div([
                 html.H1('Costs'),
-                dcc.Dropdown(
+                html.Div([
+                    dcc.Dropdown(
                     id='dropdown-category',
                     options=[{'label': option, 'value': option}
                              for option in dropdown_options],
                     value=list(dropdown_options.keys())[0],
                     placeholder="Select vehicle category",
-                ),
-                dcc.Dropdown(
-                    id='id-dropdown',
-                    options=[{'label': i, 'value': i}
-                             for i in df_cost_data.vid.unique()],
-                    placeholder="Select vehicle id",
-                ),
+                    ),
+                    dcc.Dropdown(
+                        id='id-dropdown',
+                        options=[{'value': x, 'label': x} for x in ids],
+                        multi=True, value=['1', '2', '3'],
+                        placeholder="Select vehicle id",
+                    ),
+                    dcc.Dropdown(id='memory-field', options=[
+                        {'value': 'fuel_cost_total', 'label': 'Fuel Cost'},
+                        {'value': 'maintenance_cost', 'label': 'Maintenance cost'},
+                        {'value': 'insurance_cost', 'label': 'Insurance cost'},
+                        {'value': 'total_cost', 'label': 'Total costs'}
+                    ], value='total_cost'),
+                ], className='dropdown-alignment'),
+                dcc.Store(id='memory-output'),
 
-                html.Div(id='display-selected-values'),
-                dcc.Graph(id='costs-chart',
-                          figure=fig_costs
-                          ),
-            ], style=dict(display='flex'), className='card'), width=True),
+
+                html.Div([
+                    dcc.Graph(id='costs-chart',
+                          #figure=fig_costs
+                    ),
+                ]),
+
+            ], className='card'), width=True),
         ]),
 
         html.Div(className='bottom-cards around',

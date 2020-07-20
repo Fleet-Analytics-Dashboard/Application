@@ -148,6 +148,23 @@ h4 {
     margin: 0 auto;
 }
 
+.dropdown-alignment {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: baseline;
+    flex: auto;
+    width: 100% !important;
+}
+
+/*
+.dropdown-alignment div {
+    width: 100% !important;
+}*/
+
+
 .data-picker {
     margin-bottom: 12px;
     display: flex;
