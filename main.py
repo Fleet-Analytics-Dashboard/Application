@@ -4,6 +4,8 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
+from dash.exceptions import PreventUpdate
+import collections
 from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
@@ -24,6 +26,9 @@ app = dash.Dash(__name__,
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"}
                 ]
                 )
+
+# colors theme
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
 
 # navigation
 app.layout = html.Div([
@@ -176,29 +181,39 @@ def update_dropdown(option):
     return [{'label': i, 'value': i} for i in dropdown_options[option]]
 
 
-'''#### Callback filter costs chart by vehicle id############
+#### Callback filter costs chart by vehicle id############
+@app.callback(Output('memory-output', 'data'),
+              [Input('id-dropdown', 'value')])
+def filter_id(id_selected):
+    if not id_selected:
+        return df_cost_data.to_dict('records')
+    filtered = df_cost_data.query('vid in @id_selected')
+    return filtered.to_dict('records')
+
+
 @app.callback(
     Output('costs-chart', 'figure'),
-    [Input('dropdown-category', 'value'),
-     Input('id-dropdown', 'value')])
-def update_chart(selected_id):
-    traces = []
-    if selected_id is None:
-        filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
-        go.Scatter(
-            x=x_data,
-            y=filtered_df['total_cost']
-        )
-    else:
-        filtered_df = df_cost_data[df_cost_data['vid'] == 'value']
-        traces.append(
-                go.Scatter(
-                    x=x_data,
-                    y=filtered_df['fuel_cost_total']
-                    )
-        )
-    figure = {'data': traces, 'layout': layout}
-    return figure'''
+    [Input('memory-output', 'data'),
+     Input('memory-field', 'value')])
+def on_data_set_graph(data, field):
+    if data is None:
+        raise PreventUpdate
+
+    aggregation = collections.defaultdict(
+        lambda: collections.defaultdict(list)
+    )
+
+    for row in data:
+        a = aggregation[row['vid']]
+        a['name'] = row['vid']
+        a['mode'] = 'lines+markers'
+
+        a['x'].append(row['month'])
+        a['y'].append(row[field])
+
+    return {
+        'data': [y for y in aggregation.values()]
+    }
 
 
 ####Callback checkboxes controlling-table###########

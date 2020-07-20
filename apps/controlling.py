@@ -48,6 +48,7 @@ names_goals = ['Revenue', 'Profit', 'Liquidity']
 
 
 ############ data for the costs chart ##############
+ids = set(df_cost_data['vid'])
 np.random.seed(1)
 labels_costs = ['Overall', 'Fuel', 'Maintenance', 'Insurance']
 mode_size = [8, 8, 12, 8]
@@ -170,7 +171,7 @@ for i in range(0, 1):
         x=x_data_carbon[i],
         y=y_data_carbon_footprint[i], mode='lines+markers',
         name='Carbon Footprint',
-        line=dict(color=colors[i], width=line_size[i]),
+        line=dict(color=colors[1], width=line_size[i]),
         connectgaps=True,
     ))
 
@@ -234,7 +235,7 @@ for i in range(0, 1):
         x=x_data_delivery,
         y=y_data_kept_delivery[i], mode='lines+markers',
         name='Kept delivery dates',
-        line=dict(color=colors[i], width=line_size[i]),
+        line=dict(color=colors[3], width=line_size[i]),
         connectgaps=True
     ))
 
@@ -358,7 +359,7 @@ fig_costs.update_layout(annotations=annotations)
 df_vehicle_status = df_vehicle_data.copy()
 
 # array with accepted values
-accepted_vehicle_status_array = ['in time', 'delayed', 'unused', 'maintenance', 'idle']
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
 
 # filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
@@ -427,25 +428,36 @@ layout = html.Div(
             # Costs
             dbc.Col(html.Div([
                 html.H1('Costs'),
-                dcc.Dropdown(
+                html.Div([
+                    dcc.Dropdown(
                     id='dropdown-category',
                     options=[{'label': option, 'value': option}
                              for option in dropdown_options],
                     value=list(dropdown_options.keys())[0],
                     placeholder="Select vehicle category",
-                ),
-                dcc.Dropdown(
-                    id='id-dropdown',
-                    options=[{'label': i, 'value': i}
-                             for i in df_cost_data.vid.unique()],
-                    placeholder="Select vehicle id",
-                ),
+                    ),
+                    dcc.Dropdown(
+                        id='id-dropdown',
+                        options=[{'value': x, 'label': x} for x in ids],
+                        multi=True, value=['1', '2', '3'],
+                        placeholder="Select vehicle id",
+                    ),
+                    dcc.Dropdown(id='memory-field', options=[
+                        {'value': 'fuel_cost_total', 'label': 'Fuel Cost'},
+                        {'value': 'maintenance_cost', 'label': 'Maintenance cost'},
+                        {'value': 'insurance_cost', 'label': 'Insurance cost'},
+                        {'value': 'total_cost', 'label': 'Total costs'}
+                    ], value='total_cost'),
+                ], className='dropdown-alignment'),
+                dcc.Store(id='memory-output'),
 
-                html.Div(id='display-selected-values'),
-                dcc.Graph(id='costs-chart',
-                          figure=fig_costs
-                          ),
-            ], style=dict(display='flex'), className='card'), width=True),
+
+                html.Div([
+                    dcc.Graph(id='costs-chart',
+                    ),
+                ]),
+
+            ], className='card'), width=True),
         ]),
 
         html.Div(className='bottom-cards around',
@@ -465,19 +477,20 @@ layout = html.Div(
                      dbc.Row([
                          # Vehicle capacity
                          dbc.Col(html.Div([
-                             html.H1('Vehicle Capacity'),
-                             dbc.Row([
-                                 dbc.Col(html.Div([
-                                     dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
+                                 html.H1('Vehicle Capacity'),
+                                 dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
                                  ], className='card'), width=True),
-                                 dbc.Col(html.Div([
-                                     dcc.Checklist(
+
+                         # Capacity overview pro vehicle
+                         dbc.Col(html.Div([
+                                 html.H1('Capacity Overview'),
+                                 dcc.Checklist(
                                          id='page-controlling-radios-3',
                                          options=[{'label': i, 'value': i}
                                                   for i in ['in time', 'delayed', 'maintenance', 'idle', 'unused']],
                                          value=['in time', 'delayed', 'maintenance', 'idle', 'unused'],
                                          ),
-                                     dash_table.DataTable(
+                                 dash_table.DataTable(
                                          id='table-for-capacity',
                                          filter_action='native',
                                          sort_action='native',
@@ -509,9 +522,6 @@ layout = html.Div(
                                          },
 
                                      ), ], className='card'), width=True),
-                             ]),
-
-                         ], className='card'), width=True)
                      ]),
                  ])
     ])

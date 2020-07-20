@@ -19,6 +19,9 @@ sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
+# colors theme
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
+
 df_vehicle_data = df_vehicle_data.round(decimals=2)
 
 ######## Convert maintenance score to maintenance status############
@@ -56,6 +59,7 @@ labels = df_vehicle_status['vehicle_status'].unique()
 values = df_vehicle_status.vehicle_status.value_counts()
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie1.update_traces(marker=dict(colors=colors))
 
 
 
@@ -69,6 +73,7 @@ labels = df_maintenance_status['maintenance'].unique()
 values = df_maintenance_status.maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie2.update_traces(marker=dict(colors=colors))
 
 
 
@@ -79,6 +84,7 @@ labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
 
 pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
+pie3.update_traces(marker=dict(colors=colors))
 
 ####################### Mapbox ###########################
 # mapbox_access_token = open(".mapbox_token").read()
