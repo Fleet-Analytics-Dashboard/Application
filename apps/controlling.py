@@ -359,7 +359,7 @@ fig_costs.update_layout(annotations=annotations)
 df_vehicle_status = df_vehicle_data.copy()
 
 # array with accepted values
-accepted_vehicle_status_array = ['in time', 'delayed', 'unused', 'maintenance', 'idle']
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
 
 # filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
@@ -454,7 +454,6 @@ layout = html.Div(
 
                 html.Div([
                     dcc.Graph(id='costs-chart',
-                          #figure=fig_costs
                     ),
                 ]),
 
@@ -478,19 +477,20 @@ layout = html.Div(
                      dbc.Row([
                          # Vehicle capacity
                          dbc.Col(html.Div([
-                             html.H1('Vehicle Capacity'),
-                             dbc.Row([
-                                 dbc.Col(html.Div([
-                                     dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
+                                 html.H1('Vehicle Capacity'),
+                                 dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
                                  ], className='card'), width=True),
-                                 dbc.Col(html.Div([
-                                     dcc.Checklist(
+
+                         # Capacity overview pro vehicle
+                         dbc.Col(html.Div([
+                                 html.H1('Capacity Overview'),
+                                 dcc.Checklist(
                                          id='page-controlling-radios-3',
                                          options=[{'label': i, 'value': i}
                                                   for i in ['in time', 'delayed', 'maintenance', 'idle', 'unused']],
                                          value=['in time', 'delayed', 'maintenance', 'idle', 'unused'],
                                          ),
-                                     dash_table.DataTable(
+                                 dash_table.DataTable(
                                          id='table-for-capacity',
                                          filter_action='native',
                                          sort_action='native',
@@ -522,9 +522,6 @@ layout = html.Div(
                                          },
 
                                      ), ], className='card'), width=True),
-                             ]),
-
-                         ], className='card'), width=True)
                      ]),
                  ])
     ])

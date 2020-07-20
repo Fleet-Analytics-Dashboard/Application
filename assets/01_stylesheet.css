@@ -159,10 +159,14 @@ h4 {
     width: 100% !important;
 }
 
-/*
-.dropdown-alignment div {
+
+.dropdown-alignment > div {
     width: 100% !important;
-}*/
+}
+
+#page-controlling-radios-3 > label {
+    margin-right: 50px;
+}
 
 
 .data-picker {
@@ -201,6 +205,19 @@ h4 {
 .dash-graph {
     margin-bottom: 24px;
 }
+
+#page-downtimes-radios-1 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-2 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-3 > label {
+    margin-right: 10px;
+}
+
 
 /* VEHICLES TABLES */
 .vehiclestables-content {
