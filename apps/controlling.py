@@ -564,8 +564,8 @@ layout = html.Div(
                                      dcc.Checklist(
                                          id='page-controlling-radios-3',
                                          options=[{'label': i, 'value': i}
-                                                  for i in ['on time', 'delayed', 'maintenance', 'idle', 'unused']],
-                                         value=['on time', 'delayed', 'maintenance', 'idle', 'unused'],
+                                                  for i in ['on time', 'delayed', 'maintenance', 'idle', 'unused', 'accident']],
+                                         value=['on time', 'delayed', 'maintenance', 'idle', 'unused', 'accident'],
                                          ),
                                      dash_table.DataTable(
                                          id='table-for-capacity',
