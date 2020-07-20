@@ -23,6 +23,9 @@ df_vehicle_costs = df_vehicle_costs.round(decimals=2)
 sql = "select * from vehicle_cost_data"
 df_cost_data = pd.read_sql_query(sql, conn)
 df_cost_data = df_cost_data.round(decimals=2)
+sql = "select * from driving_data"
+df_driving_data = pd.read_sql_query(sql, conn)
+df_driving_data = df_driving_data.round(decimals=2)
 conn = None
 
 # colors
@@ -99,6 +102,8 @@ y_data_carbon_footprint = [y_data_carbon]
 x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 y_data_delivery = np.random.random_integers(400, 450, 900)
 y_data_kept_delivery = [y_data_delivery]
+
+
 
 ########## goals bar chart ############
 fig_goals = go.Figure()
@@ -358,7 +363,7 @@ fig_costs.update_layout(annotations=annotations)
 df_vehicle_status = df_vehicle_data.copy()
 
 # array with accepted values
-accepted_vehicle_status_array = ['in time', 'delayed', 'unused', 'maintenance', 'idle']
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
 
 # filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
@@ -371,6 +376,37 @@ values = df_vehicle_status.vehicle_status.value_counts()
 
 pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
 pie_capacity.update_traces(marker=dict(colors=colors))
+
+
+########## calculation for title cards ############
+
+    ##Cost Juli
+
+df_cost_juli = df_cost_data.groupby(['month']).sum()
+df_cost_juli = df_cost_juli.loc['07_jul']
+df_cost_juli = df_cost_juli.round(decimals=2)
+
+df_cost_juni = df_cost_data.groupby(['month']).sum()
+df_cost_juni = df_cost_juni.loc['06_jun']
+df_cost_juni = df_cost_juni.round(decimals=2)
+
+cost_change = (df_cost_juli['total_cost'] / df_cost_juni['total_cost'])-1
+cost_change = cost_change*100
+cost_change = cost_change.round(decimals=2)
+
+    ##vehicle_active + total
+
+df_vehicle_active = values.loc[['delayed', 'idle', 'on time']]
+df_vehicle_active = df_vehicle_active.sum()
+
+df_vehicle_total = values.iloc[0:4]
+df_vehicle_total = df_vehicle_total.sum()
+
+    ## occupancy rate
+
+occupancy_rate = values.loc[['delayed', 'idle', 'on time', 'maintenance']]
+occupancy_rate = occupancy_rate.sum()
+occupancy_rate = (occupancy_rate/df_vehicle_total)*100
 
 
 # Initialize the app
@@ -416,6 +452,53 @@ layout = html.Div(
                 html.Div(id='output-container-date-picker-range')
             ], className='data-picker',
         ),
+
+        html.Div(className='top-cards around',
+                children=[
+                    dbc.Row([
+                         # Cost card
+                        dbc.Col(html.Div([
+                        html.H5('Cost'),
+                        html.H1(df_cost_juli['total_cost'], '$'),
+                        html.H4(cost_change, "%")
+                        ], className='card'), width=True),
+                        ]),
+                    dbc.Row([
+                        # Vehicle active
+                        dbc.Col(html.Div([
+                            html.H5('Active Vehicle'),
+                            html.H1(df_vehicle_active),
+                        ], className='card'), width=True),
+                    ]),
+                    dbc.Row([
+                        # Vehicle maintenance
+                        dbc.Col(html.Div([
+                            html.H5('Vehicle in Maintenance'),
+                            html.H1(values['maintenance']),
+                        ], className='card'), width=True),
+                    ]),
+                    dbc.Row([
+                        # Vehicle unused
+                        dbc.Col(html.Div([
+                            html.H5('Unused Vehicle'),
+                            html.H1(values['unused']),
+                        ], className='card'), width=True),
+                    ]),
+                    dbc.Row([
+                        # Total Number vehicle
+                        dbc.Col(html.Div([
+                            html.H5('Total Number of Vehicles'),
+                            html.H1(df_vehicle_total),
+                        ], className='card'), width=True),
+                    ]),
+                    dbc.Row([
+                        #occupancy rate
+                        dbc.Col(html.Div([
+                            html.H5('Occupancy rate'),
+                            html.H1(occupancy_rate),
+                        ], className='card'), width=True),
+                    ])
+                    ]),
 
         dbc.Row([
             # Business Goals
