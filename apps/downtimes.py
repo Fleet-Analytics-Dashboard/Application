@@ -2,7 +2,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import pandas as pd
+import datetime
 import numpy as np
+import plotly.express as px
 import plotly.graph_objects as go
 # TODO are imports unused or there on purpose?
 import calendar
@@ -35,9 +37,26 @@ choices = ['No need', 'Soon', 'Need']
 
 df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
 
+######## create random date############
 
 
 
+df_vehicle_data["Start"] = '2020-01-01'
+df_vehicle_data["Finish"] = '2021-01-01'
+df_vehicle_data["Resource"] = 'maintenance'
+
+
+
+#fig_carbon = go.Figure()
+
+#for i in range(0, 1):
+#    fig_carbon.add_trace(go.Scatter(
+#        x=x_data_carbon[i],
+#        y=y_data_carbon_footprint[i], mode='lines+markers',
+#        name='Carbon Footprint',
+#        line=dict(color=colors[i], width=line_size[i]),
+#        connectgaps=True,
+#    ))
 
 # PieCharts
 
@@ -170,6 +189,17 @@ fig.update_layout(
     ),
 )
 
+######Gantt Chart Maintenance########
+
+
+df_vehicle_data["Resource"] = 'maintenance'
+
+df = df_vehicle_data[['vid', 'Start', 'Finish']]
+
+
+gantt_chart = px.timeline(df, x_start=df['Start'], x_end=df['Finish'], y=df['vid'])
+gantt_chart.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
+
 layout = html.Div(
     className='downtimes-content',
     children=[
@@ -230,7 +260,7 @@ layout = html.Div(
 
                                     columns=[{'name': i, 'id': i} for i in
                                              df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
-                                    page_size=10,
+                                    page_size=10, 
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
                                         'fontWeight': 'bold',
@@ -560,8 +590,37 @@ layout = html.Div(
 
                 html.Div([
                     html.Embed(src='assets/calendar.html', className="cal-container")
-                ])
+                ]),
+                dbc.Row([
+                    dbc.Col(dash_table.DataTable(
+                        data=df_vehicle_data.to_dict('records'),
+                        filter_action='native',
+                        sort_action='native',
+                        # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                        columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'Start', 'Finish', 'Resource']]],
+                        page_size=5,
+                        style_header={
+                            'backgroundColor': '#f1f1f1',
+                            'fontWeight': 'bold',
+                            'fontSize': 12,
+                            'fontFamily': 'Open Sans'
+                        },
+                        style_cell={
+                            'padding': '5px',
+                            'fontSize': 13,
+                            'fontFamily': 'sans-serif'
+                        },
+                        style_cell_conditional=[
+
+                        ]), ),
+
+                    html.Div(
+                            dcc.Graph(figure=gantt_chart, config={'responsive': True}, className='gantt_chart'),
+                            ),
+
+                ]),
             ]),
+
 
             # Fleet Location Map
             # dcc.Tab(label='Realtime Map', children=[

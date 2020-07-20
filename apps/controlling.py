@@ -23,6 +23,9 @@ df_vehicle_costs = df_vehicle_costs.round(decimals=2)
 sql = "select * from vehicle_cost_data"
 df_cost_data = pd.read_sql_query(sql, conn)
 df_cost_data = df_cost_data.round(decimals=2)
+sql = "select * from driving_data"
+df_driving_data = pd.read_sql_query(sql, conn)
+df_driving_data = df_driving_data.round(decimals=2)
 conn = None
 
 # colors
@@ -100,6 +103,8 @@ y_data_carbon_footprint = [y_data_carbon]
 x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 y_data_delivery = np.random.random_integers(400, 450, 900)
 y_data_kept_delivery = [y_data_delivery]
+
+
 
 ########## goals bar chart ############
 fig_goals = go.Figure()
@@ -359,7 +364,7 @@ fig_costs.update_layout(annotations=annotations)
 df_vehicle_status = df_vehicle_data.copy()
 
 # array with accepted values
-accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle', 'accident']
 
 # filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
@@ -372,6 +377,43 @@ values = df_vehicle_status.vehicle_status.value_counts()
 
 pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
 pie_capacity.update_traces(marker=dict(colors=colors))
+
+
+########## calculation for title cards ############
+
+    ##Cost Juli
+
+cost_juli = df_cost_data.groupby(['month']).sum()
+cost_juli = cost_juli.loc['07_jul']
+cost_juli = cost_juli.round(decimals=2)
+
+cost_juni = df_cost_data.groupby(['month']).sum()
+cost_juni = cost_juni.loc['06_jun']
+cost_juni = cost_juni.round(decimals=2)
+
+cost_change = (cost_juli['total_cost'] / cost_juni['total_cost'])-1
+cost_change = cost_change*100
+cost_change = cost_change.round(decimals=2)
+
+    ##vehicle_active + total
+
+df_vehicle_active = values.loc[['delayed', 'idle', 'on time']]
+df_vehicle_active = df_vehicle_active.sum()
+
+df_vehicle_total = values
+df_vehicle_total = df_vehicle_total.sum()
+
+    ## availability rate
+
+availability_rate = values.loc[['delayed', 'idle', 'on time', 'maintenance', 'accident']]
+availability_rate = availability_rate.sum()
+availability_rate = (1 - (availability_rate / df_vehicle_total)) * 100
+availability_rate = availability_rate.round(decimals=2)
+
+    ## profit
+
+profit = 100000
+revenue = (cost_juli['total_cost']) + (profit)
 
 
 # Initialize the app
@@ -418,6 +460,54 @@ layout = html.Div(
             ], className='data-picker',
         ),
 
+        html.Div(className='top-cards around',
+                children=[
+                    dbc.Row([
+                        # Profit
+                        dbc.Col(html.Div([
+                            html.H5('Profit'),
+                            html.H1(str(profit) + "$"),
+                            html.H4("+3%")
+                        ], className='card'), width=True),
+                        # Revenue
+                        dbc.Col(html.Div([
+                            html.H5('Revenue'),
+                            html.H1(str(revenue) + "$"),
+                            html.H4("+8%")
+                        ], className='card'), width=True),
+                         # Cost card
+                        dbc.Col(html.Div([
+                        html.H5('Cost'),
+                        html.H1(str(cost_juli['total_cost']) + '$'),
+                        html.H4("+" + str(cost_change) + "%")
+                        ], className='card'), width=True),
+                        # Total Number vehicle
+                        dbc.Col(html.Div([
+                            html.H5('Total Number of Vehicles'),
+                            html.H1(df_vehicle_total),
+                        ], className='card'), width=True),
+                        # Vehicle active
+                        dbc.Col(html.Div([
+                            html.H5('Active Vehicle'),
+                            html.H1(df_vehicle_active),
+                        ], className='card'), width=True),
+                        # Vehicle maintenance
+                        dbc.Col(html.Div([
+                            html.H5('Vehicle in Maintenance'),
+                            html.H1(values['maintenance']),
+                        ], className='card'), width=True),
+                        # Vehicle unused
+                        dbc.Col(html.Div([
+                            html.H5('Unused Vehicle'),
+                            html.H1(values['unused']),
+                        ], className='card'), width=True),
+                        #availability rate
+                        dbc.Col(html.Div([
+                            html.H5('Availability rate'),
+                            html.H1(str(availability_rate) + "%"),
+                        ], className='card'), width=True),
+                    ]),
+                ]),
         dbc.Row([
             # Business Goals
             dbc.Col(html.Div([
@@ -487,8 +577,8 @@ layout = html.Div(
                                  dcc.Checklist(
                                          id='page-controlling-radios-3',
                                          options=[{'label': i, 'value': i}
-                                                  for i in ['in time', 'delayed', 'maintenance', 'idle', 'unused']],
-                                         value=['in time', 'delayed', 'maintenance', 'idle', 'unused'],
+                                                  for i in ['on time', 'delayed', 'maintenance', 'idle', 'unused', 'accident']],
+                                         value=['on time', 'delayed', 'maintenance', 'idle', 'unused', 'accident'],
                                          ),
                                  dash_table.DataTable(
                                          id='table-for-capacity',
