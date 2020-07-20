@@ -5,9 +5,8 @@ import pandas as pd
 def fuel_cost(v_df, d_df):
     # Simulate Fuel, Insurance, Maintenance Cost per Vehicle
     # select necessary rows and join dataframes to have vehicle and drive information
-    # v_df = v_df[['vid', 'vehicle_class', 'fuel_type', 'drivetrain_type']]
-    # d_df = d_df[['vid', 'day_id', 'distance_total']]
-    df = pd.merge(d_df[['vid', 'day_id', 'distance_total']], v_df[['vid', 'vehicle_class', 'fuel_type', 'drivetrain_type']], how='left', on='vid')
+    df = pd.merge(d_df[['vid', 'day_id', 'distance_total']],
+                  v_df[['vid', 'vehicle_class', 'fuel_type', 'drivetrain_type']], how='left', on='vid')
 
     # Fuel consumption in miles per gallon
     lst = []
@@ -95,7 +94,8 @@ def cost_per_vehicle(v_df, d_df):
     vehicle_cost_data['insurance_cost'] = np.around(np.random.normal(200, 20, size=len(vehicle_cost_data)), decimals=2)
     vehicle_cost_data['maintenance_cost'] = np.around(
         np.random.normal(1200, 100, size=len(vehicle_cost_data)), decimals=2)
-    vehicle_cost_data['total_cost'] = vehicle_cost_data['fuel_cost_total'] + vehicle_cost_data['insurance_cost'] + vehicle_cost_data['maintenance_cost']
+    vehicle_cost_data['total_cost'] = vehicle_cost_data['fuel_cost_total'] + vehicle_cost_data['insurance_cost'] + \
+                                      vehicle_cost_data['maintenance_cost']
 
     return vehicle_cost_data
 
@@ -109,7 +109,7 @@ def vehicle_build_year(df):
 
 def maintenance_start_value(df):
     # generate maintenance start value
-    df['maintenance'] = np.random.randint(0, 100, size=len(df))
+    df['scheduled_maintenance'] = np.random.randint(0, 26, size=len(df))
     return df
 
 
@@ -152,10 +152,11 @@ def vehicle_position(v_df):
 
 def vehicle_status(v_df):
     # generates random vehicle status with set probability for each status
-    status = np.random.choice(['accident', 'unused', 'idle', 'on time', 'delayed'], p=[0.05, 0.1, 0.15, 0.4, 0.3], size=len(v_df))
+    status = np.random.choice(['accident', 'unused', 'idle', 'on time', 'delayed'], p=[0.05, 0.1, 0.15, 0.4, 0.3],
+                              size=len(v_df))
     v_df['vehicle_status'] = status
     # add status 'maintenance' for each vehicle with a maintenance value over 95
-    v_df.loc[v_df['maintenance'] >= 95, ['vehicle_status']] = 'maintenance'
+    v_df.loc[v_df['scheduled_maintenance'] == 1, ['vehicle_status']] = 'maintenance'
     # ad vehicle status 'idle' for vehicles that have a long time at speed 0
 
     return v_df
@@ -166,7 +167,7 @@ def generate_licence_plate(v_df):
     for i in range(len(v_df)):
         i += 1
         if i <= 9:
-            lst.append(('NRL-00'+ str(i)))
+            lst.append(('NRL-00' + str(i)))
         elif i <= 99:
             lst.append(('NRL-0' + str(i)))
         else:

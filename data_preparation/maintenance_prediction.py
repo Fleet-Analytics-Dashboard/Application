@@ -1,8 +1,8 @@
+import numpy as np
 import pandas as pd
 import xgboost as xgb
-import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
 
 
 def get_sensor_data(d_df):
@@ -22,19 +22,25 @@ def get_sensor_data(d_df):
 
     # define a maintenance need that alerts maintenance if 2 or more sensors show a problem
     d_df['maintenance_need'] = 0
-    d_df.loc[(d_df['break_sensor']+d_df['engine_sensor']+d_df['tire_sensor']) >= 2, ['maintenance_need']] = 1
+    d_df.loc[(d_df['break_sensor'] + d_df['engine_sensor'] + d_df['tire_sensor']) >= 2, ['maintenance_need']] = 1
 
     return d_df
 
 
-def extract_prediction_data(d_df):
+def prepare_prediction_data(d_df):
     # we want to extract the last day_id of each vehicle to predict the final status of each vehicle
     # we can achieve this by sorting the data for day_id descending first and then drop all duplicates in vid
     pred = d_df.copy()
     pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid', keep='first')
     pred = pred.sort_values('vid', ascending=True)
+    pred = pred.drop('maintenance_need', axis=1)
 
-    return pred, d_df
+    # apply one hot encoding
+    pred['vid'] = pd.Categorical(pred['vid'])
+    pred['pid'] = pd.Categorical(pred['pid'])
+    pred = pd.get_dummies(pred, ['vid', 'pid'])
+
+    return pred
 
 
 def data_preparation(d_df):
@@ -51,7 +57,7 @@ def data_preparation(d_df):
     return x, y
 
 
-def predict_maintenance(x, y, v_df, d_df):
+def predict_maintenance(x, y, v_df, x_pred):
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
 
     # instantiate an XGBoost classifier object
@@ -61,50 +67,23 @@ def predict_maintenance(x, y, v_df, d_df):
     # train the xgboost classifier
     xg_class.fit(X_train, y_train)
 
+    # predict values for the tast date and calculate rmse for validation of the model
     preds = xg_class.predict(X_test)
     rmse = np.sqrt(mean_squared_error(y_test, preds))
 
     # predict probabilities for last vehicle day and ad it to vehicle data
-    pred_prob = xg_class.predict_proba(x)
-    pred_prob_data = pd.get_dummies(d_df).idxmax(1)
+    pred_prob = xg_class.predict_proba(x_pred)
 
-    v_df['predicted_maintenance_probability'] = pred_prob
+    v_df['predicted_maintenance_probability'] = pred_prob[:, 1]
+
+    # add left weeks till maintenance based on probabilities
+    v_df['predicted_weeks_until_maintenance'] = 30
+    v_df.loc[v_df['predicted_maintenance_probability'] >= 0.50, 'predicted_weeks_until_maintenance'] = 1
+    v_df.loc[(v_df['predicted_maintenance_probability'] >= 0.40) & (
+                v_df['predicted_maintenance_probability'] <= 0.50), 'predicted_weeks_until_maintenance'] = 2
+    v_df.loc[(v_df['predicted_maintenance_probability'] >= 0.35) & (
+                v_df['predicted_maintenance_probability'] <= 0.40), 'predicted_weeks_until_maintenance'] = 3
+    v_df.loc[(v_df['predicted_maintenance_probability'] >= 0.30) & (
+                v_df['predicted_maintenance_probability'] <= 0.35), 'predicted_weeks_until_maintenance'] = 4
 
     return rmse, v_df
-
-
-# def calculate_maintenance(dist, decel):
-#     # Maintenance interval is estimated 46.600 miles
-#     # calculate depending on deceleration threshold of -13 ft per second squared
-#     if decel <= -13:
-#         result = ((dist/46600)*100)+abs(decel*0.0008)
-#     else:
-#         result = (dist/46600)*100
-#
-#     return result
-#
-#
-# def maintenance_increase(df):
-#     lst = []
-#     # iterate over Dataframe and calculate maintenance for each entry
-#     for index, row in df.iterrows():
-#         lst.append(calculate_maintenance(row['distance_total'], row['max_deceleration_ft_per_second_squared']))
-#     df['maintenance_increase'] = lst
-#
-#     return df
-#
-#
-# def sum_vehicle_maintenance(df, vehicle_df):
-#     sum_dic = {}
-#     # ad maintenance increas for each row to dict where the key represents the vid
-#     for index, row in df.iterrows():
-#         if int(row['vid']) in sum_dic.keys():
-#             sum_dic[int(row['vid'])] += row['maintenance_increase']
-#         else:
-#             sum_dic[int(row['vid'])] = row['maintenance_increase']
-#     # ad a column with the value that needs to be added
-#     vehicle_df['maintenance_add'] = vehicle_df['vid'].map(sum_dic)
-#     vehicle_df['maintenance'] = vehicle_df['maintenance'] + vehicle_df['maintenance_add']
-#     vehicle_df = vehicle_df.drop('maintenance_add', axis=1)
-#
-#     return vehicle_df
