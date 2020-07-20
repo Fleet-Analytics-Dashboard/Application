@@ -363,7 +363,7 @@ fig_costs.update_layout(annotations=annotations)
 df_vehicle_status = df_vehicle_data.copy()
 
 # array with accepted values
-accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle']
+accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 'idle', 'accident']
 
 # filter
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
@@ -399,14 +399,15 @@ cost_change = cost_change.round(decimals=2)
 df_vehicle_active = values.loc[['delayed', 'idle', 'on time']]
 df_vehicle_active = df_vehicle_active.sum()
 
-df_vehicle_total = values.iloc[0:4]
+df_vehicle_total = values
 df_vehicle_total = df_vehicle_total.sum()
 
-    ## occupancy rate
+    ## availability rate
 
-occupancy_rate = values.loc[['delayed', 'idle', 'on time', 'maintenance']]
-occupancy_rate = occupancy_rate.sum()
-occupancy_rate = (occupancy_rate/df_vehicle_total)*100
+availability_rate = values.loc[['delayed', 'idle', 'on time', 'maintenance', 'accident']]
+availability_rate = availability_rate.sum()
+availability_rate = (1 - (availability_rate / df_vehicle_total)) * 100
+availability_rate = availability_rate.round(decimals=2)
 
     ## profit
 
@@ -499,12 +500,11 @@ layout = html.Div(
                             html.H5('Unused Vehicle'),
                             html.H1(values['unused']),
                         ], className='card'), width=True),
-                        #occupancy rate
+                        #availability rate
                         dbc.Col(html.Div([
-                            html.H5('Occupancy rate'),
-                            html.H1(str(occupancy_rate) + "%"),
+                            html.H5('Availability rate'),
+                            html.H1(str(availability_rate) + "%"),
                         ], className='card'), width=True),
-
                     ]),
                 ]),
         dbc.Row([
