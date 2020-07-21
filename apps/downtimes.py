@@ -198,10 +198,9 @@ def maintenance_calendar():
     delta = d2 - d1
 
 
-    dates_in_year = [d1 + datetime.timedelta(i) for i in range(delta.days+1)] # gives me a list with datetimes for each day a year
-    # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
+    dates_in_year = [d1 + datetime.timedelta(i) for i in range(delta.days+1)]
     weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
-                           dates_in_year]  # gives [1,1,1,1,1,1,1,2,2,2,2,2,2,2,…] name is self-explanatory
+                           dates_in_year]
     weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
     # create numpy array for the maintenance dates for each vehicle
     z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
@@ -249,12 +248,12 @@ def maintenance_calendar():
     height=4000,
     yaxis=dict(
     showline = False, showgrid = False, zeroline = False,
-   # tickmode='array',
     ticktext=df_vehicle_data['licence_plate'],
-   # tickvals=[0,1,2,3,4,5,6],
     ),
     xaxis=dict(
-    showline = False, showgrid = False, zeroline = False, side = 'top',
+    showline = False, showgrid = False, zeroline = False, side = 'top', tickfont=dict(color="#1f77b4"),
+    tickvals=weeknumber_of_dates,
+   # ticktext=week_num,
     ),
    #font={'size':'10', 'color':'#9e9e9e'},
     plot_bgcolor=('#fff'),

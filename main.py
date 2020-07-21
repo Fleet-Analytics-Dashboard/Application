@@ -246,6 +246,18 @@ def create_maintenance_table(selected_status):
 
     return data
 
+#### Maintenance Calendar Licence Plate Filter ####
+
+
+@app.callback(
+    Output('heatmap', 'data'),
+    [Input('maintenance-calendar-dropdown-table', 'value')])
+def create_table(selected_licenceplate):
+    if selected_licenceplate is not None:
+        filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_licenceplate)]
+        data = filtered_df.to_dict("records")
+    return data
+
 ####Callback radio buttons accident-probability-table###########
 
 
