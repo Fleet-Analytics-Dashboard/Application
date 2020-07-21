@@ -14,10 +14,14 @@ from apps.downtimes import *
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 from apps.controlling import *
 
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-conn = None
+# get data from database
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# conn = None
+
+# get data from csv
+df_vehicle_data = pd.read_csv('vehicle_data.csv')
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
@@ -266,11 +270,14 @@ def create_heat_map(selected_licence_plate):
     dates_in_year = [d1 + datetime.timedelta(i) for i in
                      range(delta.days + 1)]  # gives me a list with datetimes for each day a year
     # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
-    weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
+    weeknumber_of_dates = [i.strftime("%G cw%V")[2:] for i in
                            dates_in_year]  # gives [1,1,1,1,1,1,1,2,2,2,2,2,2,2,…] name is self-explanatory
     weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
     # create numpy array for the maintenance dates for each vehicle
     z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
+
+    # mark zells of today
+    z[:, 26] = 0.25
 
     # set status of vehicles which are currently in maintenance to 1
     today_maintenance = df_vehicle_data.index[df_vehicle_data['vehicle_status'] == 'maintenance'].tolist()
@@ -296,7 +303,7 @@ def create_heat_map(selected_licence_plate):
 
     # text = [str(i) for i in dates_in_year] #gives something like list of strings like ‘2018-01-25’ for each date. Used in data trace to make good hovertext.
     # 4cc417 green #347c17 dark green
-    colorscale = [[0, '#eeeeee'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
+    colorscale = [[0, '#eeeeee'], [0.25, '#a1a1a1'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
     if selected_licence_plate is None:
         data = [
             go.Heatmap(

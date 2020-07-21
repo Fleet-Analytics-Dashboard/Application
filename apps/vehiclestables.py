@@ -4,8 +4,9 @@ import dash_table as dt
 import pandas as pd
 from database_connection import connect, return_engine
 
-# Datasets
-# fleet_data = pd.read_csv('cleaned-data-for-fleet-dna_v3.csv')
+# get data from csv
+# fleet_data = pd.read_csv('driving_data.csv')
+# df_vehicle_data = pd.read_csv('vehicle_data.csv')
 
 # Connect to database and add files to
 conn = connect()
