@@ -1,15 +1,15 @@
+import dash_table
+##todo are imports unused or there on purpose?
+import dash_bootstrap_components as dbc
+import datetime
+import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
 import pandas as pd
-import datetime
-import numpy as np
-import plotly.express as px
 import plotly.graph_objects as go
-# TODO are imports unused or there on purpose?
-import calendar
-import matplotlib.pyplot as plt
-import dash_bootstrap_components as dbc
+import numpy as np
+from dateutil.relativedelta import relativedelta
+
 
 from database_connection import connect, return_engine
 
@@ -36,14 +36,6 @@ conditions = [
 choices = ['No need', 'Soon', 'Need']
 
 df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, default='null')
-
-######## create random date############
-
-
-
-df_vehicle_data["Start"] = '2020-01-01'
-df_vehicle_data["Finish"] = '2021-01-01'
-df_vehicle_data["Resource"] = 'maintenance'
 
 
 
@@ -189,16 +181,91 @@ fig.update_layout(
     ),
 )
 
-######Gantt Chart Maintenance########
+######Maintenance Calendar########
+######## sorting dataframe for maintenace calendar############
+
+df_vehicle_data = df_vehicle_data.sort_values(by='licence_plate', ascending=False)
+def maintenance_calendar():
+    today = datetime.date.today()
+    year, week_num, day_of_week = today.isocalendar()
+    # d1 represents starting day (yyyy-mm-dd) and d2 end day
+    #d1 = today - datetime.date.month
+
+    d1 = today + relativedelta(weeks=-26)
+
+    d2 = today + relativedelta(weeks=+26)
+
+    delta = d2 - d1
 
 
-df_vehicle_data["Resource"] = 'maintenance'
+    dates_in_year = [d1 + datetime.timedelta(i) for i in range(delta.days+1)] # gives me a list with datetimes for each day a year
+    # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
+    weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
+                           dates_in_year]  # gives [1,1,1,1,1,1,1,2,2,2,2,2,2,2,…] name is self-explanatory
+    weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
+    # create numpy array for the maintenance dates for each vehicle
+    z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
 
-df = df_vehicle_data[['vid', 'Start', 'Finish']]
+    # set status of vehicles which are currently in maintenance to 1
+    today_maintenance = df_vehicle_data.index[df_vehicle_data['vehicle_status'] == 'maintenance'].tolist()
+    for i in today_maintenance:
+        z[i][26] = 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        z[index][26 + int(row['scheduled_maintenance'])] = 1
+
+    # set status for previous maintenance
+    np.random.seed(1)
+    random_date = np.random.randint(0, 23, size=len(df_vehicle_data.vid) )
+    index = 0
+    for i in random_date:
+        z[index][i] = 1
+        index += 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        if row.predicted_weeks_until_maintenance < 30:
+            z[index][26 + int(row['predicted_weeks_until_maintenance'])] = 0.5
+
+    #text = [str(i) for i in dates_in_year] #gives something like list of strings like ‘2018-01-25’ for each date. Used in data trace to make good hovertext.
+    #4cc417 green #347c17 dark green
+    colorscale = [[0, '#eeeeee'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
+    data = [
+    go.Heatmap(
+    x = weeknumber_of_dates,
+    y = df_vehicle_data['licence_plate'],
+    z = z,
+   # text=text,
+   # hoverinfo='text',
+    xgap=3, # this
+    ygap=3, # and this is used to make the grid-like apperance
+    showscale=False,
+    colorscale=colorscale
+    )]
 
 
-gantt_chart = px.timeline(df, x_start=df['Start'], x_end=df['Finish'], y=df['vid'])
-gantt_chart.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
+    layout = go.Layout(
+    height=4000,
+    yaxis=dict(
+    showline = False, showgrid = False, zeroline = False,
+   # tickmode='array',
+    ticktext=df_vehicle_data['licence_plate'],
+   # tickvals=[0,1,2,3,4,5,6],
+    ),
+    xaxis=dict(
+    showline = False, showgrid = False, zeroline = False, side = 'top',
+    ),
+   #font={'size':'10', 'color':'#9e9e9e'},
+    plot_bgcolor=('#fff'),
+    margin = dict(t=40),
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+
+#### view layout #####
 
 layout = html.Div(
     className='downtimes-content',
@@ -586,41 +653,13 @@ layout = html.Div(
             # Maintenance Calendar
             dcc.Tab(label='Maintenance Calendar', children=[
 
-                # dcc.Graph(figure=calenderview),
-
-                html.Div([
-                    html.Embed(src='assets/calendar.html', className="cal-container")
-                ]),
-                dbc.Row([
-                    dbc.Col(dash_table.DataTable(
-                        data=df_vehicle_data.to_dict('records'),
-                        filter_action='native',
-                        sort_action='native',
-                        # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                        columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'Start', 'Finish', 'Resource']]],
-                        page_size=5,
-                        style_header={
-                            'backgroundColor': '#f1f1f1',
-                            'fontWeight': 'bold',
-                            'fontSize': 12,
-                            'fontFamily': 'Open Sans'
-                        },
-                        style_cell={
-                            'padding': '5px',
-                            'fontSize': 13,
-                            'fontFamily': 'sans-serif'
-                        },
-                        style_cell_conditional=[
-
-                        ]), ),
-
-                    html.Div(
-                            dcc.Graph(figure=gantt_chart, config={'responsive': True}, className='gantt_chart'),
-                            ),
+                html.Div(children=[
+                    dcc.Graph(id='heatmap-test', figure=maintenance_calendar(), config={'displayModeBar': False})
+                ], style={'overflowX': 'scroll', 'height': 550}
+                )
 
                 ]),
             ]),
-
 
             # Fleet Location Map
             # dcc.Tab(label='Realtime Map', children=[
@@ -651,4 +690,3 @@ layout = html.Div(
             #         ])
             # ]),
         ])
-    ])
