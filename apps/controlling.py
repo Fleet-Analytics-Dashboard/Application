@@ -15,11 +15,11 @@ import dash_bootstrap_components as dbc
 conn = connect()
 sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select vid, vehicel_type, vocation, drivetrain_type, fuel_type from cleaned_data_fleet_dna;" # todo switch source table
-df_table = pd.read_sql_query(sql, conn)
-sql = "select vid, vehicle_type, vocation from vehicle_data;"
-df_vehicle_costs = pd.read_sql_query(sql, conn)
-df_vehicle_costs = df_vehicle_costs.round(decimals=2)
+# sql = "select vid, vehicle_type, vocation, drivetrain_type, fuel_type from driving_data;"
+# df_table = pd.read_sql_query(sql, conn)
+# sql = "select vid, vehicle_type, vocation from vehicle_data;"
+# df_vehicle_costs = pd.read_sql_query(sql, conn)
+# df_vehicle_costs = df_vehicle_costs.round(decimals=2)
 sql = "select * from vehicle_cost_data"
 df_cost_data = pd.read_sql_query(sql, conn)
 df_cost_data = df_cost_data.round(decimals=2)

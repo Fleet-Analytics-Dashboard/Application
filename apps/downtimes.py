@@ -9,6 +9,8 @@ import dash_html_components as html
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import statistics
+from plotly.subplots import make_subplots
 from dateutil.relativedelta import relativedelta
 
 
@@ -18,7 +20,7 @@ from dateutil.relativedelta import relativedelta
 # conn = connect()
 # sql = "select * from vehicle_data;"
 # df_vehicle_data = pd.read_sql_query(sql, conn)
-# sql = "select * from cleaned_data_fleet_dna;"
+# sql = "select * from driving_data;"
 # fleet_data = pd.read_sql_query(sql, conn)
 # conn = None
 
@@ -195,6 +197,88 @@ fig.update_layout(
 ######## sorting dataframe for maintenace calendar############
 
 df_vehicle_data = df_vehicle_data.sort_values(by='licence_plate', ascending=False)
+
+#####oldest vehicle table#####
+oldest_vehicle_data = df_vehicle_data.sort_values(by='vehicle_construction_year', ascending=False)
+
+
+# Create figure with secondary y-axis
+oldest_vehicle = make_subplots(specs=[[{"secondary_y": True}]])
+
+x = statistics.mean(df_vehicle_data['vehicle_construction_year'])
+df_vehicle_data['mean'] = x
+
+
+# Add traces
+oldest_vehicle.add_trace(
+    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'], name="construction year"),
+    secondary_y=False,
+)
+
+oldest_vehicle.add_trace(
+    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="mean"),
+    secondary_y=True,
+)
+
+# Add figure title
+oldest_vehicle.update_layout(
+    title_text="Oldest Vehicle"
+)
+
+
+# Set x-axis title
+oldest_vehicle.update_xaxes(title_text="Licence Plate")
+
+# Set y-axes titles
+oldest_vehicle.update_yaxes(title_text="Year", secondary_y=False)
+oldest_vehicle['layout']['yaxis'].update(range=[1999, 2020], dtick=5, autorange=False)
+oldest_vehicle['layout']['yaxis2'].update(range=[1999, 2020], dtick=5, autorange=False)
+
+#####driving distance table#####
+
+sum = {}
+# run through each months dataframe
+for index, row in fleet_data.iterrows():
+    if int(row['vid']) in sum.keys():
+        sum[int(row['vid'])] += row['distance_total']
+    else:
+        sum[int(row['vid'])] = row['distance_total']
+df_vehicle_data['distance'] = df_vehicle_data['vid'].map(sum)
+
+df_vehicle_data = df_vehicle_data.sort_values(by='distance', ascending=False)
+
+# Create figure with secondary y-axis
+distance = make_subplots(specs=[[{"secondary_y": True}]])
+
+x_distance = statistics.mean(df_vehicle_data['distance'])
+df_vehicle_data['mean_distance'] = x_distance
+
+
+# Add traces
+distance.add_trace(
+    go.Bar(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['distance'], name="distance"),
+    secondary_y=False,
+)
+
+distance.add_trace(
+    go.Scatter(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['mean_distance'], name="mean"),
+    secondary_y=True,
+)
+
+# Add figure title
+distance.update_layout(
+    title_text="Distance"
+)
+
+
+# Set x-axis title
+distance.update_xaxes(title_text="Licence Plate")
+
+# Set y-axes titles
+distance.update_yaxes(title_text="Distance", secondary_y=False)
+distance['layout']['yaxis'].update(range=[int(df_vehicle_data['distance'].iloc[-1]), int(df_vehicle_data['distance'].iloc[0])], dtick=5, autorange=False)
+distance['layout']['yaxis2'].update(range=[int(df_vehicle_data['distance'].iloc[-1]), int(df_vehicle_data['distance'].iloc[0])], dtick=5, autorange=False)
+
 
 #### view layout #####
 
@@ -446,6 +530,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
+                        dcc.Graph(id='graph-oldest_vehicle', figure=oldest_vehicle)
                     ], className='card-tab card', width=True),
 
                     # Longest Distance table
@@ -465,7 +550,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'distance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -481,7 +566,7 @@ layout = html.Div(
                                 style_cell_conditional=[
 
                                 ]), ),
-                        ]),
+                        ]),dcc.Graph(id='graph-distance', figure=distance)
                     ], className='card-tab card', width=True),
 
                     
