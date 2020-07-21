@@ -9,17 +9,18 @@ from apps.downtimes import fleet_data
 from apps.vehiclestables import df_driver, df_vehicle_class
 import plotly.express as px
 
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from cleaned_data_fleet_dna;"
-fleet_data = pd.read_sql_query(sql, conn)
-conn = None
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from cleaned_data_fleet_dna;"
+# fleet_data = pd.read_sql_query(sql, conn)
+# conn = None
 
 df_map_data = df_vehicle_data.copy()
 
-# Daten
-# fleet_data = pd.read_csv('driving_data.csv')
+# Data from csv
+fleet_data = pd.read_csv('driving_data.csv')
+df_vehicle_data = pd.read_csv('vehicle_data.csv')
 # fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 # fleet_data.iloc[:,1:3]
 

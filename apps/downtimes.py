@@ -1,5 +1,6 @@
 import dash_table
 ##todo are imports unused or there on purpose?
+##todo switch from csv to database
 import dash_bootstrap_components as dbc
 import datetime
 import plotly.graph_objs as go
@@ -11,15 +12,19 @@ import numpy as np
 from dateutil.relativedelta import relativedelta
 
 
-from database_connection import connect, return_engine
+# from database_connection import connect, return_engine
 
 # connect to database and add files to
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from cleaned_data_fleet_dna;"
-fleet_data = pd.read_sql_query(sql, conn)
-conn = None
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from cleaned_data_fleet_dna;"
+# fleet_data = pd.read_sql_query(sql, conn)
+# conn = None
+
+# get data from csv files
+df_vehicle_data = pd.read_csv('vehicle_data.csv')
+fleet_data = pd.read_csv('driving_data.csv')
 
 # colors theme
 colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
