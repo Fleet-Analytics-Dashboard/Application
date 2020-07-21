@@ -64,7 +64,7 @@ def cost_per_vehicle(v_df, d_df):
 
     # crate array with dataframes and seperate one with their names for refference in columns
     arr = [jan, feb, mar, apr, may, jun, jul]
-    arr_name = ['01_jan', '02_feb', '03_mar', '04_apr', '05_may', '06_jun', '07_jul']
+    arr_name = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
 
     # summ up fuel cost per vehicle
     i = 0
@@ -109,7 +109,7 @@ def vehicle_build_year(df):
 
 def maintenance_start_value(df):
     # generate maintenance start value
-    df['scheduled_maintenance'] = np.random.randint(0, 26, size=len(df))
+    df['scheduled_maintenance'] = np.random.randint(0, 22, size=len(df))
     return df
 
 
@@ -156,7 +156,7 @@ def vehicle_status(v_df):
                               size=len(v_df))
     v_df['vehicle_status'] = status
     # add status 'maintenance' for each vehicle with a maintenance value over 95
-    v_df.loc[v_df['scheduled_maintenance'] == 1, ['vehicle_status']] = 'maintenance'
+    v_df.loc[v_df['scheduled_maintenance'] == 0, ['vehicle_status']] = 'maintenance'
     # ad vehicle status 'idle' for vehicles that have a long time at speed 0
 
     return v_df

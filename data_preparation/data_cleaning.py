@@ -211,12 +211,12 @@ def cleaning (df):
 
     return new
 
+
 def seperate_vehicle_data(df):
     # Separate Vehicle Information from the rest of the dataset to normalise table
     result = df[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
     # drop duplicates in v_df
     result = result.drop_duplicates(keep='first', ignore_index=True).sort_values('vid')
     result = result.reset_index(drop=True)
-
 
     return result

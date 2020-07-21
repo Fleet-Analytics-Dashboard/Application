@@ -27,49 +27,54 @@ def get_sensor_data(d_df):
     return d_df
 
 
-def prepare_prediction_data(d_df):
-    # we want to extract the last day_id of each vehicle to predict the final status of each vehicle
-    # we can achieve this by sorting the data for day_id descending first and then drop all duplicates in vid
-    pred = d_df.copy()
-    pred = pred.sort_values('day_id', ascending=False).drop_duplicates('vid', keep='first')
-    pred = pred.sort_values('vid', ascending=True)
-    pred = pred.drop('maintenance_need', axis=1)
-
-    # apply one hot encoding
-    pred['vid'] = pd.Categorical(pred['vid'])
-    pred['pid'] = pd.Categorical(pred['pid'])
-    pred = pd.get_dummies(pred, ['vid', 'pid'])
-
-    return pred
-
-
 def data_preparation(d_df):
+    # sort day_id descending so that we can easily extract the last day of each vehicle later
+    d_df = d_df.sort_values('day_id', ascending=False)
+
+    # create array with all vid
+    vid_all = d_df['vid'].unique()
+
     # encode all cathegorical values with one hot encoding
     # variables to encode: 'vid', 'pid'
     d_df['vid'] = pd.Categorical(d_df['vid'])
     d_df['pid'] = pd.Categorical(d_df['pid'])
     d_df = pd.get_dummies(d_df, ['vid', 'pid'])
 
+    # extract prediction variables from dataframe and store in x_pred
+    i = 0
+    x_pred = pd.DataFrame()
+    for index, row in d_df.iterrows():
+        if i < len(vid_all):
+            if row['vid_'+str(vid_all[i])] == 1:
+                x_pred = x_pred.append(row)
+                d_df = d_df.drop(index, axis=0)
+                i += 1
+
     # Separate the target variable maintenance_need from the rest of the variables
     x = d_df.drop('maintenance_need', axis=1)
+    x_pred = x_pred.drop('maintenance_need', axis=1)
     y = d_df['maintenance_need']
 
-    return x, y
+    # resort columns of x_pred to prevend feature_names mismatch when predicting with xgb
+    cols = x.columns.tolist()
+    x_pred = x_pred[cols]
+
+    return x, y, x_pred
 
 
-def predict_maintenance(x, y, v_df, x_pred):
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
+def predict_maintenance(x, y, dmatrix, v_df, x_pred):
+    # use 10 fold cross validation to check if our modell ist sutable for the job
+    params = {"objective": "binary:logistic", 'colsample_bytree': 0.3, 'learning_rate': 0.1,
+              'max_depth': 5, 'alpha': 10}
+
+    cv_results = xgb.cv(dtrain=dmatrix, params=params, nfold=10,
+                        num_boost_round=50, early_stopping_rounds=10, metrics="rmse", as_pandas=True, seed=123)
 
     # instantiate an XGBoost classifier object
-    xg_class = xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.3, learning_rate=0.1, max_depth=5,
-                                 alpha=10, n_estimators=10)
+    xg_class = xgb.XGBClassifier(params=params, n_estimators=10)
 
-    # train the xgboost classifier
-    xg_class.fit(X_train, y_train)
-
-    # predict values for the tast date and calculate rmse for validation of the model
-    preds = xg_class.predict(X_test)
-    rmse = np.sqrt(mean_squared_error(y_test, preds))
+    # train the xgboost classifier with all our Data except x_pred
+    xg_class.fit(x, y)
 
     # predict probabilities for last vehicle day and ad it to vehicle data
     pred_prob = xg_class.predict_proba(x_pred)
@@ -86,4 +91,4 @@ def predict_maintenance(x, y, v_df, x_pred):
     v_df.loc[(v_df['predicted_maintenance_probability'] >= 0.30) & (
                 v_df['predicted_maintenance_probability'] <= 0.35), 'predicted_weeks_until_maintenance'] = 4
 
-    return rmse, v_df
+    return cv_results, v_df

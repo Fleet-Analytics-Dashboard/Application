@@ -59,17 +59,14 @@ vehicle_data = simulation.generate_licence_plate(vehicle_data)
 driving_data = m_prediction.get_sensor_data(driving_data)
 
 # prepare data for training the model
-x, y = m_prediction.data_preparation(driving_data)
+x, y, x_pred = m_prediction.data_preparation(driving_data)
 
 # convert to DMatrix for XGBoost
 data_dmatrix = xgb.DMatrix(data=x, label=y)
 
-# extract prediction data for predicting a final vehicle status later
-predict_data = m_prediction.prepare_prediction_data(driving_data)
-
 # train a xgb modell for classifiction
-# returns rmse (route mean square error) and vehicle_data with probability for maintenance need
-rmse, vehicle_data = m_prediction.predict_maintenance(x, y, vehicle_data, predict_data)
+# returns cv_table (route mean square error) and vehicle_data with probability for maintenance need
+cv_table, vehicle_data = m_prediction.predict_maintenance(x, y, data_dmatrix, vehicle_data, x_pred)
 
 # ------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
@@ -77,9 +74,11 @@ engine = return_engine()
 driving_data.to_sql('driving_data', con=engine, if_exists='replace')
 vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
 vehicle_cost_data.to_sql('vehicle_cost_data', con=engine, if_exists='replace')
+cv_table.to_sql('10_fold_cross_validation_maintenance', con=engine, if_exists='replace')
 engine = None
 
 # generate new csv Files from new dataframes
 vehicle_data.to_csv('vehicle_data.csv')
 driving_data.to_csv('driving_data.csv')
 vehicle_cost_data.to_csv('vehicle_cost_data.csv')
+cv_table.to_csv('10_fold_cross_validation_maintenance')
