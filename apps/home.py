@@ -63,7 +63,8 @@ fig.update_layout(
         ),
         pitch=0,
         zoom=5,
-        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
 
