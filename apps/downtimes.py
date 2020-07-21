@@ -9,6 +9,8 @@ import dash_html_components as html
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import statistics
+from plotly.subplots import make_subplots
 from dateutil.relativedelta import relativedelta
 
 
@@ -195,6 +197,43 @@ fig.update_layout(
 ######## sorting dataframe for maintenace calendar############
 
 df_vehicle_data = df_vehicle_data.sort_values(by='licence_plate', ascending=False)
+
+#####oldest vehicle table#####
+oldest_vehicle_data = df_vehicle_data.sort_values(by='vehicle_construction_year', ascending=False)
+
+
+# Create figure with secondary y-axis
+oldest_vehicle = make_subplots(specs=[[{"secondary_y": True}]])
+
+x = statistics.mean(df_vehicle_data['vehicle_construction_year'])
+df_vehicle_data['mean'] = x
+
+
+# Add traces
+oldest_vehicle.add_trace(
+    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'], name="yaxis data"),
+    secondary_y=False,
+)
+
+oldest_vehicle.add_trace(
+    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="yaxis2 data"),
+    secondary_y=True,
+)
+
+# Add figure title
+oldest_vehicle.update_layout(
+    title_text="Oldest Vehicle"
+)
+
+
+# Set x-axis title
+oldest_vehicle.update_xaxes(title_text="Licence Plate")
+
+# Set y-axes titles
+oldest_vehicle.update_yaxes(title_text="Year", secondary_y=False)
+oldest_vehicle['layout']['yaxis'].update(range=[1999, 2020], dtick=5, autorange=False)
+oldest_vehicle['layout']['yaxis2'].update(range=[1999, 2020], dtick=5, autorange=False)
+
 
 #### view layout #####
 
@@ -453,7 +492,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
+                                         oldest_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -470,6 +509,10 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
+                        dbc.Col([
+                         dbc.Row(
+                            dcc.Graph(id='graph-carbon-footprint', figure=oldest_vehicle)
+                         )
                     ], className='card-tab card', width=True),
 
                     # Excessive speeding table
@@ -630,3 +673,4 @@ layout = html.Div(
             #         ])
             # ]),
         ])
+])
