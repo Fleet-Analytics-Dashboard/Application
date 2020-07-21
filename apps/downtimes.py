@@ -118,17 +118,20 @@ df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_st
 
 fleet_lat = df_vehicle_accidents.position_latitude
 fleet_lon = df_vehicle_accidents.position_longitude
-fleet_vid = df_vehicle_accidents.vid
+fleet_text = df_vehicle_accidents.licence_plate
 
 mapbox_accidents = go.Figure(go.Scattermapbox(
-
+    text=fleet_text,
     lat=fleet_lat,
     lon=fleet_lon,
     mode='markers',
+    #hoverinfo='all',
     marker=go.scattermapbox.Marker(
-        size=9
+        size=12,
+        symbol='fire-station',
+        color='rgb(242, 177, 172)'
     ),
-    text=fleet_vid,
+
 ))
 
 mapbox_accidents.update_layout(
@@ -144,7 +147,8 @@ mapbox_accidents.update_layout(
         ),
         pitch=0,
         zoom=3,
-        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
 
