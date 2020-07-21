@@ -412,31 +412,7 @@ layout = html.Div(
 
                 dbc.Row([
 
-                    # Overstepping speed limit table
 
-                    # dbc.Col([
-                    #     dbc.Row(
-                    #         dbc.Col(
-                    #             html.Div(
-                    #                 html.H3('Overstepping Speed Limit'),
-                    #                 style={'textAlign': 'center'}
-                    #             ),
-                    #         ),
-                    #     ),
-                    #     dbc.Row([
-                    #         dbc.Col(dash_table.DataTable(
-                    #             data=vehicle_data.to_dict('records'),
-                    #             # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                    #             columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
-                    #             page_size=5,
-                    #             style_cell={'textAlign': 'left'},
-                    #             style_cell_conditional=[
-                    #
-                    #             ]), ),
-                    #     ]),
-                    # ], className='card', width=True),
-
-                    # Oldest Vehicles table
 
                     dbc.Col([
                         dbc.Row(
@@ -472,7 +448,7 @@ layout = html.Div(
                         ]),
                     ], className='card-tab card', width=True),
 
-                    # Excessive speeding table
+                    # Longest Distance table
 
                     dbc.Col([
                         dbc.Row(
@@ -508,77 +484,7 @@ layout = html.Div(
                         ]),
                     ], className='card-tab card', width=True),
 
-                    # Excessive acceleration table
-
-                    dbc.Col([
-                        dbc.Row(
-                            dbc.Col(
-                                html.Div(
-                                    html.H3('Excessive Acceleration'),
-                                ),
-                            ),
-                        ),
-                        dbc.Row([
-                            dbc.Col(dash_table.DataTable(
-                                data=df_vehicle_data.to_dict('records'),
-                                filter_action='native',
-                                sort_action='native',
-                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
-                                page_size=5,
-                                style_header={
-                                    'backgroundColor': '#f1f1f1',
-                                    'fontWeight': 'bold',
-                                    'fontSize': 12,
-                                    'fontFamily': 'Open Sans'
-                                },
-                                style_cell={
-                                    'padding': '5px',
-                                    'fontSize': 13,
-                                    'fontFamily': 'sans-serif'
-                                },
-                                style_cell_conditional=[
-
-                                ]), ),
-                        ]),
-                    ], className='card-tab card', width=True),
-
-                    # Excessive breaking table
-
-                    dbc.Col([
-                        dbc.Row(
-                            dbc.Col(
-                                html.Div(
-                                    html.H3('Excessive Breaking'),
-                                ),
-                            ),
-                        ),
-                        dbc.Row([
-                            dbc.Col(dash_table.DataTable(
-                                data=df_vehicle_data.to_dict('records'),
-                                filter_action='native',
-                                sort_action='native',
-                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
-                                page_size=5,
-                                style_header={
-                                    'backgroundColor': '#f1f1f1',
-                                    'fontWeight': 'bold',
-                                    'fontSize': 12,
-                                    'fontFamily': 'Open Sans'
-                                },
-                                style_cell={
-                                    'padding': '5px',
-                                    'fontSize': 13,
-                                    'fontFamily': 'sans-serif'
-                                },
-                                style_cell_conditional=[
-
-                                ]), ),
-                        ]),
-                    ], className='card-tab card', width=True),
+                    
                 ]),
 
             ]),
