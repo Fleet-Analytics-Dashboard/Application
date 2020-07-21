@@ -10,6 +10,7 @@ from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
+from apps.downtimes import *
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 from apps.controlling import *
 
@@ -205,12 +206,13 @@ def on_data_set_graph(data, field):
         a = aggregation[row['vid']]
         a['name'] = row['vid']
         a['mode'] = 'lines+markers'
+        a['line'] = dict(color=colors[1])
 
         a['x'].append(row['month'])
         a['y'].append(row[field])
 
     return {
-        'data': [y for y in aggregation.values()]
+        'data': [y for y in aggregation.values()],
     }
 
 
@@ -244,6 +246,120 @@ def create_maintenance_table(selected_status):
         data = filtered_df.to_dict("records")
 
     return data
+
+
+####Callback filter maintenance calendar based on license plate####
+@app.callback(Output('heatmap', 'figure'),
+              [Input('heatmap-dropdown', 'value')])
+def create_heat_map(selected_licence_plate):
+    today = datetime.date.today()
+    year, week_num, day_of_week = today.isocalendar()
+    # d1 represents starting day (yyyy-mm-dd) and d2 end day
+    # d1 = today - datetime.date.month
+
+    d1 = today + relativedelta(weeks=-26)
+
+    d2 = today + relativedelta(weeks=+26)
+
+    delta = d2 - d1
+
+    dates_in_year = [d1 + datetime.timedelta(i) for i in
+                     range(delta.days + 1)]  # gives me a list with datetimes for each day a year
+    # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
+    weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
+                           dates_in_year]  # gives [1,1,1,1,1,1,1,2,2,2,2,2,2,2,…] name is self-explanatory
+    weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
+    # create numpy array for the maintenance dates for each vehicle
+    z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
+
+    # set status of vehicles which are currently in maintenance to 1
+    today_maintenance = df_vehicle_data.index[df_vehicle_data['vehicle_status'] == 'maintenance'].tolist()
+    for i in today_maintenance:
+        z[i][26] = 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        z[index][26 + int(row['scheduled_maintenance'])] = 1
+
+    # set status for previous maintenance
+    np.random.seed(1)
+    random_date = np.random.randint(0, 23, size=len(df_vehicle_data.vid))
+    index = 0
+    for i in random_date:
+        z[index][i] = 1
+        index += 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        if row.predicted_weeks_until_maintenance < 30:
+            z[index][26 + int(row['predicted_weeks_until_maintenance'])] = 0.5
+
+    # text = [str(i) for i in dates_in_year] #gives something like list of strings like ‘2018-01-25’ for each date. Used in data trace to make good hovertext.
+    # 4cc417 green #347c17 dark green
+    colorscale = [[0, '#eeeeee'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
+    if selected_licence_plate is None:
+        data = [
+            go.Heatmap(
+                x=weeknumber_of_dates,
+                y=df_vehicle_data['licence_plate'],
+                z=z,
+                # text=text,
+                # hoverinfo='text',
+                xgap=3,  # this
+                ygap=3,  # and this is used to make the grid-like apperance
+                showscale=False,
+                colorscale=colorscale
+            )]
+        layout = go.Layout(
+            height=1000,
+            yaxis=dict(
+                showline=False, showgrid=False, zeroline=False,
+                # tickmode='array',
+                ticktext=df_vehicle_data['licence_plate'],
+                # tickvals=[0,1,2,3,4,5,6],
+            ),
+            xaxis=dict(
+                showline=False, showgrid=False, zeroline=False, side='top',
+            ),
+            # font={'size':'10', 'color':'#9e9e9e'},
+            plot_bgcolor=('#fff'),
+            margin=dict(t=40),
+        )
+    else:
+        filtered_df = df_vehicle_data[df_vehicle_data['licence_plate'] == selected_licence_plate]
+
+        data = [
+            go.Heatmap(
+                x=weeknumber_of_dates,
+                y=filtered_df['licence_plate'],
+                z=z,
+                # text=text,
+                # hoverinfo='text',
+                xgap=3,  # this
+                ygap=3,  # and this is used to make the grid-like apperance
+                showscale=False,
+                colorscale=colorscale
+            )]
+
+        layout = go.Layout(
+            height=300,
+            yaxis=dict(
+                showline=False, showgrid=False, zeroline=False,
+                # tickmode='array',
+                ticktext=df_vehicle_data['licence_plate'],
+                # tickvals=[0,1,2,3,4,5,6],
+            ),
+            xaxis=dict(
+                showline=False, showgrid=False, zeroline=False, side='top',
+            ),
+            # font={'size':'10', 'color':'#9e9e9e'},
+            plot_bgcolor=('#fff'),
+            margin=dict(t=40),
+        )
+
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
 
 
 ####Callback radio buttons accident-probability-table###########

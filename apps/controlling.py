@@ -60,23 +60,6 @@ line_size = [2, 2, 4, 2]
 # period of a year in months (in this case until july)
 x_data = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 
-# test data
-y_data = np.array([
-    [132, 138, 150, 144, 129, 128, 132, 145, 137, 138, 141, 147],
-    [74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69],
-    [45, 42, 50, 46, 36, 36, 34, 35, 32, 31, 31, 28],
-    [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
-])
-
-# transform the different columns of the data frame into lists
-y_data_fuel_cost = df_cost_data['fuel_cost_total'].to_list()
-y_data_insurance_cost = df_cost_data['insurance_cost'].to_list()
-y_data_maintenance_cost = df_cost_data['maintenance_cost'].to_list()
-y_data_total_cost = df_cost_data['total_cost'].to_list()
-
-# summarise the cost lists in an array
-y_data_cost = [y_data_total_cost, y_data_fuel_cost, y_data_maintenance_cost, y_data_insurance_cost]
-
 ###### chained dropdown for the filtering of chart costs ##########
 # create option for dropdown
 dropdown_options = {
@@ -103,7 +86,6 @@ y_data_carbon_footprint = [y_data_carbon]
 x_data_delivery = np.array(['January', "February", 'March', 'April', 'Mai', 'June', 'July'])
 y_data_delivery = np.random.random_integers(400, 450, 900)
 y_data_kept_delivery = [y_data_delivery]
-
 
 
 ########## goals bar chart ############
@@ -142,14 +124,10 @@ fig_goals.update_layout(
     ),
     xaxis_tickfont_size=14,
     yaxis=dict(
-        title='Dollar (millions)',
+        title='USD (millions)',
         titlefont_size=16,
         tickfont_size=14,
     ),
-    #legend=dict(
-    #    x=0,
-    #    y=1.0
-    #),
     barmode='group',
     bargap=0.15,  # gap between bars of adjacent location coordinates
     bargroupgap=0.1  # gap between bars of the same location coordinate
@@ -284,7 +262,7 @@ fig_delivery_dates.update_layout(
     plot_bgcolor='white'
 )
 
-########### line chart costs #############
+'''########### line chart costs #############
 fig_costs = go.Figure()
 
 for i in range(0, 4):
@@ -356,7 +334,7 @@ annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
                                   color='rgb(37,37,37)'),
                         showarrow=False))
 
-fig_costs.update_layout(annotations=annotations)
+fig_costs.update_layout(annotations=annotations)'''
 
 ######## pie chart vehicle capacity ########
 
@@ -461,50 +439,50 @@ layout = html.Div(
         ),
 
         html.Div(className='top-cards around',
-                children=[
+                 children=[
                     dbc.Row([
                         # Profit
                         dbc.Col(html.Div([
                             html.H5('Profit'),
-                            html.H1(str(profit) + "$"),
+                            html.H2(str(profit) + "$"),
                             html.H4("+3%")
                         ], className='card'), width=True),
                         # Revenue
                         dbc.Col(html.Div([
                             html.H5('Revenue'),
-                            html.H1(str(revenue) + "$"),
+                            html.H2(str(revenue) + "$"),
                             html.H4("+8%")
                         ], className='card'), width=True),
                          # Cost card
                         dbc.Col(html.Div([
                         html.H5('Cost'),
-                        html.H1(str(cost_juli['total_cost']) + '$'),
+                        html.H2(str(cost_juli['total_cost']) + '$'),
                         html.H4("+" + str(cost_change) + "%")
                         ], className='card'), width=True),
                         # Total Number vehicle
                         dbc.Col(html.Div([
                             html.H5('Total Number of Vehicles'),
-                            html.H1(df_vehicle_total),
+                            html.H2(df_vehicle_total),
                         ], className='card'), width=True),
                         # Vehicle active
                         dbc.Col(html.Div([
                             html.H5('Active Vehicle'),
-                            html.H1(df_vehicle_active),
+                            html.H2(df_vehicle_active),
                         ], className='card'), width=True),
                         # Vehicle maintenance
                         dbc.Col(html.Div([
                             html.H5('Vehicle in Maintenance'),
-                            html.H1(values['maintenance']),
+                            html.H2(values['maintenance']),
                         ], className='card'), width=True),
                         # Vehicle unused
                         dbc.Col(html.Div([
                             html.H5('Unused Vehicle'),
-                            html.H1(values['unused']),
+                            html.H2(values['unused']),
                         ], className='card'), width=True),
                         #availability rate
                         dbc.Col(html.Div([
                             html.H5('Availability rate'),
-                            html.H1(str(availability_rate) + "%"),
+                            html.H2(str(availability_rate) + "%"),
                         ], className='card'), width=True),
                     ]),
                 ]),
@@ -520,11 +498,11 @@ layout = html.Div(
                 html.H1('Costs'),
                 html.Div([
                     dcc.Dropdown(
-                    id='dropdown-category',
-                    options=[{'label': option, 'value': option}
-                             for option in dropdown_options],
-                    value=list(dropdown_options.keys())[0],
-                    placeholder="Select vehicle category",
+                        id='dropdown-category',
+                        options=[{'label': option, 'value': option}
+                                 for option in dropdown_options],
+                        value=list(dropdown_options.keys())[0],
+                        placeholder="Select vehicle category",
                     ),
                     dcc.Dropdown(
                         id='id-dropdown',
@@ -540,13 +518,9 @@ layout = html.Div(
                     ], value='total_cost'),
                 ], className='dropdown-alignment'),
                 dcc.Store(id='memory-output'),
-
-
                 html.Div([
-                    dcc.Graph(id='costs-chart',
-                    ),
+                    dcc.Graph(id='costs-chart'),
                 ]),
-
             ], className='card'), width=True),
         ]),
 
@@ -600,18 +574,18 @@ layout = html.Div(
                                              'align': 'right'
                                          },
                                          style_header={
-                                             'backgroundColor': '#f1f1f1',
+                                             'backgroundColor': '#FFFFFF',
                                              'fontWeight': 'bold',
                                              'fontSize': 12,
                                              'fontFamily': 'Open Sans'
                                          },
                                          style_cell={
+                                             'backgroundColor': '#FFFFFF',
                                              'padding': '5px',
                                              'fontSize': 13,
                                              'fontFamily': 'sans-serif'
                                          },
-
-                                     ), ], className='card'), width=True),
+                                     ),], className='card'), width=True),
                      ]),
                  ])
     ])
