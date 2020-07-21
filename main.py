@@ -3,29 +3,55 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-import dash_table as dt
+import plotly.express as px
+from plotly import graph_objs as go
 
-from apps import vehiclestables, downtimes, controlling, overview
-from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver
+from apps import vehiclestables, downtimes, controlling, home
+from apps.downtimes import df_vehicle_data, df_maintenance_status
+from apps.home import df_map_data
+from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True,
-                external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+
+external_scripts = [
+    {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
+    {'src': 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'}
+]
+
+app = dash.Dash(__name__,
+                suppress_callback_exceptions=True,
+                external_scripts=external_scripts,
+                external_stylesheets=[dbc.themes.BOOTSTRAP],
+                meta_tags=[
+                    {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+                ]
+                )
 
 # navigation
 app.layout = html.Div([
 
     dcc.Location(id='url', refresh=False),
-    html.H1('Fleetboard'),
 
-    # TODO fix active=True
-    dbc.Nav(
+    html.Div(
         [
-            dbc.NavItem(dbc.NavLink("Overview", href="/")),
-            dbc.NavItem(dbc.NavLink("Controlling", href="/controlling")),
-            dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes")),
-            dbc.NavItem(dbc.NavLink("Vehicle Tables", href="/vehicles-tables")),
+            html.A([
+                html.Img(src=app.get_asset_url('fleetboard_logo.jpg'), style={'height': '36px'}),
+                html.Span('Fleetboard', className='logo-text'),
+            ], className='align-self-center', href='/'),
+
+            dbc.Nav(
+                [
+                    dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
+                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
+                    dbc.NavItem(dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
+                ],
+                pills=True,
+                className='nav-menu',
+                id='navbar',
+
+            ),
         ],
-        pills=True,
+        className='header align-self-center'
     ),
 
     # page content from respective site will be loaded via this id
@@ -34,142 +60,131 @@ app.layout = html.Div([
 
 server = app.server
 
+#####Callback navigation active page########
+
 
 # routing based on navigation
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return overview.layout
-    elif pathname == '/controlling':
         return controlling.layout
     elif pathname == '/downtimes':
         return downtimes.layout
-    elif pathname == '/vehicles-tables':
-        return vehiclestables.layout
+    elif pathname == '/vehicles-overview':
+        return home.layout
     else:
         return '404'
 
 
+#####Callback navigation active page########
+
+
+@app.callback(Output('-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/':
+        active = True
+        return active
+
+@app.callback(Output('downtimes-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/downtimes':
+        active = True
+        return active
+
+
+@app.callback(Output('vehicles-overview-link', 'active'), [Input('url', 'pathname')])
+def set_page_1_active(pathname):
+    if pathname == '/vehicles-overview':
+        active = True
+        return active
+
+
+
+# Overview view
+
+
+# Overview map to table filter
+
+@app.callback(
+    Output('vehicle-table-overview', 'data'),
+    [Input('mapbox-overview', 'clickData')])
+def create_table(selected_vehicle):
+    data = df_driver
+    if selected_vehicle is not None:
+        filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
+        data = filtered_df.to_dict("records")
+    return data
+
+# def create_downtimes_table(selected_status):
+#     if selected_status is not None:
+#         data = df_driver
+#     return data
+
 # Table function
-def make_table(data, output):
-    return html.Div(
-        [
-            dt.DataTable(
-                id=output,
-                data=data.to_dict('rows'),
-                columns=[{'id': c, 'name': c} for c in data.columns],
-                selected_rows=[],
-                style_cell={'padding': '5px',
-                            'whiteSpace': 'no-wrap',
-                            'overflow': 'hidden',
-                            'textOverflow': 'ellipsis',
-                            'maxWidth': 100,
-                            'height': 30,
-                            'textAlign': 'left'},
-                style_header={
-                    'backgroundColor': 'white',
-                    'fontWeight': 'bold',
-                    'color': 'black'
-
-                },
-
-            ),
-        ], className="seven columns", style={'margin-top': '35',
-                                             'margin-left': '15',
-                                             'border': '1px solid #C6CCD5'}
-    )
-
-
-def make_chart(df, x, y, label='Author', size='Size'):
-    graph = []
-    if size == '':
-        s = 15
-    else:
-        s = df[size]
-    graph.append(go.Scatter(
-        x=df[x],
-        y=df[y],
-        mode='markers',
-        text=['{}: {}'.format(label, a) for a in df[label]],
-        opacity=0.7,
-        marker={
-            'size': s,
-            'line': {'width': 0.5, 'color': 'white'}
-        },
-        name='X'
-    ))
-
-    return graph
-
-
-# Callbacks and functions
-@app.callback(dash.dependencies.Output('memory', 'data'),
-              [dash.dependencies.Input('table', 'selected_cells'),
-               dash.dependencies.Input('table', 'derived_virtual_data')],
-              [dash.dependencies.State('memory', 'data')])
-def tab(sel, table, state):
-    # to initialize variables when it is None
-    if state is None:
-        state = {}
-    if table is None:
-        state['data'] = df_group_vehicle_class.to_dict('records')
-        table = [{}]
-    else:
-        state['data'] = table  # save current table value afer it gets initialized
-
-    # store information of selected rows to retrieve them when back button is clicked
-    # information is stored in json format
-    #
-    if sel:
-        if 'vid' in table[0].keys():
-            state['vid'] = table[0]['vid']
-        if 'vehicle_class' in table[0].keys() and table is not None:
-            state['vehicle_class'] = table[0]['vehicle_class']
-
-    return state
 
 
 @app.callback(
-    dash.dependencies.Output('table-box', 'children'),
-    [dash.dependencies.Input('filter_x', 'value'),
-     dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-     dash.dependencies.Input('table', 'selected_cells')],
-    [dash.dependencies.State('memory', 'data')])
-def update_image_src(fx, fy, button, back, selected_cell, current_table):
-    if fx == '':
-        res = df_group_vehicle_class
-    else:
-        res = df_vehicle[df_vehicle['vid'] == fx]
-
-    if selected_cell:
-        print(current_table)
-        if 'Klasse' in current_table['data'][0].keys():
-            res = df_vehicle[
-                df_vehicle['vehicle_class'] == current_table['data'][list(selected_cell)[0]['row']]['Klasse']]
-        if 'pid' in current_table['data'][0].keys():
-            res = df_driver[df_driver['pp'] == current_table['data'][list(selected_cell)[0]['row']]['pid']]
-
-    return make_table(res, 'table')
+    Output('vehicle-table2', 'data'),
+    [Input('vocation-dropdown-table', 'value')])
+def create_table(selected_vocation):
+    if selected_vocation is not None:
+        filtered_df = df_driver[df_driver["vocation"].isin(selected_vocation)]
+        data = filtered_df.to_dict("records")
+    return data
 
 
 @app.callback(
-    dash.dependencies.Output('graph', 'figure'),
-    [dash.dependencies.Input('filter_x', 'value'),
-     dash.dependencies.Input('filter_y', 'value'),
-     dash.dependencies.Input('button_chart', 'n_clicks_timestamp'),
-     dash.dependencies.Input('back_button', 'n_clicks_timestamp'),
-     dash.dependencies.Input('table', 'selected_cells')])
-def update_graph(fx, fy, back, selected_cell, current_table):
-    if fx == '':
-        return {
-            'data': [{
-                'x': df_group_vehicle_class['Klasse'],
-                'y': df_group_vehicle_class['anzahl']
-            }]
-        }
+    Output('graph', 'figure'),
+    [Input('graph-filter', 'value')])
+def create_graph(selected_column):
+    if selected_column == 'Voc':
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
+                        hover_data=['Transport Goal'], color='Transport Goal')
+
+    if selected_column == 'vic_type':
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
+                        hover_data=['Typ'], color='Typ')
+
+    if selected_column == 'person':
+        figure = px.bar(df_group_driver, x="Name", y="Amount",
+                        hover_data=['License Plate'], color='License Plate')
+    return figure
+
+
+####Callback radio buttons downtimes-table###########
+
+@app.callback(
+    Output('downtime_table', 'data'),
+    [Input('page-downtimes-radios-1', 'value')])
+def create_downtimes_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_vehicle_data[df_vehicle_data["vehicle_status"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
+
+####Callback radio buttons maintenance-status-table###########
+
+@app.callback(
+    Output('maintenance_table', 'data'),
+    [Input('page-downtimes-radios-2', 'value')])
+def create_maintenance_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_maintenance_status[df_maintenance_status["maintenance"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
+
+####Callback radio buttons accident-probability-table###########
 
 
 # server

@@ -1,24 +1,200 @@
+/* STRUCTURE
+
+    GENERAL
+    TEXT
+    NAVIGATION
+    HOME
+    CONTROLLING
+    DOWNTIMES
+    VEHICLESTABLE
+ */
+
+
+/* GENERAL */
 body {
     font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif;
     color: #444444;
-    margin: 0 auto;
-    padding: 40px;
-}
-
-.container {
-    border-radius: 5px;
-    background-color: #efefef;
-    margin: 5px;
-    padding: 15px;
-    position: relative;
-    box-shadow: 2px 2px 2px lightgrey;
+    margin: 0;
+    background: #f4f4f4;
 }
 
 div {
     padding: 0;
 }
 
+.button {
+    display: block;
+    padding: 12px 24px;
+    margin-left: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.card {
+    padding: 12px 12px;
+    border-radius: 6px;
+    border: none;
+    background: white;
+}
+
+.last-page {
+    font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif !important;
+    font-size: 12px !important;
+}
+
+.table-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+    margin: 12px;
+}
+
+
+#vocation-dropdown-table .Select {
+    border: solid 2px #eeeeee;
+    border-radius: 6px;
+}
+
+.Select-control {
+    min-height: 50px !important;
+}
+
+
+/* TEXT */
+h1 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.8em;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+h2 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.5em;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+h3 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.2em;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+h4 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 0.9em;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+/* HEADER */
+.logo-text {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative;
+    top: 4px;
+    margin: 0 !important;
+    padding: 0 18px !important;
+}
+
+.header {
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.header * {
+    display: inline-block;
+}
+
+
+/* HOME */
+.home-content {
+    margin: 5px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.home-welcome-text {
+    margin-bottom: 20px;
+}
+
+
+/* CONTROLLING */
+.tab-content {
+    margin: 18px;
+}
+
+.controlling-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+.data-picker {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: stretch;
+    align-content: stretch;
+}
+
+
+/* DOWNTIMES */
+.downtimes-content {
+    margin: 0 auto;
+}
+
+.card-tab {
+    margin: 18px;
+}
+
+.dash-table-container {
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.cal-container {
+    width: 100%;
+    height: 700px;
+}
+
+.dash-graph {
+    margin-bottom: 24px;
+}
+
 /* VEHICLES TABLES */
+.vehiclestables-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+#graph-filter label {
+    padding-right: 12px;
+}
+
 .vehicles-tables-filter {
     width: 200px;
 }
@@ -26,7 +202,6 @@ div {
 .vehicles-tables-content {
     max-width: 900px;
     border-radius: 5px;
-    background-color: #efefef;
     margin: 5px;
     padding: 15px;
     position: relative;
@@ -36,32 +211,4 @@ div {
 .vehicles-tables-data-table {
     padding: 12px;
 }
-
-.vehicles-tables-button-reset {
-    display: inline-block;
-    padding: 12px 24px;
-    font-weight: 500;
-    border: none;
-    background: white;
-    color: #1a1a1b;
-    margin: 12px;
-}
-
-.vehicles-tables-button-previous-level {
-    display: inline-block;
-    padding: 12px 24px;
-    font-weight: 500;
-    border: none;
-    border-radius: 3px;
-    background: white;
-    color: #1a1a1b;
-    margin: 12px;
-}
-
-
-/* */
-.overview-welcome-text {
-    margin-bottom: 20px;
-}
-
 

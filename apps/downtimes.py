@@ -2,7 +2,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
+# TODO are imports unused or there on purpose?
 import calendar
 import matplotlib.pyplot as plt
 import dash_bootstrap_components as dbc
@@ -11,65 +13,142 @@ from database_connection import connect, return_engine
 
 # connect to database and add files to
 conn = connect()
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
 sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
-# Daten
-# fleet_data = pd.read_csv('cleaned-data-for-fleet-dna.csv')
-fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
-# fleet_data.iloc[:,1:3]
+df_vehicle_data = df_vehicle_data.round(decimals=2)
+
+######## Convert maintenance score to maintenance status############
+
+df_maintenance_status = df_vehicle_data.copy()
+conditions = [
+    (df_vehicle_data['maintenance'] < 50),
+    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 95),
+    (df_vehicle_data['maintenance'] >= 95)]
+choices = ['No need', 'Soon', 'Need']
+
+df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
+
+
+
 
 
 # PieCharts
 
-# Downtimes Overview
+############### Downtimes Overview graph################
 
-labels = ['Accidents', 'Traffic Jams', 'Maintenance', 'Unused']
-values = [20, 30, 10, 40]
+###New dataframe for filter result####
+df_vehicle_status = df_vehicle_data.copy()
+
+###Array with accepted values###
+accepted_vehicle_status_array = ['accident', 'unused', 'maintenance', 'traffic jam']
+
+###filter####
+df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
+
+####use unique values as labels###
+labels = df_vehicle_status['vehicle_status'].unique()
+
+####count values###
+values = df_vehicle_status.vehicle_status.value_counts()
 
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Need for Maintenance
 
-labels = ['Need', 'Soon', 'No need']
-values = [2, 5, 10]
+
+
+############################## Need for Maintenance graph###################################
+
+####use unique values as labels###
+labels = df_maintenance_status['maintenance'].unique()
+
+####count values###
+values = df_maintenance_status.maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 
-# Accident Probability
+
+
+
+##################### Accident Probability graph#####################################
 
 labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
 
-pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
 
-# Mapbox
+####################### Mapbox ###########################
 # mapbox_access_token = open(".mapbox_token").read()
 
-fig = go.Figure(go.Scattermapbox(
-    lat=['38.91427', '38.91538', '38.91458',
-         '38.92239', '38.93222', '38.90842',
-         '38.91931', '38.93260', '38.91368',
-         '38.88516', '38.921894', '38.93206',
-         '38.91275'],
-    lon=['-77.02827', '-77.02013', '-77.03155',
-         '-77.04227', '-77.02854', '-77.02419',
-         '-77.02518', '-77.03304', '-77.04509',
-         '-76.99656', '-77.042438', '-77.02821',
-         '-77.01239'],
+
+#########Mapbox Accidents##############
+
+
+###Data filter####
+
+df_vehicle_accidents = df_vehicle_data.copy()
+
+###Array with accepted values###
+only_accidents_array = ['accident']
+
+df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
+
+
+
+fleet_lat = df_vehicle_accidents.position_latitude
+fleet_lon = df_vehicle_accidents.position_longitude
+fleet_vid = df_vehicle_accidents.vid
+
+mapbox_accidents = go.Figure(go.Scattermapbox(
+
+    lat=fleet_lat,
+    lon=fleet_lon,
     mode='markers',
     marker=go.scattermapbox.Marker(
         size=9
     ),
-    text=["Truck 1", "Truck 2", "Truck 3",
-          "Truck 4", "Truck 5", "Truck 6",
-          "Truck 7", "Truck 8", "Truck 9",
-          "Truck 10", "Truck 11", "Truck 12",
-          "Truck 13"],
+    text=fleet_vid,
+))
+
+mapbox_accidents.update_layout(
+    margin=dict(l=0, r=0, t=0, b=0),
+    autosize=True,
+    hovermode='closest',
+    mapbox=dict(
+        accesstoken='pk.eyJ1IjoiamFrb2JzY2hhYWwiLCJhIjoiY2tiMWVqYnYwMDEyNDJ5bWF3YWhnMTFnNCJ9.KitYnq2a645C15FwvFdqAw',
+        bearing=0,
+        center=dict(
+            lat=40.92,
+            lon=-91.07
+        ),
+        pitch=0,
+        zoom=3,
+        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+    ),
+)
+
+######Mapbox total########
+####### Vehicle  position data extraction ###################
+fleet_lat = df_vehicle_data.position_latitude
+fleet_lon = df_vehicle_data.position_longitude
+fleet_vid = df_vehicle_data.vid
+
+fig = go.Figure(go.Scattermapbox(
+
+    lat=fleet_lat,
+    lon=fleet_lon,
+    mode='markers',
+    marker=go.scattermapbox.Marker(
+        size=9
+    ),
+    text=fleet_vid,
 ))
 
 fig.update_layout(
+    margin=dict(l=0, r=0, t=0, b=0),
     autosize=True,
     hovermode='closest',
     mapbox=dict(
@@ -77,349 +156,434 @@ fig.update_layout(
         bearing=0,
         center=dict(
             lat=38.92,
-            lon=-77.07
+            lon=-100.07
         ),
         pitch=0,
-        zoom=10,
+        zoom=5,
         style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
     ),
 )
 
-###Kalender###
+layout = html.Div(
+    className='downtimes-content',
+    children=[
 
-calendar.setfirstweekday(0)
-w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
-m_names = '''
-January February March April
-May June July August
-September October November December'''.split()
+        ###### Tab-Layout ############
 
+        dcc.Tabs([
 
-class MplCalendar(object):
+            # Downtimes Home
 
-    def __init__(self, year, month):
-        self.year = year
-        self.month = month
-        self.cal = calendar.monthcalendar(year, month)
-        # monthcalendar creates a list of lists for each week
-        # Save the events data in the same format
-        self.events = [[[] for day in week] for week in self.cal]
+            dcc.Tab(label='Downtimes', children=[
 
-    def _monthday_to_index(self, day):
-        for week_n, week in enumerate(self.cal):
-            try:
-                i = week.index(day)
-                return week_n, i
-            except ValueError:
-                pass
-        # couldn't find the day
-        raise ValueError("There aren't {} days in the month".format(day))
+                ################# Row 1 ###########################
 
-    def add_event(self, day, event_str):
-        week, w_day = self._monthday_to_index(day)
-        self.events[week][w_day].append(event_str)
+                dbc.Row([
 
-    def show(self):
-        ##create calendar
-        f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
-        for week, ax_row in enumerate(axs):
-            for week_day, ax in enumerate(ax_row):
-                ax.set_xticks([])
-                ax.set_yticks([])
-                if self.cal[week][week_day] != 0:
-                    ax.text(.02, .98,
-                            str(self.cal[week][week_day]),
-                            verticalalignment='top',
-                            horizontalalignment='left')
-                contents = "\n".join(self.events[week][week_day])
-                ax.text(.03, .85, contents,
-                        verticalalignment='top',
-                        horizontalalignment='left',
-                        fontsize=9)
-
-        # use the titles of the first row as the weekdays
-        for n, day in enumerate(w_days):
-            axs[0][n].set_title(day)
-
-        # Place subplots in a close grid
-        f.subplots_adjust(hspace=0)
-        f.subplots_adjust(wspace=0)
-        f.suptitle(m_names[self.month] + ' ' + str(self.year),
-                   fontsize=20, fontweight='bold')
-
-    plt.show()
-
-
-plt = go.Figure(plt.show())
-
-layout = html.Div([
-
-    ###### Tab-Layout ############
-
-    dcc.Tabs([
-
-        # Downtimes View
-
-        dcc.Tab(label='Downtimes', children=[
-
-            ################# Row 1 ###########################
-
-            dbc.Row([
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Vehicle Downtimes'),
-                                style={'text-align': 'center'}
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H1('Vehicle Downtimes'),
+                                ),
                             ),
                         ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dcc.Graph(figure=pie1)),
-                        dbc.Col([
+                        dbc.Row([
+                            dbc.Col(dcc.Graph(figure=pie1, config={'responsive': True}), className='piechart'),
+                            dbc.Col([
 
-                            dcc.RadioItems(
-                                id='page-controlling-radios-2',
-                                options=[{'label': i, 'value': i}
-                                         for i in ['Unused', 'Traffic Jams', 'Accidents', 'Maintenance']],
-                                value='Overall'),
+                                ##################Radiobuttons Downtimes###################
 
-                            dash_table.DataTable(
-                                data=fleet_data.to_dict('records'),
+                                dcc.Checklist(
+                                    id='page-downtimes-radios-1',
+                                    options=[{'label': i, 'value': i}
+                                             for i in ['unused', 'accident', 'maintenance']],
+                                    value=['unused', 'accident', 'maintenance']),
+
+                                ##################Searchbox Downtimes###################
+
+                                # dcc.Dropdown(
+                                #     id='searchbox_downtime_table',
+                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
+                                #     value='',
+                                #     placeholder='Search for vehicle...'
+                                # ),
+
+                                ##################Table Downtimes#########################
+
+                                dash_table.DataTable(
+                                    id="downtime_table",
+                                    filter_action='native',
+                                    sort_action='native',
+                                    style_table={
+                                        'maxHeight': '',
+                                        'maxWidth': '',
+                                        'overflowY': ''
+                                    },
+                                    data=[{}],
+
+                                    columns=[{'name': i, 'id': i} for i in
+                                             df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
+                                    page_size=10,
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
+                                    style_cell_conditional=[
+
+                                    ]),
+                            ]),
+                        ]),
+                    ], className='card-tab card', width=True),
+
+                    ##################Map Accidents#########################
+
+                    dbc.Col(html.Div([
+                        html.Div([
+                            html.Div(
+                                html.H1('Accidents'), className='map-margin'
+                            ),
+                            html.Div(
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
+                            ),
+                        ]),
+
+                    ]), className='card-tab card', width=True),
+
+                ]),
+
+                ################# Row 2 ###########################
+
+                dbc.Row([
+
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H1('Need for Maintenance'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dcc.Graph(figure=pie2)),
+                            dbc.Col([
+
+                                ################## Radio-Buttons Maintenance ################
+
+                                dcc.Checklist(
+                                    id='page-downtimes-radios-2',
+                                    options=[{'label': i, 'value': i}
+                                             for i in ['Need', 'Soon', 'No need']],
+                                    value=['Need', 'Soon', 'No need']),
+
+                                ################## Searchbox Maintenance ###################
+
+                                # dcc.Dropdown(
+                                #     id='maintenance_filter_x',
+                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
+                                #     value='',
+                                #     placeholder='Search for vehicle...'
+                                # ),
+
+                                dash_table.DataTable(
+                                    id='maintenance_table',
+                                    data=[{}],
+                                    filter_action='native',
+                                    sort_action='native',
+                                    columns=[{'name': i, 'id': i} for i in
+                                             df_maintenance_status.loc[:, ['licence_plate', 'maintenance']]],
+                                    page_size=10,
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
+                                    style_cell_conditional=[
+
+                                    ]),
+                            ]),
+                        ]),
+                    ], className='card-tab card', width=True),
+
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H1('Accident Probability'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dcc.Graph(figure=pie3)),
+                            dbc.Col([
+                                ################## Searchbox Accidents ###################
+
+                                dcc.Checklist(
+                                    id='page-downtimes-radios-3',
+                                    options=[{'label': i, 'value': i}
+                                             for i in ['Category 1', 'Category 2', 'Category 3']],
+                                    value=['Category 1', 'Category 2', 'Category 3']),
+
+                                ################## Searchbox Accidents ###################
+
+                                # dcc.Dropdown(
+                                #     id='accident_filter_x',
+                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
+                                #     value='',
+                                #     placeholder='Search for vehicle...'
+                                # ),
+
+                                dash_table.DataTable(
+                                    data=df_vehicle_data.to_dict('records'),
+                                    filter_action='native',
+                                    sort_action='native',
+                                    # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                    columns=[{'name': i, 'id': i} for i in
+                                             df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                    page_size=10,
+                                    style_header={
+                                        'backgroundColor': '#f1f1f1',
+                                        'fontWeight': 'bold',
+                                        'fontSize': 12,
+                                        'fontFamily': 'Open Sans'
+                                    },
+                                    style_cell={
+                                        'padding': '5px',
+                                        'fontSize': 13,
+                                        'fontFamily': 'sans-serif'
+                                    },
+                                    style_cell_conditional=[
+                                    ]),
+                            ]),
+                        ]),
+                    ], className='card-tab card', width=True),
+
+                ]),
+
+                ############# Row 3 #############
+
+                dbc.Row([
+
+                    # Overstepping speed limit table
+
+                    # dbc.Col([
+                    #     dbc.Row(
+                    #         dbc.Col(
+                    #             html.Div(
+                    #                 html.H3('Overstepping Speed Limit'),
+                    #                 style={'textAlign': 'center'}
+                    #             ),
+                    #         ),
+                    #     ),
+                    #     dbc.Row([
+                    #         dbc.Col(dash_table.DataTable(
+                    #             data=vehicle_data.to_dict('records'),
+                    #             # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                    #             columns=[{'name': i, 'id': i} for i in vehicle_data.loc[:, ['vid', 'maintenance']]],
+                    #             page_size=5,
+                    #             style_cell={'textAlign': 'left'},
+                    #             style_cell_conditional=[
+                    #
+                    #             ]), ),
+                    #     ]),
+                    # ], className='card', width=True),
+
+                    # Oldest Vehicles table
+
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H3('Oldest Vehicles'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dash_table.DataTable(
+                                data=df_vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                                style_cell={'textAlign': 'left'},
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
+                                page_size=5,
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
                                 style_cell_conditional=[
 
-                                ]),
+                                ]), ),
                         ]),
-                    ]),
-                ], className='container', width=True),
+                    ], className='card-tab card', width=True),
 
-                dbc.Col(html.Div([
-                    html.Div([
-                        html.Div(
-                            html.H2('Accidents'),
-                            style={'text-align': 'center'}
-                        ),
-                        html.Div(
-                            dcc.Graph(figure=fig),
-                        ),
-                    ]),
+                    # Excessive speeding table
 
-                ]), className='container', width=True),
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H3('Longest Distance'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dash_table.DataTable(
+                                data=df_vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                page_size=5,
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
+                                style_cell_conditional=[
+
+                                ]), ),
+                        ]),
+                    ], className='card-tab card', width=True),
+
+                    # Excessive acceleration table
+
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H3('Excessive Acceleration'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dash_table.DataTable(
+                                data=df_vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                page_size=5,
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
+                                style_cell_conditional=[
+
+                                ]), ),
+                        ]),
+                    ], className='card-tab card', width=True),
+
+                    # Excessive breaking table
+
+                    dbc.Col([
+                        dbc.Row(
+                            dbc.Col(
+                                html.Div(
+                                    html.H3('Excessive Breaking'),
+                                ),
+                            ),
+                        ),
+                        dbc.Row([
+                            dbc.Col(dash_table.DataTable(
+                                data=df_vehicle_data.to_dict('records'),
+                                filter_action='native',
+                                sort_action='native',
+                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
+                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'maintenance']]],
+                                page_size=5,
+                                style_header={
+                                    'backgroundColor': '#f1f1f1',
+                                    'fontWeight': 'bold',
+                                    'fontSize': 12,
+                                    'fontFamily': 'Open Sans'
+                                },
+                                style_cell={
+                                    'padding': '5px',
+                                    'fontSize': 13,
+                                    'fontFamily': 'sans-serif'
+                                },
+                                style_cell_conditional=[
+
+                                ]), ),
+                        ]),
+                    ], className='card-tab card', width=True),
+                ]),
 
             ]),
 
-            ################# Row 2 ###########################
+            # Maintenance Calendar
+            dcc.Tab(label='Maintenance Calendar', children=[
 
-            dbc.Row([
+                # dcc.Graph(figure=calenderview),
 
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Need for Maintenance'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dcc.Graph(figure=pie2)),
-                        dbc.Col([
-                            dcc.RadioItems(
-                                id='page-controlling-radios-2',
-                                options=[{'label': i, 'value': i}
-                                         for i in ['Need', 'Soon', 'No need']],
-                                value='Overall'),
-                            dash_table.DataTable(
-                                data=fleet_data.to_dict('records'),
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                                style_cell={'textAlign': 'left'},
-                                style_cell_conditional=[
-
-                                ]),
-                        ]),
-                    ]),
-                ], className='container', width=True),
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Accident Probability'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dcc.Graph(figure=pie3)),
-                        dbc.Col([
-                            dcc.RadioItems(
-                                id='page-controlling-radios-2',
-                                options=[{'label': i, 'value': i}
-                                         for i in ['Category 1', 'Category 2', 'Category 3']],
-                                value='Overall'),
-
-                            dash_table.DataTable(
-                                data=fleet_data.to_dict('records'),
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                                style_cell={'textAlign': 'left'},
-                                style_cell_conditional=[
-                                ]),
-                        ]),
-                    ]),
-                ], className='container', width=True),
-
-            ]),
-
-            ############# Row 3 #############
-
-            dbc.Row([
-
-                # Overstepping speed limit table
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Overstepping Speed Limit'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
-
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
-
-                # Oldest Vehicles table
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Oldest Vehicles'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
-
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
-
-                # Excessive speeding table
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Excessive Speeding'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
-
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
-
-                # Excessive acceleration table
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Excessive Acceleration'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
-
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
-
-                # Excessive breaking table
-
-                dbc.Col([
-                    dbc.Row(
-                        dbc.Col(
-                            html.Div(
-                                html.H2('Excessive Breaking'),
-                                style={'text-align': 'center'}
-                            ),
-                        ),
-                    ),
-                    dbc.Row([
-                        dbc.Col(dash_table.DataTable(
-                            data=fleet_data.to_dict('records'),
-                            # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                            columns=[{'name': i, 'id': i} for i in fleet_data.loc[:, ['vid', 'vehicle_class']]],
-                            style_cell={'textAlign': 'left'},
-                            style_cell_conditional=[
-
-                            ]), ),
-                    ]),
-                ], className='container', width=True),
-            ]),
-
-        ]),
-
-        ################### Maintenance Calendar View ##################
-        dcc.Tab(label='Maintenance Calendar', children=[
-            dcc.Graph(figure=plt)
-
-        ]),
-
-        # Fleet location map view
-        dcc.Tab(label='Realtime Map', children=[
-
-            dcc.Graph(figure=fig),
-
-            dash_table.DataTable(
-                data=fleet_data.to_dict('records'),
-                columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                style_cell={'textAlign': 'left'},
-                style_cell_conditional=[
-                    {
-                        'if': {'column_id': 'Region'},
-                        'textAlign': 'left'
-                    }
+                html.Div([
+                    html.Embed(src='assets/calendar.html', className="cal-container")
                 ])
+            ]),
 
-        ]),
+            # Fleet Location Map
+            # dcc.Tab(label='Realtime Map', children=[
+            #
+            #     dcc.Graph(figure=fig),
+            #
+            #     html.H3('Vehicle Details'),
+            #
+            #     dash_table.DataTable(
+            #         data=df_vehicle_data.to_dict('records'),
+            #         columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
+            #         style_header={
+            #             'backgroundColor': 'lightgrey',
+            #             'fontWeight': 'bold',
+            #             'fontSize': 12,
+            #             'fontFamily': 'Open Sans'
+            #         },
+            #         style_cell={
+            #             'padding': '5px',
+            #             'fontSize': 13,
+            #             'fontFamily': 'sans-serif'
+            #         },
+            #         style_cell_conditional=[
+            #             {
+            #                 'if': {'column_id': 'Region'},
+            #                 'textAlign': 'left'
+            #             }
+            #         ])
+            # ]),
+        ])
     ])
-])
