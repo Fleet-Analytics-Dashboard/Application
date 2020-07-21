@@ -114,13 +114,66 @@ def set_page_1_active(pathname):
 # Overview table to map filter
 
 @app.callback(
-    Output('vehicle-table-overview', 'figure'),
-    [Input('mapbox-overview', 'clickData')])
+    Output('map', 'figure'),
+    [Input('vehicle-table-overview', 'data')])
 def create_downtimes_table(selected_status):
     if selected_status is not None:
-        filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_status)]
-        data = filtered_df.to_dict("records")
-    return data
+        filtered_df = df_vehicle_data[df_vehicle_data.isin(selected_status)]
+        # data = filtered_df.to_dict("records")
+
+        fleet_lat = filtered_df.position_latitude
+        fleet_lon = filtered_df.position_longitude
+        fleet_vid = filtered_df.vid
+        fleet_status = filtered_df.vehicle_status
+
+        fig = go.Figure(
+            px.scatter_mapbox(filtered_df, text="licence_plate", lat=fleet_lat, lon=fleet_lon,
+                              color="vehicle_status",
+                              custom_data=['licence_plate'], color_continuous_scale=px.colors.cyclical.IceFire,
+                              size_max=20, zoom=10))
+
+        fig.update_layout(
+            margin=dict(l=0, r=0, t=0, b=0),
+            autosize=True,
+            clickmode='event+select',
+            legend=dict(
+                x=0,
+                y=1,
+                font=dict(
+                    family="Courier",
+                    size=12,
+                    color="black"
+                ),
+                bgcolor="LightSteelBlue",
+                bordercolor="Black",
+                borderwidth=2
+            ),
+            hovermode='closest',
+            mapbox=dict(
+                accesstoken='pk.eyJ1IjoiamFrb2JzY2hhYWwiLCJhIjoiY2tiMWVqYnYwMDEyNDJ5bWF3YWhnMTFnNCJ9.KitYnq2a645C15FwvFdqAw',
+                bearing=0,
+                center=dict(
+                    lat=38.92,
+                    lon=-100.07
+                ),
+                pitch=0,
+                zoom=5,
+                # style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+                style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
+            ),
+        )
+
+    return fig
+
+
+# @app.callback(
+#     Output('map-container', 'figure'),
+#     [Input('vehicle-table-overview', 'data')])
+# def create_downtimes_table(selected_status):
+#     if selected_status is not None:
+#         filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_status)]
+#         data = filtered_df.to_dict("records")
+#     return data
 
 
 # Table function

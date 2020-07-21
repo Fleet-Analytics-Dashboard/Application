@@ -135,7 +135,15 @@ h4 {
 
 .home-welcome-text {
     margin-bottom: 20px;
+    height: 700px;
 }
+realtime-map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
 
 
 /* CONTROLLING */

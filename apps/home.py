@@ -34,8 +34,8 @@ fleet_status = df_vehicle_data.vehicle_status
 
 fig = go.Figure(
     px.scatter_mapbox(df_vehicle_data, text="licence_plate", lat=fleet_lat, lon=fleet_lon, color="vehicle_status",
-                      custom_data=['licence_plate'], color_continuous_scale=px.colors.cyclical.IceFire,
-                      size_max=20, zoom=10))
+                      color_continuous_scale=px.colors.cyclical.IceFire,
+                      size_max=20, zoom=10, height=650))
 
 fig.update_layout(
     margin=dict(l=0, r=0, t=0, b=0),
@@ -63,7 +63,7 @@ fig.update_layout(
         ),
         pitch=0,
         zoom=5,
-        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        # style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
         style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
@@ -75,125 +75,122 @@ layout = html.Div(
 
         dcc.Tabs([
 
-        #########Realtime Map############
+            #########Realtime Map############
             dcc.Tab(label='Realtime Map', children=[
 
                 html.Div(
-                    children='',
+
+                    children=[
+                        dcc.Dropdown(
+                            id='map-filter',
+                            options=[{'label': i, 'value': i} for i in sorted(df_vehicle_data['licence_plate'])],
+                            value='',
+                            placeholder='Search for vehicle...'
+                        ),
+                        dcc.Graph(figure=fig, id='mapbox-overview', className='realtime-map'),
+
+                    ],
+                    id='map-container',
                     className="home-welcome-text"),
 
-                dcc.Graph(figure=fig, id='mapbox-overview'),
-
-
-                html.Div(dt.DataTable(
-                    id='vehicle-table-overview',
-                    data=[{}],
-                    columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in
-                             df_driver.columns],
-                    filter_action="native",
-                    editable=True,
-                    sort_action="native",
-                    sort_mode="multi",
-                    page_action="native",
-                    page_current=0,
-                    page_size=40,
-                    style_as_list_view=True,
-                    style_header={
-                        'backgroundColor': '#f1f1f1',
-                        'fontWeight': 'bold',
-                        'fontSize': 12,
-                        'fontFamily': 'Open Sans'
-                    },
-                    style_cell={
-                        'padding': '5px',
-                        'fontSize': 13,
-                        'fontFamily': 'sans-serif'
-                    },
-                    style_cell_conditional=[
-                        {
-                            'if': {'column_id': c},
-                            'textAlign': 'left'
-                        } for c in ['Date', 'Region']
-                    ],
-                ),
-
-                )
+                # html.Div(dt.DataTable(
+                #     data=df_vehicle_data.to_dict('records'),
+                #     columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
+                #     filter_action="native",
+                #     style_header={
+                #         'backgroundColor': 'lightgrey',
+                #         'fontWeight': 'bold',
+                #         'fontSize': 12,
+                #         'fontFamily': 'Open Sans'
+                #     },
+                #     style_cell={
+                #         'padding': '5px',
+                #         'fontSize': 13,
+                #         'fontFamily': 'sans-serif'
+                #     },
+                #     style_cell_conditional=[
+                #         {
+                #             'if': {'column_id': 'Region'},
+                #             'textAlign': 'left'
+                #         }
+                #     ])
+                #
+                # )
 
             ]),
 
             ############Vehicles###############
             dcc.Tab(label='Vehicles', children=[
 
-html.Div(
-            className='card',
-            children=[
-                html.H1('Select One Option'),
-                dcc.RadioItems(
-                    id='graph-filter',
-                    options=[
-                        {'label': ' Transport Goals   ', 'value': 'Voc'},
-                        {'label': ' Vehicles   ', 'value': 'vic_type'},
-                        {'label': ' Drivers   ', 'value': 'person'}
-                    ],
-                    value='Voc',
-                ),
-                dcc.Graph(
-                    id='graph'
-                ),
-            ]),
-        html.Div(
-            className='card',
-            children=[
-                html.H1('Table'),
-                html.Div('In the following bar, a certain vehicle, driver, or other information can be searched.'
-                         'Further, one of the following transport goals can be exclude.'
-                         'Lastly, the table can be resetted via the reset button'),
+                html.Div(
+                    className='card',
+                    children=[
+                        html.H1('Select One Option'),
+                        dcc.RadioItems(
+                            id='graph-filter',
+                            options=[
+                                {'label': ' Transport Goals   ', 'value': 'Voc'},
+                                {'label': ' Vehicles   ', 'value': 'vic_type'},
+                                {'label': ' Drivers   ', 'value': 'person'}
+                            ],
+                            value='Voc',
+                        ),
+                        dcc.Graph(
+                            id='graph'
+                        ),
+                    ]),
+                html.Div(
+                    className='card',
+                    children=[
+                        html.H1('Table'),
+                        html.Div(
+                            'In the following bar, a certain vehicle, driver, or other information can be searched.'
+                            'Further, one of the following transport goals can be exclude.'
+                            'Lastly, the table can be resetted via the reset button'),
 
-                html.Div([
-                    dcc.Dropdown(
-                        id='vocation-dropdown-table',
-                        options=[{'label': i, 'value': i} for i in
-                                 sorted(df_driver['vocation'].unique())],
-                        value=df_driver['vocation'].unique(),
-                        multi=True,
-                    ),
-                    html.A('Reset table (Refresh)', className='button', href='/vehicles-tables'),
-                ], className='table-menu'),
+                        html.Div([
+                            dcc.Dropdown(
+                                id='vocation-dropdown-table',
+                                options=[{'label': i, 'value': i} for i in
+                                         sorted(df_driver['vocation'].unique())],
+                                value=df_driver['vocation'].unique(),
+                                multi=True,
+                            ),
+                            html.A('Reset table (Refresh)', className='button', href='/vehicles-tables'),
+                        ], className='table-menu'),
 
-                dt.DataTable(
-                    id='vehicle-table2',
-                    data=[{}],
-                    columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in
-                             df_driver.columns],
-                    filter_action="native",
-                    editable=True,
-                    sort_action="native",
-                    sort_mode="multi",
-                    page_action="native",
-                    page_current=0,
-                    page_size=40,
-                    style_as_list_view=True,
-                    style_header={
-                        'backgroundColor': '#f1f1f1',
-                        'fontWeight': 'bold',
-                        'fontSize': 12,
-                        'fontFamily': 'Open Sans'
-                    },
-                    style_cell={
-                        'padding': '5px',
-                        'fontSize': 13,
-                        'fontFamily': 'sans-serif'
-                    },
-                    style_cell_conditional=[
-                        {
-                            'if': {'column_id': c},
-                            'textAlign': 'left'
-                        } for c in ['Date', 'Region']
-                    ],
-                ),
-            ])
-
-
+                        dt.DataTable(
+                            id='vehicle-table2',
+                            data=[{}],
+                            columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in
+                                     df_driver.columns],
+                            filter_action="native",
+                            editable=True,
+                            sort_action="native",
+                            sort_mode="multi",
+                            page_action="native",
+                            page_current=0,
+                            page_size=40,
+                            style_as_list_view=True,
+                            style_header={
+                                'backgroundColor': '#f1f1f1',
+                                'fontWeight': 'bold',
+                                'fontSize': 12,
+                                'fontFamily': 'Open Sans'
+                            },
+                            style_cell={
+                                'padding': '5px',
+                                'fontSize': 13,
+                                'fontFamily': 'sans-serif'
+                            },
+                            style_cell_conditional=[
+                                {
+                                    'if': {'column_id': c},
+                                    'textAlign': 'left'
+                                } for c in ['Date', 'Region']
+                            ],
+                        ),
+                    ])
 
             ]),
         ]),
