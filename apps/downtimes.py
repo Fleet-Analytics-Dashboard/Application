@@ -41,7 +41,7 @@ df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, 
 
 #fig_carbon = go.Figure()
 
-#for i in range(0, 1):
+# for i in range(0, 1):
 #    fig_carbon.add_trace(go.Scatter(
 #        x=x_data_carbon[i],
 #        y=y_data_carbon_footprint[i], mode='lines+markers',
@@ -69,11 +69,14 @@ labels = df_vehicle_status['vehicle_status'].unique()
 ####count values###
 values = df_vehicle_status.vehicle_status.value_counts()
 
+#index = df_vehicle_status.vid
+text = len(df_vehicle_status)
+
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 pie1.update_traces(marker=dict(colors=colors))
-
-
-
+pie1.update_layout(
+    annotations=[dict(text=text, font_size=20, showarrow=False)]
+)
 
 ############################## Need for Maintenance graph###################################
 
@@ -113,21 +116,22 @@ only_accidents_array = ['accident']
 
 df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
 
-
-
 fleet_lat = df_vehicle_accidents.position_latitude
 fleet_lon = df_vehicle_accidents.position_longitude
-fleet_vid = df_vehicle_accidents.vid
+fleet_text = df_vehicle_accidents.licence_plate
 
 mapbox_accidents = go.Figure(go.Scattermapbox(
-
+    text=fleet_text,
     lat=fleet_lat,
     lon=fleet_lon,
     mode='markers',
+    #hoverinfo='all',
     marker=go.scattermapbox.Marker(
-        size=9
+        size=12,
+        symbol='fire-station',
+        color='rgb(242, 177, 172)'
     ),
-    text=fleet_vid,
+
 ))
 
 mapbox_accidents.update_layout(
@@ -143,7 +147,8 @@ mapbox_accidents.update_layout(
         ),
         pitch=0,
         zoom=3,
-        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
 
@@ -185,84 +190,6 @@ fig.update_layout(
 ######## sorting dataframe for maintenace calendar############
 
 df_vehicle_data = df_vehicle_data.sort_values(by='licence_plate', ascending=False)
-def maintenance_calendar():
-    today = datetime.date.today()
-    year, week_num, day_of_week = today.isocalendar()
-    # d1 represents starting day (yyyy-mm-dd) and d2 end day
-    #d1 = today - datetime.date.month
-
-    d1 = today + relativedelta(weeks=-26)
-
-    d2 = today + relativedelta(weeks=+26)
-
-    delta = d2 - d1
-
-
-    dates_in_year = [d1 + datetime.timedelta(i) for i in range(delta.days+1)]
-    weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
-                           dates_in_year]
-    weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
-    # create numpy array for the maintenance dates for each vehicle
-    z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
-
-    # set status of vehicles which are currently in maintenance to 1
-    today_maintenance = df_vehicle_data.index[df_vehicle_data['vehicle_status'] == 'maintenance'].tolist()
-    for i in today_maintenance:
-        z[i][26] = 1
-
-    # set status for scheduled maintenance
-    for index, row in df_vehicle_data.iterrows():
-        z[index][26 + int(row['scheduled_maintenance'])] = 1
-
-    # set status for previous maintenance
-    np.random.seed(1)
-    random_date = np.random.randint(0, 23, size=len(df_vehicle_data.vid) )
-    index = 0
-    for i in random_date:
-        z[index][i] = 1
-        index += 1
-
-    # set status for scheduled maintenance
-    for index, row in df_vehicle_data.iterrows():
-        if row.predicted_weeks_until_maintenance < 30:
-            z[index][26 + int(row['predicted_weeks_until_maintenance'])] = 0.5
-
-    #text = [str(i) for i in dates_in_year] #gives something like list of strings like ‘2018-01-25’ for each date. Used in data trace to make good hovertext.
-    #4cc417 green #347c17 dark green
-    colorscale = [[0, '#eeeeee'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
-    data = [
-    go.Heatmap(
-    x = weeknumber_of_dates,
-    y = df_vehicle_data['licence_plate'],
-    z = z,
-   # text=text,
-   # hoverinfo='text',
-    xgap=3, # this
-    ygap=3, # and this is used to make the grid-like apperance
-    showscale=False,
-    colorscale=colorscale
-    )]
-
-
-    layout = go.Layout(
-    height=4000,
-    yaxis=dict(
-    showline = False, showgrid = False, zeroline = False,
-    ticktext=df_vehicle_data['licence_plate'],
-    ),
-    xaxis=dict(
-    showline = False, showgrid = False, zeroline = False, side = 'top', tickfont=dict(color="#1f77b4"),
-    tickvals=weeknumber_of_dates,
-   # ticktext=week_num,
-    ),
-   #font={'size':'10', 'color':'#9e9e9e'},
-    plot_bgcolor=('#fff'),
-    margin = dict(t=40),
-    )
-
-    fig = go.Figure(data=data, layout=layout)
-    return fig
-
 
 #### view layout #####
 
@@ -326,7 +253,7 @@ layout = html.Div(
 
                                     columns=[{'name': i, 'id': i} for i in
                                              df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
-                                    page_size=10, 
+                                    page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
                                         'fontWeight': 'bold',
@@ -353,7 +280,8 @@ layout = html.Div(
                                 html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
-                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True},
+                                          className='accidentsmap'),
                             ),
                         ]),
 
@@ -627,7 +555,8 @@ layout = html.Div(
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -653,7 +582,14 @@ layout = html.Div(
             dcc.Tab(label='Maintenance Calendar', children=[
 
                 html.Div(children=[
-                    dcc.Graph(id='heatmap-test', figure=maintenance_calendar(), config={'displayModeBar': False})
+                    dcc.Dropdown(id='heatmap-dropdown',
+                                 options=[{'value': x, 'label': x} for x in df_vehicle_data['licence_plate']],
+                                 #multi=True,
+                                 #value='x',
+                                 placeholder='Select license plate'),
+                    dcc.Graph(id='heatmap',
+                              #figure=maintenance_calendar(), config={'displayModeBar': False}
+                    )
                 ], style={'overflowX': 'scroll', 'height': 550}
                 )
 
