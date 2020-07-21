@@ -12,7 +12,7 @@ from database_connection import connect, return_engine
 conn = connect()
 sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from cleaned_data_fleet_dna;"
+sql = "select * from driving_data;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
@@ -21,13 +21,14 @@ dfnames = pd.read_csv('names.csv')
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
-df_vehicle = fleet_data[
-    ['vid', 'vehicle_class', 'vocation', 'vehicel_type', 'fuel_type', 'drivetrain_type', 'pid']].copy()
+df_vehicle = df_vehicle_data[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
+df_vehicle = pd.merge(df_vehicle, fleet_data, how='left', on='vid')
+df_vehicle = df_vehicle[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type', 'pid']]
 
-df_vehicle_class = fleet_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicel_type']].copy()
-df_vehicle_class = df_vehicle.drop_duplicates(subset=None, keep='first', inplace=False)
-df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicel_type'])[
-    'vid'].count().reset_index()
+df_vehicle_class = df_vehicle_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicle_type']].copy()
+df_vehicle_class = df_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
+
+df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicle_type'])['vid'].count().reset_index()
 df_group_vehicle_class.columns = (["Vehicle Typ", 'Transport Goal', 'Typ', "Amount"])
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
