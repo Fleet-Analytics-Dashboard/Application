@@ -150,7 +150,7 @@ new['stops_1800_plus_seconds'] = df['stops_1800_plus'].copy()
 new['stops_3600_plus_seconds'] = df['stops_3600_plus'].copy()
 new['stops_per_mile'] = df['stops_per_mile'].copy()
 new['total_stops'] = df['total_stops'].copy()
-new['non_recorded_time_hrs'] = df['non_recorded_time_hrs'].copy()
+#new['non_recorded_time_hrs'] = df['non_recorded_time_hrs'].copy()
 
 # add all relevant columns from category 'Elevation' (original column 193-232)
 new['max_elevation'] = df['max_elevation'].copy()
