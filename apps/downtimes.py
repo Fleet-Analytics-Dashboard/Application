@@ -276,8 +276,8 @@ distance.update_xaxes(title_text="Licence Plate")
 
 # Set y-axes titles
 distance.update_yaxes(title_text="Distance", secondary_y=False)
-distance['layout']['yaxis'].update(range=[int(df_vehicle_data['distance'].iloc[-1]), int(df_vehicle_data['distance'].iloc[0])], dtick=5, autorange=False)
-distance['layout']['yaxis2'].update(range=[int(df_vehicle_data['distance'].iloc[-1]), int(df_vehicle_data['distance'].iloc[0])], dtick=5, autorange=False)
+distance['layout']['yaxis'].update(range=[0,20000], dtick=1000, autorange=False)
+distance['layout']['yaxis2'].update(range=[0,20000], dtick=1000, autorange=False)
 
 
 #### view layout #####
