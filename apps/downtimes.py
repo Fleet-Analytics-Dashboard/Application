@@ -211,12 +211,12 @@ df_vehicle_data['mean'] = x
 
 # Add traces
 oldest_vehicle.add_trace(
-    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'], name="yaxis data"),
+    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'], name="construction year"),
     secondary_y=False,
 )
 
 oldest_vehicle.add_trace(
-    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="yaxis2 data"),
+    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="mean"),
     secondary_y=True,
 )
 
@@ -492,7 +492,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         oldest_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -509,10 +509,7 @@ layout = html.Div(
 
                                 ]), ),
                         ]),
-                        dbc.Col([
-                         dbc.Row(
-                            dcc.Graph(id='graph-carbon-footprint', figure=oldest_vehicle)
-                         )
+                        dcc.Graph(id='graph-carbon-footprint', figure=oldest_vehicle)
                     ], className='card-tab card', width=True),
 
                     # Excessive speeding table
@@ -673,4 +670,3 @@ layout = html.Div(
             #         ])
             # ]),
         ])
-])
