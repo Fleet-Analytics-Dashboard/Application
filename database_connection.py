@@ -1,6 +1,6 @@
 import psycopg2 as pg
 from sqlalchemy import create_engine
-import hidden.database_config as config
+from hidden import database_config as config
 
 
 def connect():
