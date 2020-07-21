@@ -22,7 +22,8 @@ fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
 # colors theme
-colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)',
+          'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
 
 df_vehicle_data = df_vehicle_data.round(decimals=2)
 
@@ -40,16 +41,13 @@ df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, 
 ######## create random date############
 
 
-
 df_vehicle_data["Start"] = '2020-01-01'
 df_vehicle_data["Finish"] = '2021-01-01'
 df_vehicle_data["Resource"] = 'maintenance'
 
+# fig_carbon = go.Figure()
 
-
-#fig_carbon = go.Figure()
-
-#for i in range(0, 1):
+# for i in range(0, 1):
 #    fig_carbon.add_trace(go.Scatter(
 #        x=x_data_carbon[i],
 #        y=y_data_carbon_footprint[i], mode='lines+markers',
@@ -77,11 +75,14 @@ labels = df_vehicle_status['vehicle_status'].unique()
 ####count values###
 values = df_vehicle_status.vehicle_status.value_counts()
 
+#index = df_vehicle_status.vid
+text = len(df_vehicle_status)
+
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 pie1.update_traces(marker=dict(colors=colors))
-
-
-
+pie1.update_layout(
+    annotations=[dict(text=text, font_size=20, showarrow=False)]
+)
 
 ############################## Need for Maintenance graph###################################
 
@@ -93,9 +94,6 @@ values = df_maintenance_status.scheduled_maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 pie2.update_traces(marker=dict(colors=colors))
-
-
-
 
 ##################### Accident Probability graph#####################################
 
@@ -120,8 +118,6 @@ df_vehicle_accidents = df_vehicle_data.copy()
 only_accidents_array = ['accident']
 
 df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
-
-
 
 fleet_lat = df_vehicle_accidents.position_latitude
 fleet_lon = df_vehicle_accidents.position_longitude
@@ -196,9 +192,8 @@ df_vehicle_data["Resource"] = 'maintenance'
 
 df = df_vehicle_data[['vid', 'Start', 'Finish']]
 
-
 gantt_chart = px.timeline(df, x_start=df['Start'], x_end=df['Finish'], y=df['vid'])
-gantt_chart.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
+gantt_chart.update_yaxes(autorange="reversed")  # otherwise tasks are listed from the bottom up
 
 layout = html.Div(
     className='downtimes-content',
@@ -260,7 +255,7 @@ layout = html.Div(
 
                                     columns=[{'name': i, 'id': i} for i in
                                              df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
-                                    page_size=10, 
+                                    page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
                                         'fontWeight': 'bold',
@@ -287,7 +282,8 @@ layout = html.Div(
                                 html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
-                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True},
+                                          className='accidentsmap'),
                             ),
                         ]),
 
@@ -561,7 +557,8 @@ layout = html.Div(
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -597,7 +594,8 @@ layout = html.Div(
                         filter_action='native',
                         sort_action='native',
                         # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                        columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'Start', 'Finish', 'Resource']]],
+                        columns=[{'name': i, 'id': i} for i in
+                                 df_vehicle_data.loc[:, ['vid', 'Start', 'Finish', 'Resource']]],
                         page_size=5,
                         style_header={
                             'backgroundColor': '#f1f1f1',
@@ -615,12 +613,11 @@ layout = html.Div(
                         ]), ),
 
                     html.Div(
-                            dcc.Graph(figure=gantt_chart, config={'responsive': True}, className='gantt_chart'),
-                            ),
+                        dcc.Graph(figure=gantt_chart, config={'responsive': True}, className='gantt_chart'),
+                    ),
 
                 ]),
             ]),
-
 
             # Fleet Location Map
             # dcc.Tab(label='Realtime Map', children=[
