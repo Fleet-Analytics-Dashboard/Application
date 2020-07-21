@@ -1,13 +1,15 @@
+import dash_table
+##todo are imports unused or there on purpose?
+import dash_bootstrap_components as dbc
+import datetime
+import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
-# TODO are imports unused or there on purpose?
-import calendar
-import matplotlib.pyplot as plt
-import dash_bootstrap_components as dbc
+import numpy as np
+from dateutil.relativedelta import relativedelta
+
 
 from database_connection import connect, return_engine
 
@@ -19,22 +21,34 @@ sql = "select * from cleaned_data_fleet_dna;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
+# colors theme
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
+
 df_vehicle_data = df_vehicle_data.round(decimals=2)
 
 ######## Convert maintenance score to maintenance status############
 
 df_maintenance_status = df_vehicle_data.copy()
 conditions = [
-    (df_vehicle_data['maintenance'] < 50),
-    (df_vehicle_data['maintenance'] >= 50) & (df_vehicle_data['maintenance'] < 95),
-    (df_vehicle_data['maintenance'] >= 95)]
+    (df_vehicle_data['scheduled_maintenance'] >= 8),
+    (df_vehicle_data['scheduled_maintenance'] < 8) & (df_vehicle_data['scheduled_maintenance'] > 1),
+    (df_vehicle_data['scheduled_maintenance'] <= 1)]
 choices = ['No need', 'Soon', 'Need']
 
-df_maintenance_status['maintenance'] = np.select(conditions, choices, default='null')
+df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, default='null')
 
 
 
+#fig_carbon = go.Figure()
 
+# for i in range(0, 1):
+#    fig_carbon.add_trace(go.Scatter(
+#        x=x_data_carbon[i],
+#        y=y_data_carbon_footprint[i], mode='lines+markers',
+#        name='Carbon Footprint',
+#        line=dict(color=colors[i], width=line_size[i]),
+#        connectgaps=True,
+#    ))
 
 # PieCharts
 
@@ -55,20 +69,25 @@ labels = df_vehicle_status['vehicle_status'].unique()
 ####count values###
 values = df_vehicle_status.vehicle_status.value_counts()
 
+#index = df_vehicle_status.vid
+text = len(df_vehicle_status)
+
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-
-
-
+pie1.update_traces(marker=dict(colors=colors))
+pie1.update_layout(
+    annotations=[dict(text=text, font_size=20, showarrow=False)]
+)
 
 ############################## Need for Maintenance graph###################################
 
 ####use unique values as labels###
-labels = df_maintenance_status['maintenance'].unique()
+labels = df_maintenance_status['scheduled_maintenance'].unique()
 
 ####count values###
-values = df_maintenance_status.maintenance.value_counts()
+values = df_maintenance_status.scheduled_maintenance.value_counts()
 
 pie2 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie2.update_traces(marker=dict(colors=colors))
 
 
 
@@ -79,6 +98,7 @@ labels = ['Category 1', 'Category 2', 'Category 3']
 values = [20, 30, 10, 40]
 
 pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
+pie3.update_traces(marker=dict(colors=colors))
 
 ####################### Mapbox ###########################
 # mapbox_access_token = open(".mapbox_token").read()
@@ -96,21 +116,22 @@ only_accidents_array = ['accident']
 
 df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
 
-
-
 fleet_lat = df_vehicle_accidents.position_latitude
 fleet_lon = df_vehicle_accidents.position_longitude
-fleet_vid = df_vehicle_accidents.vid
+fleet_text = df_vehicle_accidents.licence_plate
 
 mapbox_accidents = go.Figure(go.Scattermapbox(
-
+    text=fleet_text,
     lat=fleet_lat,
     lon=fleet_lon,
     mode='markers',
+    #hoverinfo='all',
     marker=go.scattermapbox.Marker(
-        size=9
+        size=12,
+        symbol='fire-station',
+        color='rgb(242, 177, 172)'
     ),
-    text=fleet_vid,
+
 ))
 
 mapbox_accidents.update_layout(
@@ -126,7 +147,8 @@ mapbox_accidents.update_layout(
         ),
         pitch=0,
         zoom=3,
-        style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
+        style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
 
@@ -163,6 +185,92 @@ fig.update_layout(
         style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
     ),
 )
+
+######Maintenance Calendar########
+######## sorting dataframe for maintenace calendar############
+
+df_vehicle_data = df_vehicle_data.sort_values(by='licence_plate', ascending=False)
+def maintenance_calendar():
+    today = datetime.date.today()
+    year, week_num, day_of_week = today.isocalendar()
+    # d1 represents starting day (yyyy-mm-dd) and d2 end day
+    #d1 = today - datetime.date.month
+
+    d1 = today + relativedelta(weeks=-26)
+
+    d2 = today + relativedelta(weeks=+26)
+
+    delta = d2 - d1
+
+
+    dates_in_year = [d1 + datetime.timedelta(i) for i in range(delta.days+1)] # gives me a list with datetimes for each day a year
+    # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
+    weeknumber_of_dates = [i.strftime("%Gcw%V")[2:] for i in
+                           dates_in_year]  # gives [1,1,1,1,1,1,1,2,2,2,2,2,2,2,…] name is self-explanatory
+    weeknumber_of_dates = list(dict.fromkeys(weeknumber_of_dates))
+    # create numpy array for the maintenance dates for each vehicle
+    z = np.zeros(shape=(len(df_vehicle_data['vid']), len(weeknumber_of_dates)), dtype=float)
+
+    # set status of vehicles which are currently in maintenance to 1
+    today_maintenance = df_vehicle_data.index[df_vehicle_data['vehicle_status'] == 'maintenance'].tolist()
+    for i in today_maintenance:
+        z[i][26] = 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        z[index][26 + int(row['scheduled_maintenance'])] = 1
+
+    # set status for previous maintenance
+    np.random.seed(1)
+    random_date = np.random.randint(0, 23, size=len(df_vehicle_data.vid) )
+    index = 0
+    for i in random_date:
+        z[index][i] = 1
+        index += 1
+
+    # set status for scheduled maintenance
+    for index, row in df_vehicle_data.iterrows():
+        if row.predicted_weeks_until_maintenance < 30:
+            z[index][26 + int(row['predicted_weeks_until_maintenance'])] = 0.5
+
+    #text = [str(i) for i in dates_in_year] #gives something like list of strings like ‘2018-01-25’ for each date. Used in data trace to make good hovertext.
+    #4cc417 green #347c17 dark green
+    colorscale = [[0, '#eeeeee'], [0.5, 'red'], [1, 'rgb(7, 130, 130)']]
+    data = [
+    go.Heatmap(
+    x = weeknumber_of_dates,
+    y = df_vehicle_data['licence_plate'],
+    z = z,
+   # text=text,
+   # hoverinfo='text',
+    xgap=3, # this
+    ygap=3, # and this is used to make the grid-like apperance
+    showscale=False,
+    colorscale=colorscale
+    )]
+
+
+    layout = go.Layout(
+    height=4000,
+    yaxis=dict(
+    showline = False, showgrid = False, zeroline = False,
+   # tickmode='array',
+    ticktext=df_vehicle_data['licence_plate'],
+   # tickvals=[0,1,2,3,4,5,6],
+    ),
+    xaxis=dict(
+    showline = False, showgrid = False, zeroline = False, side = 'top',
+    ),
+   #font={'size':'10', 'color':'#9e9e9e'},
+    plot_bgcolor=('#fff'),
+    margin = dict(t=40),
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+
+#### view layout #####
 
 layout = html.Div(
     className='downtimes-content',
@@ -251,7 +359,8 @@ layout = html.Div(
                                 html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
-                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True},
+                                          className='accidentsmap'),
                             ),
                         ]),
 
@@ -298,7 +407,7 @@ layout = html.Div(
                                     filter_action='native',
                                     sort_action='native',
                                     columns=[{'name': i, 'id': i} for i in
-                                             df_maintenance_status.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_maintenance_status.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -352,7 +461,7 @@ layout = html.Div(
                                     sort_action='native',
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in
-                                             df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                             df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -454,7 +563,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -490,7 +599,7 @@ layout = html.Div(
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                 columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'maintenance']]],
+                                         df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -525,7 +634,8 @@ layout = html.Div(
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
@@ -550,11 +660,12 @@ layout = html.Div(
             # Maintenance Calendar
             dcc.Tab(label='Maintenance Calendar', children=[
 
-                # dcc.Graph(figure=calenderview),
+                html.Div(children=[
+                    dcc.Graph(id='heatmap-test', figure=maintenance_calendar(), config={'displayModeBar': False})
+                ], style={'overflowX': 'scroll', 'height': 550}
+                )
 
-                html.Div([
-                    html.Embed(src='assets/calendar.html', className="cal-container")
-                ])
+                ]),
             ]),
 
             # Fleet Location Map
@@ -586,4 +697,3 @@ layout = html.Div(
             #         ])
             # ]),
         ])
-    ])

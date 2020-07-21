@@ -148,6 +148,27 @@ h4 {
     margin: 0 auto;
 }
 
+.dropdown-alignment {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: baseline;
+    flex: auto;
+    width: 100% !important;
+}
+
+
+.dropdown-alignment > div {
+    width: 100% !important;
+}
+
+#page-controlling-radios-3 > label {
+    margin-right: 50px;
+}
+
+
 .data-picker {
     margin-bottom: 12px;
     display: flex;
@@ -184,6 +205,19 @@ h4 {
 .dash-graph {
     margin-bottom: 24px;
 }
+
+#page-downtimes-radios-1 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-2 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-3 > label {
+    margin-right: 10px;
+}
+
 
 /* VEHICLES TABLES */
 .vehiclestables-content {

@@ -4,14 +4,19 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
+from dash.exceptions import PreventUpdate
+import collections
 from plotly import graph_objs as go
 
 from apps import vehiclestables, downtimes, controlling, home
 from apps.downtimes import df_vehicle_data, df_maintenance_status
-from apps.home import df_map_data
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
+from apps.controlling import *
 
-
+conn = connect()
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
+conn = None
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
@@ -26,6 +31,10 @@ app = dash.Dash(__name__,
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"}
                 ]
                 )
+
+# colors theme
+colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)',
+          'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
 
 # navigation
 app.layout = html.Div([
@@ -43,12 +52,12 @@ app.layout = html.Div([
                 [
                     dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
                     dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
-                    dbc.NavItem(dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
+                    dbc.NavItem(
+                        dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
                 ],
                 pills=True,
                 className='nav-menu',
                 id='navbar',
-
             ),
         ],
         className='header align-self-center'
@@ -59,8 +68,6 @@ app.layout = html.Div([
 ])
 
 server = app.server
-
-#####Callback navigation active page########
 
 
 # routing based on navigation
@@ -86,6 +93,7 @@ def set_page_1_active(pathname):
         active = True
         return active
 
+
 @app.callback(Output('downtimes-link', 'active'), [Input('url', 'pathname')])
 def set_page_1_active(pathname):
     if pathname == '/downtimes':
@@ -100,26 +108,20 @@ def set_page_1_active(pathname):
         return active
 
 
-
 # Overview view
 
 
-# Overview map to table filter
+# Overview table to map filter
 
 @app.callback(
-    Output('vehicle-table-overview', 'data'),
+    Output('vehicle-table-overview', 'figure'),
     [Input('mapbox-overview', 'clickData')])
-def create_table(selected_vehicle):
-    data = df_driver
-    if selected_vehicle is not None:
-        filtered_df = df_map_data[df_map_data["licence_plate"].isin(selected_vehicle)]
+def create_downtimes_table(selected_status):
+    if selected_status is not None:
+        filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_status)]
         data = filtered_df.to_dict("records")
     return data
 
-# def create_downtimes_table(selected_status):
-#     if selected_status is not None:
-#         data = df_driver
-#     return data
 
 # Table function
 
@@ -168,6 +170,66 @@ def create_downtimes_table(selected_status):
     return data
 
 
+####Callback costs dropdown controlling-table###########
+@app.callback(
+    Output('id-dropdown', 'options'),
+    [Input('dropdown-category', 'value')]
+)
+def update_dropdown(option):
+    return [{'label': i, 'value': i} for i in dropdown_options[option]]
+
+
+#### Callback filter costs chart by vehicle id############
+@app.callback(Output('memory-output', 'data'),
+              [Input('id-dropdown', 'value')])
+def filter_id(id_selected):
+    if not id_selected:
+        return df_cost_data.to_dict('records')
+    filtered = df_cost_data.query('vid in @id_selected')
+    return filtered.to_dict('records')
+
+
+@app.callback(
+    Output('costs-chart', 'figure'),
+    [Input('memory-output', 'data'),
+     Input('memory-field', 'value')])
+def on_data_set_graph(data, field):
+    if data is None:
+        raise PreventUpdate
+
+    aggregation = collections.defaultdict(
+        lambda: collections.defaultdict(list)
+    )
+
+    for row in data:
+        a = aggregation[row['vid']]
+        a['name'] = row['vid']
+        a['mode'] = 'lines+markers'
+
+        a['x'].append(row['month'])
+        a['y'].append(row[field])
+
+    return {
+        'data': [y for y in aggregation.values()]
+    }
+
+
+####Callback checkboxes controlling-table###########
+
+@app.callback(
+    Output('table-for-capacity', 'data'),
+    [Input('page-controlling-radios-3', 'value')])
+def create_capacity_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_vehicle_data[df_vehicle_data["vehicle_status"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
+
 ####Callback radio buttons maintenance-status-table###########
 
 @app.callback(
@@ -178,7 +240,7 @@ def create_maintenance_table(selected_status):
         data = selected_status.to_dict("records")
 
     else:
-        filtered_df = df_maintenance_status[df_maintenance_status["maintenance"].isin(selected_status)]
+        filtered_df = df_maintenance_status[df_maintenance_status["scheduled_maintenance"].isin(selected_status)]
         data = filtered_df.to_dict("records")
 
     return data
