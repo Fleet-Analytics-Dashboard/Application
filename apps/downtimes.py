@@ -41,7 +41,7 @@ df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, 
 
 #fig_carbon = go.Figure()
 
-#for i in range(0, 1):
+# for i in range(0, 1):
 #    fig_carbon.add_trace(go.Scatter(
 #        x=x_data_carbon[i],
 #        y=y_data_carbon_footprint[i], mode='lines+markers',
@@ -69,11 +69,14 @@ labels = df_vehicle_status['vehicle_status'].unique()
 ####count values###
 values = df_vehicle_status.vehicle_status.value_counts()
 
+#index = df_vehicle_status.vid
+text = len(df_vehicle_status)
+
 pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 pie1.update_traces(marker=dict(colors=colors))
-
-
-
+pie1.update_layout(
+    annotations=[dict(text=text, font_size=20, showarrow=False)]
+)
 
 ############################## Need for Maintenance graph###################################
 
@@ -112,8 +115,6 @@ df_vehicle_accidents = df_vehicle_data.copy()
 only_accidents_array = ['accident']
 
 df_vehicle_accidents = df_vehicle_accidents.loc[df_vehicle_accidents['vehicle_status'].isin(only_accidents_array)]
-
-
 
 fleet_lat = df_vehicle_accidents.position_latitude
 fleet_lon = df_vehicle_accidents.position_longitude
@@ -327,7 +328,7 @@ layout = html.Div(
 
                                     columns=[{'name': i, 'id': i} for i in
                                              df_vehicle_data.loc[:, ['licence_plate', 'vehicle_status']]],
-                                    page_size=10, 
+                                    page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
                                         'fontWeight': 'bold',
@@ -354,7 +355,8 @@ layout = html.Div(
                                 html.H1('Accidents'), className='map-margin'
                             ),
                             html.Div(
-                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True}, className='accidentsmap'),
+                                dcc.Graph(figure=mapbox_accidents, config={'responsive': True},
+                                          className='accidentsmap'),
                             ),
                         ]),
 
@@ -628,7 +630,8 @@ layout = html.Div(
                                 filter_action='native',
                                 sort_action='native',
                                 # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
+                                columns=[{'name': i, 'id': i} for i in
+                                         df_vehicle_data.loc[:, ['vid', 'scheduled_maintenance']]],
                                 page_size=5,
                                 style_header={
                                     'backgroundColor': '#f1f1f1',
