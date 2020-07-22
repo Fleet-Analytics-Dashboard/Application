@@ -295,11 +295,11 @@ pie_capacity.update_traces(marker=dict(colors=colors))
     ##Cost Juli
 
 cost_juli = df_cost_data.groupby(['month']).sum()
-cost_juli = cost_juli.loc['07_jul']
+cost_juli = cost_juli.loc['July']
 cost_juli = cost_juli.round(decimals=2)
 
 cost_juni = df_cost_data.groupby(['month']).sum()
-cost_juni = cost_juni.loc['06_jun']
+cost_juni = cost_juni.loc['June']
 cost_juni = cost_juni.round(decimals=2)
 
 cost_change = (cost_juli['total_cost'] / cost_juni['total_cost'])-1

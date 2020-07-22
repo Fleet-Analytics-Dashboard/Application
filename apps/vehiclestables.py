@@ -21,7 +21,7 @@ dfnames = pd.read_csv('names.csv')
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
-df_vehicle = df_vehicle_data[['vid','licence_plate', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
+df_vehicle = df_vehicle_data[['vid','licence_plate', 'vehicle_class',   'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
 df_vehicle = pd.merge(df_vehicle, fleet_data, how='left', on='vid')
 df_vehicle = df_vehicle[['vid', 'vehicle_class', 'licence_plate', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type', 'pid']]
 
