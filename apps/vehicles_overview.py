@@ -3,9 +3,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 from database_connection import connect
 import dash_table as dt
-from apps.downtimes import df_vehicle_data
 import plotly.graph_objects as go
-from apps.downtimes import fleet_data
 import plotly.express as px
 
 conn = connect()
@@ -40,11 +38,6 @@ df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
 
 df_map_data = df_vehicle_data.copy()
 
-# Data from csv
-#fleet_data = pd.read_csv('driving_data.csv')
-#df_vehicle_data = pd.read_csv('vehicle_data.csv')
-# fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
-# fleet_data.iloc[:,1:3]
 
 
 ####Mapbox####
@@ -86,7 +79,6 @@ fig.update_layout(
         ),
         pitch=0,
         zoom=5,
-        # style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
         style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
@@ -94,7 +86,7 @@ fig.update_layout(
 layout = html.Div(
     className='home-content card',
     children=[
-        # html.H1(children='Home'),
+
 
         dcc.Tabs([
 
@@ -116,29 +108,6 @@ layout = html.Div(
                     id='map-container',
                     className="home-welcome-text"),
 
-                # html.Div(dt.DataTable(
-                #     data=df_vehicle_data.to_dict('records'),
-                #     columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
-                #     filter_action="native",
-                #     style_header={
-                #         'backgroundColor': 'lightgrey',
-                #         'fontWeight': 'bold',
-                #         'fontSize': 12,
-                #         'fontFamily': 'Open Sans'
-                #     },
-                #     style_cell={
-                #         'padding': '5px',
-                #         'fontSize': 13,
-                #         'fontFamily': 'sans-serif'
-                #     },
-                #     style_cell_conditional=[
-                #         {
-                #             'if': {'column_id': 'Region'},
-                #             'textAlign': 'left'
-                #         }
-                #     ])
-                #
-                # )
 
             ]),
 

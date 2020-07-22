@@ -1,15 +1,10 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
+
 import plotly.express as px
 from dash.exceptions import PreventUpdate
 import collections
-from plotly import graph_objs as go
+
 
 from apps import downtimes, home, vehicles_overview
-from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.downtimes import *
 from apps.home import *
 
@@ -211,15 +206,6 @@ def create_downtimes_table(selected_status):
 
     return fig
 
-
-# @app.callback(
-#     Output('map-container', 'figure'),
-#     [Input('vehicle-table-overview', 'data')])
-# def create_downtimes_table(selected_status):
-#     if selected_status is not None:
-#         filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_status)]
-#         data = filtered_df.to_dict("records")
-#     return data
 
 
 # Table function
@@ -479,7 +465,28 @@ def create_heat_map(selected_licence_plate):
     return fig
 
 
-####Callback radio buttons accident-probability-table###########
+####Callback date picker###########
+
+# callback for date-picker
+@app.callback(
+    Output('output-container-date-picker-range', 'children'),
+    [Input('my-date-picker-range', 'start_date'),
+     Input('my-date-picker-range', 'end_date')])
+def update_output(start_date, end_date):
+    string_prefix = 'You have selected: '
+    if start_date is not None:
+        start_date = dt.strptime(re.split('T| ', start_date)[0], '%Y-%m-%d')
+        start_date_string = start_date.strftime('%B %d, %Y')
+        string_prefix = string_prefix + 'Start Date: ' + start_date_string + ' | '
+    if end_date is not None:
+        end_date = dt.strptime(re.split('T| ', end_date)[0], '%Y-%m-%d')
+        end_date_string = end_date.strftime('%B %d, %Y')
+        string_prefix = string_prefix + 'End Date: ' + end_date_string
+    if len(string_prefix) == len('You have selected: '):
+        return 'Select a date to see it displayed here'
+    else:
+        return string_prefix
+
 
 
 # server
