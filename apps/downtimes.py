@@ -541,7 +541,7 @@ layout = html.Div(
                     dcc.Graph(id='heatmap',
                               #figure=maintenance_calendar(), config={'displayModeBar': False}
                     )
-                ], style={'overflowX': 'scroll', 'height': 550}
+                ], className="maintenance-calender"
                 )
 
                 ]),

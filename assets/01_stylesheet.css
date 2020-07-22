@@ -74,6 +74,11 @@ div {
     height: 100%;
 }
 
+.maintenance-calender {
+    overflow: scroll;
+    height: 100%;
+}
+
 .top-cards > .row {
     display: flex;
     flex-direction: row;
