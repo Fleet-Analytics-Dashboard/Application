@@ -211,12 +211,13 @@ df_vehicle_data['mean'] = x
 
 # Add traces
 oldest_vehicle.add_trace(
-    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'], name="construction year"),
+    go.Bar(x=oldest_vehicle_data['licence_plate'], y=oldest_vehicle_data['vehicle_construction_year'],
+           name="construction year", marker=dict(color='rgb(7,130,130)')),
     secondary_y=False,
 )
 
 oldest_vehicle.add_trace(
-    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="mean"),
+    go.Scatter(x=oldest_vehicle_data['licence_plate'], y=df_vehicle_data['mean'], name="mean", marker=dict(color='rgb(66,234,221)')),
     secondary_y=True,
 )
 
@@ -250,12 +251,12 @@ df_vehicle_data['mean_distance'] = x_distance
 
 # Add traces
 distance.add_trace(
-    go.Bar(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['distance'], name="distance"),
+    go.Bar(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['distance'], name="distance", marker=dict(color='rgb(7,130,130)')),
     secondary_y=False,
 )
 
 distance.add_trace(
-    go.Scatter(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['mean_distance'], name="mean"),
+    go.Scatter(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['mean_distance'], name="mean", marker=dict(color='rgb(66,234,221)')),
     secondary_y=True,
 )
 
