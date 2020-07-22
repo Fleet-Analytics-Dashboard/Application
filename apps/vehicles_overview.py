@@ -157,14 +157,14 @@ layout = html.Div(
                                 value=df_driver['vocation'].unique(),
                                 multi=True,
                             ),
-                            html.A('Reset table (Refresh)', className='button', href='/vehicles-tables'),
                         ], className='table-menu'),
 
                         dt.DataTable(
                             id='vehicle-table2',
                             data=[{}],
-                            columns=[{'id': c, 'name': c, "deletable": True, "selectable": True} for c in
+                            columns=[{'id': c, 'name': c, "deletable": True, "selectable": True, "hideable": "last"} for c in
                                      df_driver.columns],
+
                             filter_action="native",
                             editable=True,
                             sort_action="native",
@@ -190,6 +190,8 @@ layout = html.Div(
                                     'textAlign': 'left'
                                 } for c in ['Date', 'Region']
                             ],
+                            export_format='xlsx',
+                            export_headers='display',
                         ),
                     ])
 
