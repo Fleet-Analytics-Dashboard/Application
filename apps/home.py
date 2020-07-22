@@ -357,20 +357,6 @@ layout = html.Div(
     className='controlling-content',
     children=[
 
-        # Date Picker
-        html.Div(
-            [
-                dcc.DatePickerRange(
-                    id='controlling-date-picker-range',
-                    min_date_allowed=dt(1995, 8, 5),
-                    max_date_allowed=dt(2020, 6, 19),
-                    initial_visible_month=dt(2020, 6, 5),
-                    end_date=dt(2020, 6, 5).date()
-                ),
-                html.Div(id='output-container-date-picker-range')
-            ], className='data-picker',
-        ),
-
         html.Div(className='top-cards around',
                  children=[
                     dbc.Row([
@@ -399,30 +385,35 @@ layout = html.Div(
                         dbc.Col(html.Div([
                             html.H5('Total Number of Vehicles'),
                             html.H2(df_vehicle_total),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle active
                         dbc.Col(html.Div([
                             html.H5('Active Vehicle'),
                             html.H2(df_vehicle_active),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle maintenance
                         dbc.Col(html.Div([
                             html.H5('Vehicle in Maintenance'),
                             html.H2(values['maintenance']),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle unused
                         dbc.Col(html.Div([
                             html.H5('Unused Vehicle'),
                             html.H2(values['unused']),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Availability rate
                         dbc.Col(html.Div([
                             html.H5('Availability rate'),
                             html.H2(str(availability_rate) + "%"),
+                            html.H4(" ")
                         ], className='card'), width=True),
                     ]),
                 ]),
@@ -531,6 +522,7 @@ layout = html.Div(
     ])
 
 
+# TODO delete date picker
 # callback for date-picker
 @app.callback(
     Output('output-container-date-picker-range', 'children'),
