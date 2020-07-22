@@ -13,8 +13,8 @@ from database_connection import return_engine, connect
 # conn = None
 
 # import NREL-Fleet-DNA-Data.csv as dataframe 'df' if Database is gone
-df = pd.read_csv('composite-data-for-fleet-dna-csv-1.csv')
-driver_names = pd.read_csv('names.csv')
+df = pd.read_csv('csv_data_files/composite-data-for-fleet-dna-csv-1.csv')
+driver_names = pd.read_csv('csv_data_files/names.csv')
 
 # ------------ include data_cleanig.py ---------------------------------
 # generate two tables for vehicle and driving data
@@ -83,7 +83,7 @@ driver_names.to_sql('driver_names', con=engine, if_exists='replace')
 engine = None
 
 # generate new csv Files from new dataframes
-vehicle_data.to_csv('vehicle_data.csv')
-driving_data.to_csv('driving_data.csv')
-vehicle_cost_data.to_csv('vehicle_cost_data.csv')
-cv_table.to_csv('10_fold_cross_validation_maintenance')
+vehicle_data.to_csv('csv_data_files/vehicle_data.csv')
+driving_data.to_csv('csv_data_files/driving_data.csv')
+vehicle_cost_data.to_csv('csv_data_files/vehicle_cost_data.csv')
+cv_table.to_csv('csv_data_files/10_fold_cross_validation_maintenance.csv')

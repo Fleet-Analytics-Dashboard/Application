@@ -149,7 +149,7 @@ def vehicle_position(v_df):
     # generate a random Position for each vehicle in the Dataframe
     # generated a list with random locations on http://www.geomidpoint.com/random/
     # all within 200 Mile radius around Washington DC, 224 Datapoints
-    df = pd.read_csv('random-locations.csv')
+    df = pd.read_csv('csv_data_files/random-locations.csv')
     v_df['position_latitude'] = df['latitude'].copy()
     v_df['position_longitude'] = df['longitude'].copy()
 
