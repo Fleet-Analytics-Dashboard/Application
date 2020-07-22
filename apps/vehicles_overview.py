@@ -6,21 +6,43 @@ import dash_table as dt
 from apps.downtimes import df_vehicle_data
 import plotly.graph_objects as go
 from apps.downtimes import fleet_data
-from apps.vehiclestables import df_driver, df_vehicle_class
 import plotly.express as px
 
-# conn = connect()
-# sql = "select * from vehicle_data;"
-# df_vehicle_data = pd.read_sql_query(sql, conn)
-# sql = "select * from cleaned_data_fleet_dna;"
-# fleet_data = pd.read_sql_query(sql, conn)
-# conn = None
+conn = connect()
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
+sql = "select * from driving_data;"
+fleet_data = pd.read_sql_query(sql, conn)
+conn = None
+
+dfnames = pd.read_csv('names.csv')
+
+# Rounded data
+fleet_data_rounded = fleet_data.round(decimals=2)
+
+df_vehicle = df_vehicle_data[['vid','licence_plate', 'vehicle_class',   'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
+df_vehicle = pd.merge(df_vehicle, fleet_data, how='left', on='vid')
+df_vehicle = df_vehicle[['vid', 'vehicle_class', 'licence_plate', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type', 'pid']]
+
+df_vehicle_class = df_vehicle_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicle_type']].copy()
+df_vehicle_class = df_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
+
+df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicle_type'])['vid'].count().reset_index()
+df_group_vehicle_class.columns = (["Vehicle Class", 'Transport Goal', 'Typ', "Amount"])
+
+df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
+df_driver = df_driver.drop(columns=['ip_address'])
+df_driver = df_driver.drop_duplicates(subset=None, keep='first', inplace=False)
+
+
+df_group_driver = df_driver.groupby(['licence_plate', 'last_name'])['pid'].count().reset_index()
+df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
 
 df_map_data = df_vehicle_data.copy()
 
 # Data from csv
-fleet_data = pd.read_csv('driving_data.csv')
-df_vehicle_data = pd.read_csv('vehicle_data.csv')
+#fleet_data = pd.read_csv('driving_data.csv')
+#df_vehicle_data = pd.read_csv('vehicle_data.csv')
 # fleet_data = fleet_data.head(10)  # limits the displayed rows to 10
 # fleet_data.iloc[:,1:3]
 
