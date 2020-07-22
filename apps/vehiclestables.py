@@ -43,7 +43,7 @@ df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
 #df_group_driver = df_driver.reset_index().groupby('last_name')['vid'].nunique().reset_index()
 #df_group_driver.columns = (['last_name', 'Amount'])
 
-print(df_group_driver)
+
 
 
 # Layout

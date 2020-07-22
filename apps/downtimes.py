@@ -14,19 +14,19 @@ from plotly.subplots import make_subplots
 from dateutil.relativedelta import relativedelta
 
 
-# from database_connection import connect, return_engine
+from database_connection import connect, return_engine
 
-# connect to database and add files to
-# conn = connect()
-# sql = "select * from vehicle_data;"
-# df_vehicle_data = pd.read_sql_query(sql, conn)
-# sql = "select * from driving_data;"
-# fleet_data = pd.read_sql_query(sql, conn)
-# conn = None
+#connect to database and add files to
+conn = connect()
+sql = "select * from vehicle_data;"
+df_vehicle_data = pd.read_sql_query(sql, conn)
+sql = "select * from driving_data;"
+fleet_data = pd.read_sql_query(sql, conn)
+conn = None
 
 # get data from csv files
-df_vehicle_data = pd.read_csv('vehicle_data.csv')
-fleet_data = pd.read_csv('driving_data.csv')
+#df_vehicle_data = pd.read_csv('vehicle_data.csv')
+#fleet_data = pd.read_csv('driving_data.csv')
 
 # colors theme
 colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
@@ -45,6 +45,17 @@ choices = ['No need', 'Soon', 'Need']
 df_maintenance_status['scheduled_maintenance'] = np.select(conditions, choices, default='null')
 
 
+
+#####Convert accident_probability score to accident probability status########
+
+df_accident_probability = df_vehicle_data.copy()
+conditions = [
+    (df_vehicle_data['accident_probability'] <= 40),
+    (df_vehicle_data['accident_probability'] <= 90) & (df_vehicle_data['accident_probability'] > 40),
+    (df_vehicle_data['accident_probability'] > 90)]
+choices = ['Low Risk', 'Mid Risk', 'High Risk']
+
+df_accident_probability['accident_probability'] = np.select(conditions, choices, default='null')
 
 #fig_carbon = go.Figure()
 
@@ -101,8 +112,8 @@ pie2.update_traces(marker=dict(colors=colors))
 
 ##################### Accident Probability graph#####################################
 
-labels = ['Category 1', 'Category 2', 'Category 3']
-values = [20, 30, 10, 40]
+labels = df_accident_probability['accident_probability'].unique()
+values = df_accident_probability.accident_probability.value_counts()
 
 pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
 pie3.update_traces(marker=dict(colors=colors))
@@ -442,8 +453,8 @@ layout = html.Div(
                                 dcc.Checklist(
                                     id='page-downtimes-radios-3',
                                     options=[{'label': i, 'value': i}
-                                             for i in ['Category 1', 'Category 2', 'Category 3']],
-                                    value=['Category 1', 'Category 2', 'Category 3']),
+                                             for i in ['High Risk', 'Mid Risk', 'Low Risk']],
+                                    value=['High Risk', 'Mid Risk', 'Low Risk']),
 
                                 ################## Searchbox Accidents ###################
 
@@ -455,12 +466,13 @@ layout = html.Div(
                                 # ),
 
                                 dash_table.DataTable(
-                                    data=df_vehicle_data.to_dict('records'),
+                                    id='table-accident-probability',
+                                    data=[{}],
                                     filter_action='native',
                                     sort_action='native',
                                     # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
                                     columns=[{'name': i, 'id': i} for i in
-                                             df_vehicle_data.loc[:, ['licence_plate', 'scheduled_maintenance']]],
+                                             df_accident_probability.loc[:, ['licence_plate', 'accident_probability']]],
                                     page_size=10,
                                     style_header={
                                         'backgroundColor': '#f1f1f1',
@@ -495,30 +507,7 @@ layout = html.Div(
                                 ),
                             ),
                         ),
-                        dbc.Row([
-                            dbc.Col(dash_table.DataTable(
-                                data=df_vehicle_data.to_dict('records'),
-                                filter_action='native',
-                                sort_action='native',
-                                # columns=[{'id': c, 'name': c} for c in fleet_data.columns],
-                                columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'vehicle_construction_year']]],
-                                page_size=5,
-                                style_header={
-                                    'backgroundColor': '#f1f1f1',
-                                    'fontWeight': 'bold',
-                                    'fontSize': 12,
-                                    'fontFamily': 'Open Sans'
-                                },
-                                style_cell={
-                                    'padding': '5px',
-                                    'fontSize': 13,
-                                    'fontFamily': 'sans-serif'
-                                },
-                                style_cell_conditional=[
 
-                                ]), ),
-                        ]),
                         dcc.Graph(id='graph-oldest_vehicle', figure=oldest_vehicle)
                     ], className='card-tab card', width=True),
 
@@ -532,30 +521,7 @@ layout = html.Div(
                                 ),
                             ),
                         ),
-                        dbc.Row([
-                            dbc.Col(dash_table.DataTable(
-                                data=df_vehicle_data.to_dict('records'),
-                                filter_action='native',
-                                sort_action='native',
-                                # columns=[{'id': c, 'name': c} for c in vehicle_data.columns],
-                                columns=[{'name': i, 'id': i} for i in
-                                         df_vehicle_data.loc[:, ['licence_plate', 'distance']]],
-                                page_size=5,
-                                style_header={
-                                    'backgroundColor': '#f1f1f1',
-                                    'fontWeight': 'bold',
-                                    'fontSize': 12,
-                                    'fontFamily': 'Open Sans'
-                                },
-                                style_cell={
-                                    'padding': '5px',
-                                    'fontSize': 13,
-                                    'fontFamily': 'sans-serif'
-                                },
-                                style_cell_conditional=[
-
-                                ]), ),
-                        ]),dcc.Graph(id='graph-distance', figure=distance)
+                        dcc.Graph(id='graph-distance', figure=distance)
                     ], className='card-tab card', width=True),
 
                     

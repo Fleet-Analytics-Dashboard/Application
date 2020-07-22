@@ -306,6 +306,21 @@ def create_maintenance_table(selected_status):
 
     return data
 
+####Callback radio buttons accident-probability-table###########
+
+@app.callback(
+    Output('table-accident-probability', 'data'),
+    [Input('page-downtimes-radios-3', 'value')])
+def create_maintenance_table(selected_status):
+    if selected_status is None:
+        data = selected_status.to_dict("records")
+
+    else:
+        filtered_df = df_accident_probability[df_accident_probability["accident_probability"].isin(selected_status)]
+        data = filtered_df.to_dict("records")
+
+    return data
+
 
 ####Callback filter maintenance calendar based on license plate####
 @app.callback(Output('heatmap', 'figure'),
