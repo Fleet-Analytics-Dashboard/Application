@@ -24,6 +24,9 @@ sql = "select * from driving_data;"
 fleet_data = pd.read_sql_query(sql, conn)
 conn = None
 
+
+
+
 # get data from csv files
 #df_vehicle_data = pd.read_csv('vehicle_data.csv')
 #fleet_data = pd.read_csv('driving_data.csv')
