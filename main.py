@@ -199,16 +199,19 @@ def create_table(selected_vocation):
     [Input('graph-filter', 'value')])
 def create_graph(selected_column):
     if selected_column == 'Voc':
-        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Class", y="Amount",
                         hover_data=['Transport Goal'], color='Transport Goal')
 
     if selected_column == 'vic_type':
-        figure = px.bar(df_group_vehicle_class, x="Vehicle Typ", y="Amount",
+        figure = px.bar(df_group_vehicle_class, x="Vehicle Class", y="Amount",
                         hover_data=['Typ'], color='Typ')
 
     if selected_column == 'person':
-        figure = px.bar(df_group_driver, x="Name", y="Amount",
-                        hover_data=['License Plate'], color='License Plate')
+        figure = px.bar(df_group_driver, x="Name", y='Amount', hover_data=['License Plate'], color='License Plate')
+        #figure.update_yaxes(title_text="Amount")
+        #figure.update_xaxes(title_text="Name")
+
+
     return figure
 
 

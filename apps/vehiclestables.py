@@ -21,20 +21,30 @@ dfnames = pd.read_csv('names.csv')
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
 
-df_vehicle = df_vehicle_data[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
+df_vehicle = df_vehicle_data[['vid','licence_plate', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type']].copy()
 df_vehicle = pd.merge(df_vehicle, fleet_data, how='left', on='vid')
-df_vehicle = df_vehicle[['vid', 'vehicle_class', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type', 'pid']]
+df_vehicle = df_vehicle[['vid', 'vehicle_class', 'licence_plate', 'vocation', 'vehicle_type', 'fuel_type', 'drivetrain_type', 'pid']]
 
 df_vehicle_class = df_vehicle_data[['vehicle_class', 'vid', 'fuel_type', 'vocation', 'vehicle_type']].copy()
 df_vehicle_class = df_vehicle_class.drop_duplicates(subset=None, keep='first', inplace=False)
 
 df_group_vehicle_class = df_vehicle_class.groupby(['vehicle_class', 'vocation', 'vehicle_type'])['vid'].count().reset_index()
-df_group_vehicle_class.columns = (["Vehicle Typ", 'Transport Goal', 'Typ', "Amount"])
+df_group_vehicle_class.columns = (["Vehicle Class", 'Transport Goal', 'Typ', "Amount"])
 
 df_driver = pd.merge(df_vehicle, dfnames, how='left', on='pid').copy()
 df_driver = df_driver.drop(columns=['ip_address'])
-df_group_driver = df_driver.groupby(['vid', 'last_name'])['pid'].count().reset_index()
+df_driver = df_driver.drop_duplicates(subset=None, keep='first', inplace=False)
+
+
+df_group_driver = df_driver.groupby(['licence_plate', 'last_name'])['pid'].count().reset_index()
 df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
+
+#df_group_driver = df_driver.groupby(['last_name'])['vid'].count().reset_index()
+#df_group_driver = df_driver.reset_index().groupby('last_name')['vid'].nunique().reset_index()
+#df_group_driver.columns = (['last_name', 'Amount'])
+
+print(df_group_driver)
+
 
 # Layout
 
@@ -74,7 +84,7 @@ layout = html.Div(
                         value=df_driver['vocation'].unique(),
                         multi=True,
                     ),
-                    html.A('Reset table (Refresh)', className='button', href='/vehicles-tables'),
+                    html.A('Reset table (Refresh)', className='button', href='/vehicles-overview'),
                 ], className='table-menu'),
 
                 dt.DataTable(
