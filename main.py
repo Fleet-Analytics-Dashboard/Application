@@ -8,11 +8,11 @@ from dash.exceptions import PreventUpdate
 import collections
 from plotly import graph_objs as go
 
-from apps import vehiclestables, downtimes, controlling, home
+from apps import vehiclestables, downtimes, home, vehicles_overview
 from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.downtimes import *
 from apps.vehiclestables import df_group_vehicle_class, df_vehicle, df_driver, df_group_driver
-from apps.controlling import *
+from apps.home import *
 
 # get data from database
 # conn = connect()
@@ -80,11 +80,11 @@ server = app.server
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return controlling.layout
+        return home.layout
     elif pathname == '/downtimes':
         return downtimes.layout
     elif pathname == '/vehicles-overview':
-        return home.layout
+        return vehicles_overview.layout
     else:
         return '404'
 
