@@ -5,6 +5,7 @@ import data_preparation.data_cleaning as data_cleaning
 import data_preparation.maintenance_prediction as m_prediction
 import data_preparation.simulation as simulation
 from database_connection import return_engine
+import matplotlib.pyplot as plt
 
 # connect to database and write raw data into dataframe
 # conn = connect()
@@ -54,6 +55,9 @@ driving_data = driving_data.drop('month', axis=1)
 # generate a licence plate for each vehicel
 vehicle_data = simulation.generate_licence_plate(vehicle_data)
 
+# generate a accident probability per vehicle
+vehicle_data = simulation.accident_probability(vehicle_data)
+
 # ------------ include maintenance_prediction.py -----------------------
 # Prepare Data by simulating sensor data from real variables
 driving_data = m_prediction.get_sensor_data(driving_data)
@@ -66,7 +70,7 @@ data_dmatrix = xgb.DMatrix(data=x, label=y)
 
 # train a xgb modell for classifiction
 # returns cv_table (route mean square error) and vehicle_data with probability for maintenance need
-cv_table, vehicle_data = m_prediction.predict_maintenance(x, y, data_dmatrix, vehicle_data, x_pred)
+cv_table, vehicle_data, xg_class = m_prediction.predict_maintenance(x, y, data_dmatrix, vehicle_data, x_pred)
 
 # ------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes

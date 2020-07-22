@@ -113,6 +113,12 @@ def maintenance_start_value(df):
     return df
 
 
+def accident_probability(v_df):
+    # generate maintenance start value
+    v_df['accident_probability'] = np.random.randint(0, 100, size=len(v_df))
+    return v_df
+
+
 def vehicle_capacity(v_df):
     # capacity in pounds depending on vehicle Class
     # iterate over dataframe and generate capacity for each vehicle in lst

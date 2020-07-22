@@ -91,4 +91,4 @@ def predict_maintenance(x, y, dmatrix, v_df, x_pred):
     v_df.loc[(v_df['predicted_maintenance_probability'] >= 0.30) & (
                 v_df['predicted_maintenance_probability'] <= 0.35), 'predicted_weeks_until_maintenance'] = 4
 
-    return cv_results, v_df
+    return cv_results, v_df, xg_class
