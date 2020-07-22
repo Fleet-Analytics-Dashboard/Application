@@ -13,9 +13,9 @@ sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
 sql = "select * from driving_data;"
 fleet_data = pd.read_sql_query(sql, conn)
+sql = "select + from driver_names;"
+dfnames = pd.read_sql_query(sql, conn)
 conn = None
-
-dfnames = pd.read_csv('names.csv')
 
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)

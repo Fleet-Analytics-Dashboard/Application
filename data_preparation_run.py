@@ -4,8 +4,7 @@ import xgboost as xgb
 import data_preparation.data_cleaning as data_cleaning
 import data_preparation.maintenance_prediction as m_prediction
 import data_preparation.simulation as simulation
-from database_connection import return_engine
-import matplotlib.pyplot as plt
+from database_connection import return_engine, connect
 
 # connect to database and write raw data into dataframe
 # conn = connect()
@@ -15,6 +14,7 @@ import matplotlib.pyplot as plt
 
 # import NREL-Fleet-DNA-Data.csv as dataframe 'df' if Database is gone
 df = pd.read_csv('composite-data-for-fleet-dna-csv-1.csv')
+driver_names = pd.read_csv('names.csv')
 
 # ------------ include data_cleanig.py ---------------------------------
 # generate two tables for vehicle and driving data
@@ -79,6 +79,7 @@ driving_data.to_sql('driving_data', con=engine, if_exists='replace')
 vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
 vehicle_cost_data.to_sql('vehicle_cost_data', con=engine, if_exists='replace')
 cv_table.to_sql('10_fold_cross_validation_maintenance', con=engine, if_exists='replace')
+driver_names.to_sql('driver_names', con=engine, if_exists='replace')
 engine = None
 
 # generate new csv Files from new dataframes
