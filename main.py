@@ -1,6 +1,10 @@
 import plotly.express as px
 from dash.exceptions import PreventUpdate
 import collections
+from dateutil.relativedelta import *
+from dash.dependencies import Input, Output
+from datetime import datetime
+
 from apps import downtimes, home, vehicles_overview
 from apps.downtimes import *
 from apps.home import *
@@ -89,10 +93,10 @@ app.layout = html.Div([
                 [
                     dcc.DatePickerRange(
                         id='controlling-date-picker-range',
-                        min_date_allowed=dt(1995, 8, 5),
-                        max_date_allowed=dt(2020, 6, 19),
-                        initial_visible_month=dt(2020, 6, 5),
-                        end_date=dt(2020, 6, 5).date()
+                        min_date_allowed=datetime(1995, 8, 5),
+                        max_date_allowed=datetime(2020, 6, 19),
+                        initial_visible_month=datetime(2020, 6, 5),
+                        end_date=datetime(2020, 6, 5).date()
                     ),
                     html.Span(id='output-container-date-picker-range')
                 ], className='data-picker',
@@ -460,31 +464,6 @@ def create_heat_map(selected_licence_plate):
 
     fig = go.Figure(data=data, layout=layout)
     return fig
-
-
-####Callback date picker###########
-
-# callback for date-picker
-@app.callback(
-    Output('output-container-date-picker-range', 'children'),
-    [Input('my-date-picker-range', 'start_date'),
-     Input('my-date-picker-range', 'end_date')])
-def update_output(start_date, end_date):
-    string_prefix = 'You have selected: '
-    if start_date is not None:
-        start_date = dt.strptime(re.split('T| ', start_date)[0], '%Y-%m-%d')
-        start_date_string = start_date.strftime('%B %d, %Y')
-        string_prefix = string_prefix + 'Start Date: ' + start_date_string + ' | '
-    if end_date is not None:
-        end_date = dt.strptime(re.split('T| ', end_date)[0], '%Y-%m-%d')
-        end_date_string = end_date.strftime('%B %d, %Y')
-        string_prefix = string_prefix + 'End Date: ' + end_date_string
-    if len(string_prefix) == len('You have selected: '):
-        return 'Select a date to see it displayed here'
-    else:
-        return string_prefix
-
-
 
 # server
 if __name__ == '__main__':

@@ -1,7 +1,5 @@
 import dash_table
 import dash_bootstrap_components as dbc
-import datetime
-import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
@@ -9,8 +7,6 @@ import plotly.graph_objects as go
 import numpy as np
 import statistics
 from plotly.subplots import make_subplots
-from dateutil.relativedelta import relativedelta
-
 
 from database_connection import connect, return_engine
 

@@ -1,14 +1,11 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
 import dash_table
 import pandas as pd
 import dash
-from datetime import datetime as dt
-import re
 import plotly.graph_objects as go
 import numpy as np
-from database_connection import connect, return_engine
+from database_connection import connect
 import dash_bootstrap_components as dbc
 
 # connect to database
