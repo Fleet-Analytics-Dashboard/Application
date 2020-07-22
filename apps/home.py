@@ -15,11 +15,6 @@ import dash_bootstrap_components as dbc
 conn = connect()
 sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
-# sql = "select vid, vehicle_type, vocation, drivetrain_type, fuel_type from driving_data;"
-# df_table = pd.read_sql_query(sql, conn)
-# sql = "select vid, vehicle_type, vocation from vehicle_data;"
-# df_vehicle_costs = pd.read_sql_query(sql, conn)
-# df_vehicle_costs = df_vehicle_costs.round(decimals=2)
 sql = "select * from vehicle_cost_data"
 df_cost_data = pd.read_sql_query(sql, conn)
 df_cost_data = df_cost_data.round(decimals=2)
@@ -357,20 +352,6 @@ layout = html.Div(
     className='controlling-content',
     children=[
 
-        # Date Picker
-        html.Div(
-            [
-                dcc.DatePickerRange(
-                    id='controlling-date-picker-range',
-                    min_date_allowed=dt(1995, 8, 5),
-                    max_date_allowed=dt(2020, 6, 19),
-                    initial_visible_month=dt(2020, 6, 5),
-                    end_date=dt(2020, 6, 5).date()
-                ),
-                html.Div(id='output-container-date-picker-range')
-            ], className='data-picker',
-        ),
-
         html.Div(className='top-cards around',
                  children=[
                     dbc.Row([
@@ -399,30 +380,35 @@ layout = html.Div(
                         dbc.Col(html.Div([
                             html.H5('Total Number of Vehicles'),
                             html.H2(df_vehicle_total),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle active
                         dbc.Col(html.Div([
                             html.H5('Active Vehicle'),
                             html.H2(df_vehicle_active),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle maintenance
                         dbc.Col(html.Div([
                             html.H5('Vehicle in Maintenance'),
                             html.H2(values['maintenance']),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Vehicle unused
                         dbc.Col(html.Div([
                             html.H5('Unused Vehicle'),
                             html.H2(values['unused']),
+                            html.H4(" ")
                         ], className='card'), width=True),
 
                         # Availability rate
                         dbc.Col(html.Div([
                             html.H5('Availability rate'),
                             html.H2(str(availability_rate) + "%"),
+                            html.H4(" ")
                         ], className='card'), width=True),
                     ]),
                 ]),
@@ -529,24 +515,3 @@ layout = html.Div(
                      ]),
                  ])
     ])
-
-
-# callback for date-picker
-@app.callback(
-    Output('output-container-date-picker-range', 'children'),
-    [Input('my-date-picker-range', 'start_date'),
-     Input('my-date-picker-range', 'end_date')])
-def update_output(start_date, end_date):
-    string_prefix = 'You have selected: '
-    if start_date is not None:
-        start_date = dt.strptime(re.split('T| ', start_date)[0], '%Y-%m-%d')
-        start_date_string = start_date.strftime('%B %d, %Y')
-        string_prefix = string_prefix + 'Start Date: ' + start_date_string + ' | '
-    if end_date is not None:
-        end_date = dt.strptime(re.split('T| ', end_date)[0], '%Y-%m-%d')
-        end_date_string = end_date.strftime('%B %d, %Y')
-        string_prefix = string_prefix + 'End Date: ' + end_date_string
-    if len(string_prefix) == len('You have selected: '):
-        return 'Select a date to see it displayed here'
-    else:
-        return string_prefix

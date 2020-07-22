@@ -34,10 +34,14 @@ div {
 }
 
 .card {
-    padding: 12px 12px;
+    padding: 24px 24px;
     border-radius: 6px;
     border: none;
     background: white;
+}
+
+.card input {
+    margin-right: 6px !important;
 }
 
 .last-page {
@@ -55,6 +59,56 @@ div {
     margin: 12px;
 }
 
+.row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch !important;
+	align-content: stretch;
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+}
+
+.row .col .card {
+    height: 100%;
+}
+
+.maintenance-calender {
+    overflow: scroll;
+    height: 100%;
+}
+
+.top-cards > .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch !important;
+    align-content: stretch;
+}
+
+.top-cards > .row .card {
+    height: 100%;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
+	align-content: stretch;
+}
+
+.top-cards > .row .card h2 {
+    font-size: 33px;
+    font-weight: 600;
+    color: #444444;
+}
+
+.top-cards > .row .card h4 {
+    font-size: 20px !important;
+    font-weight: normal;
+    color: #2ecc71;
+}
 
 #vocation-dropdown-table .Select {
     border: solid 2px #eeeeee;
@@ -72,7 +126,7 @@ h1 {
     color: #5b5b5b;
     font-weight: normal;
     font-size: 1.8em;
-    padding-top: 6px;
+    padding-top: 24px;
     padding-bottom: 12px;
 }
 
@@ -103,6 +157,12 @@ h4 {
     padding-bottom: 12px;
 }
 
+h5 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    font-size: 1.1rem;
+    color: grey;
+}
+
 /* HEADER */
 .logo-text {
     font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
@@ -118,12 +178,30 @@ h4 {
     padding: 12px;
     border-radius: 5px;
     box-shadow: 2px 2px 2px lightgrey;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
 }
 
-.header * {
+#navbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
+}
+
+.header > * {
     display: inline-block;
 }
 
+.logo-and-nav > * {
+    display: inline-block;
+}
 
 /* HOME */
 .home-content {
@@ -137,13 +215,13 @@ h4 {
     margin-bottom: 20px;
     height: 700px;
 }
+
 realtime-map {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 100%;
 }
-
 
 
 /* CONTROLLING */
@@ -179,12 +257,7 @@ realtime-map {
 
 .data-picker {
     margin-bottom: 12px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-    align-items: stretch;
-    align-content: stretch;
+    display: inline-block;
 }
 
 

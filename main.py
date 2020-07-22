@@ -1,15 +1,10 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
+
 import plotly.express as px
 from dash.exceptions import PreventUpdate
 import collections
-from plotly import graph_objs as go
+
 
 from apps import downtimes, home, vehicles_overview
-from apps.downtimes import df_vehicle_data, df_maintenance_status
 from apps.downtimes import *
 from apps.home import *
 
@@ -72,24 +67,41 @@ app.layout = html.Div([
 
     html.Div(
         [
-            html.A([
-                html.Img(src=app.get_asset_url('fleetboard_logo.jpg'), style={'height': '36px'}),
-                html.Span('Fleetboard', className='logo-text'),
-            ], className='align-self-center', href='/'),
+            html.Span([
+                html.A([
+                    html.Img(src=app.get_asset_url('fleetboard_logo.jpg'), style={'height': '36px'}),
+                    html.Span('Fleetboard', className='logo-text'),
+                ], className='logo-link align-self-center', href='/'),
 
-            dbc.Nav(
+                html.Span(dbc.Nav(
+                    [
+                        dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
+                        dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
+                        dbc.NavItem(
+                            dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
+                    ],
+                    pills=True,
+                    className='nav-menu',
+                    id='navbar',
+                ),
+                )
+            ], className="logo-and-nav"),
+
+            # Date Picker
+            html.Span(
                 [
-                    dbc.NavItem(dbc.NavLink("Home", href="/", id='-link')),
-                    dbc.NavItem(dbc.NavLink("Downtimes", href="/downtimes", id='downtimes-link')),
-                    dbc.NavItem(
-                        dbc.NavLink("Vehicle Overview", href="/vehicles-overview", id='vehicles-overview-link')),
-                ],
-                pills=True,
-                className='nav-menu',
-                id='navbar',
+                    dcc.DatePickerRange(
+                        id='controlling-date-picker-range',
+                        min_date_allowed=dt(1995, 8, 5),
+                        max_date_allowed=dt(2020, 6, 19),
+                        initial_visible_month=dt(2020, 6, 5),
+                        end_date=dt(2020, 6, 5).date()
+                    ),
+                    html.Span(id='output-container-date-picker-range')
+                ], className='data-picker',
             ),
         ],
-        className='header align-self-center'
+        className='header align-self-center justify-content-between'
     ),
 
     # page content from respective site will be loaded via this id
@@ -195,15 +207,6 @@ def create_downtimes_table(selected_status):
     return fig
 
 
-# @app.callback(
-#     Output('map-container', 'figure'),
-#     [Input('vehicle-table-overview', 'data')])
-# def create_downtimes_table(selected_status):
-#     if selected_status is not None:
-#         filtered_df = df_vehicle_data[df_vehicle_data["licence_plate"].isin(selected_status)]
-#         data = filtered_df.to_dict("records")
-#     return data
-
 
 # Table function
 
@@ -232,9 +235,8 @@ def create_graph(selected_column):
 
     if selected_column == 'person':
         figure = px.bar(df_group_driver, x="Name", y='Amount', hover_data=['License Plate'], color='License Plate')
-        #figure.update_yaxes(title_text="Amount")
-        #figure.update_xaxes(title_text="Name")
-
+        # figure.update_yaxes(title_text="Amount")
+        # figure.update_xaxes(title_text="Name")
 
     return figure
 
@@ -329,6 +331,7 @@ def create_maintenance_table(selected_status):
         data = filtered_df.to_dict("records")
 
     return data
+
 
 ####Callback radio buttons accident-probability-table###########
 
@@ -461,7 +464,29 @@ def create_heat_map(selected_licence_plate):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-####Callback radio buttons accident-probability-table###########
+
+####Callback date picker###########
+
+# callback for date-picker
+@app.callback(
+    Output('output-container-date-picker-range', 'children'),
+    [Input('my-date-picker-range', 'start_date'),
+     Input('my-date-picker-range', 'end_date')])
+def update_output(start_date, end_date):
+    string_prefix = 'You have selected: '
+    if start_date is not None:
+        start_date = dt.strptime(re.split('T| ', start_date)[0], '%Y-%m-%d')
+        start_date_string = start_date.strftime('%B %d, %Y')
+        string_prefix = string_prefix + 'Start Date: ' + start_date_string + ' | '
+    if end_date is not None:
+        end_date = dt.strptime(re.split('T| ', end_date)[0], '%Y-%m-%d')
+        end_date_string = end_date.strftime('%B %d, %Y')
+        string_prefix = string_prefix + 'End Date: ' + end_date_string
+    if len(string_prefix) == len('You have selected: '):
+        return 'Select a date to see it displayed here'
+    else:
+        return string_prefix
+
 
 
 # server

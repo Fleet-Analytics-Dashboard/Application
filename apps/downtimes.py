@@ -1,6 +1,4 @@
 import dash_table
-##todo are imports unused or there on purpose?
-##todo switch from csv to database
 import dash_bootstrap_components as dbc
 import datetime
 import plotly.graph_objs as go
@@ -60,16 +58,6 @@ choices = ['Low Risk', 'Mid Risk', 'High Risk']
 
 df_accident_probability['accident_probability'] = np.select(conditions, choices, default='null')
 
-#fig_carbon = go.Figure()
-
-# for i in range(0, 1):
-#    fig_carbon.add_trace(go.Scatter(
-#        x=x_data_carbon[i],
-#        y=y_data_carbon_footprint[i], mode='lines+markers',
-#        name='Carbon Footprint',
-#        line=dict(color=colors[i], width=line_size[i]),
-#        connectgaps=True,
-#    ))
 
 # PieCharts
 
@@ -122,7 +110,7 @@ pie3 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, )])
 pie3.update_traces(marker=dict(colors=colors))
 
 ####################### Mapbox ###########################
-# mapbox_access_token = open(".mapbox_token").read()
+
 
 
 #########Mapbox Accidents##############
@@ -168,7 +156,6 @@ mapbox_accidents.update_layout(
         ),
         pitch=0,
         zoom=3,
-        #style='mapbox://styles/jakobschaal/ckb1ekfv005681iqlj9tery0v',
         style='mapbox://styles/jakobschaal/ckcv9t67c097q1imzfqprsks9',
     ),
 )
@@ -323,12 +310,7 @@ layout = html.Div(
 
                                 ##################Searchbox Downtimes###################
 
-                                # dcc.Dropdown(
-                                #     id='searchbox_downtime_table',
-                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
-                                #     value='',
-                                #     placeholder='Search for vehicle...'
-                                # ),
+
 
                                 ##################Table Downtimes#########################
 
@@ -407,12 +389,6 @@ layout = html.Div(
 
                                 ################## Searchbox Maintenance ###################
 
-                                # dcc.Dropdown(
-                                #     id='maintenance_filter_x',
-                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
-                                #     value='',
-                                #     placeholder='Search for vehicle...'
-                                # ),
 
                                 dash_table.DataTable(
                                     id='maintenance_table',
@@ -461,12 +437,6 @@ layout = html.Div(
 
                                 ################## Searchbox Accidents ###################
 
-                                # dcc.Dropdown(
-                                #     id='accident_filter_x',
-                                #     options=[{'label': i, 'value': i} for i in sorted(vehicle_data['vid'])],
-                                #     value='',
-                                #     placeholder='Search for vehicle...'
-                                # ),
 
                                 dash_table.DataTable(
                                     id='table-accident-probability',
@@ -544,38 +514,11 @@ layout = html.Div(
                     dcc.Graph(id='heatmap',
                               #figure=maintenance_calendar(), config={'displayModeBar': False}
                     )
-                ], style={'overflowX': 'scroll', 'height': 550}
+                ], className="maintenance-calender"
                 )
 
                 ]),
             ]),
 
-            # Fleet Location Map
-            # dcc.Tab(label='Realtime Map', children=[
-            #
-            #     dcc.Graph(figure=fig),
-            #
-            #     html.H3('Vehicle Details'),
-            #
-            #     dash_table.DataTable(
-            #         data=df_vehicle_data.to_dict('records'),
-            #         columns=[{'id': c, 'name': c} for c in df_vehicle_data.columns],
-            #         style_header={
-            #             'backgroundColor': 'lightgrey',
-            #             'fontWeight': 'bold',
-            #             'fontSize': 12,
-            #             'fontFamily': 'Open Sans'
-            #         },
-            #         style_cell={
-            #             'padding': '5px',
-            #             'fontSize': 13,
-            #             'fontFamily': 'sans-serif'
-            #         },
-            #         style_cell_conditional=[
-            #             {
-            #                 'if': {'column_id': 'Region'},
-            #                 'textAlign': 'left'
-            #             }
-            #         ])
-            # ]),
+
         ])
