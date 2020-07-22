@@ -220,12 +220,6 @@ oldest_vehicle.add_trace(
     secondary_y=True,
 )
 
-# Add figure title
-oldest_vehicle.update_layout(
-    title_text="Oldest Vehicle"
-)
-
-
 # Set x-axis title
 oldest_vehicle.update_xaxes(title_text="Licence Plate")
 
@@ -264,12 +258,6 @@ distance.add_trace(
     go.Scatter(x=df_vehicle_data['licence_plate'], y=df_vehicle_data['mean_distance'], name="mean"),
     secondary_y=True,
 )
-
-# Add figure title
-distance.update_layout(
-    title_text="Distance"
-)
-
 
 # Set x-axis title
 distance.update_xaxes(title_text="Licence Plate")
