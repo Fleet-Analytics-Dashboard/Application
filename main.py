@@ -1,9 +1,6 @@
-
 import plotly.express as px
 from dash.exceptions import PreventUpdate
 import collections
-
-
 from apps import downtimes, home, vehicles_overview
 from apps.downtimes import *
 from apps.home import *
@@ -13,9 +10,9 @@ sql = "select * from vehicle_data;"
 df_vehicle_data = pd.read_sql_query(sql, conn)
 sql = "select * from driving_data;"
 fleet_data = pd.read_sql_query(sql, conn)
+sql = "select * from driver_names;"
+dfnames = pd.read_sql_query(sql, conn)
 conn = None
-
-dfnames = pd.read_csv('names.csv')
 
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
@@ -40,7 +37,7 @@ df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
 
 
 # get data from csv
-df_vehicle_data = pd.read_csv('vehicle_data.csv')
+# df_vehicle_data = pd.read_csv('vehicle_data.csv')
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},
