@@ -3,7 +3,7 @@ from dash.exceptions import PreventUpdate
 import collections
 from dateutil.relativedelta import *
 from dash.dependencies import Input, Output
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from apps import downtimes, home, vehicles_overview
 from apps.downtimes import *
@@ -354,7 +354,7 @@ def create_maintenance_table(selected_status):
 @app.callback(Output('heatmap', 'figure'),
               [Input('heatmap-dropdown', 'value')])
 def create_heat_map(selected_licence_plate):
-    today = datetime.date.today()
+    today = datetime.today()
     year, week_num, day_of_week = today.isocalendar()
     # d1 represents starting day (yyyy-mm-dd) and d2 end day
     # d1 = today - datetime.date.month
@@ -365,7 +365,7 @@ def create_heat_map(selected_licence_plate):
 
     delta = d2 - d1
 
-    dates_in_year = [d1 + datetime.timedelta(i) for i in
+    dates_in_year = [d1 + timedelta(i) for i in
                      range(delta.days + 1)]  # gives me a list with datetimes for each day a year
     # weekdays_in_year = [i.weekday() for i in dates_in_year] #gives [0,1,2,3,4,5,6,0,1,2,3,4,5,6,…] (ticktext in xaxis dict translates this to weekdays
     weeknumber_of_dates = [i.strftime("%G cw%V")[2:] for i in
