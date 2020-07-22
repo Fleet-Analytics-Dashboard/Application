@@ -269,80 +269,6 @@ fig_delivery_dates.update_layout(
     plot_bgcolor='white'
 )
 
-'''########### line chart costs #############
-fig_costs = go.Figure()
-
-for i in range(0, 4):
-    fig_costs.add_trace(go.Scatter(
-        x=x_data,
-        y=y_data_cost[i], mode='lines+markers',
-        name=labels_costs[i],
-        line=dict(color=colors[i], width=line_size[i]),
-        connectgaps=True,
-        ))
-
-
-fig_costs.update_layout(
-    xaxis=dict(
-        showline=True,
-        showgrid=False,
-        showticklabels=True,
-        linecolor='rgb(204, 204, 204)',
-        linewidth=2,
-        ticks='outside',
-        tickfont=dict(
-            family='Arial',
-            size=12,
-            color='rgb(82, 82, 82)',
-        ),
-    ),
-    yaxis=dict(
-        showgrid=False,
-        zeroline=False,
-        showline=False,
-        showticklabels=False,
-    ),
-    autosize=True,
-    margin=dict(
-        autoexpand=False,
-        l=100,
-        r=20,
-        t=110,
-    ),
-    showlegend=False,
-    plot_bgcolor='white'
-)
-
-annotations = []
-
-# Adding labels
-for y_trace, label, color in zip(y_data_cost, labels_costs, colors):
-    # labeling the left_side of the plot
-    annotations.append(dict(xref='paper', x=0.05, y=y_trace[0],  # hier stand 0 (?)
-                            xanchor='right', yanchor='middle',
-                            text=label,
-                            font=dict(family='Arial',
-                                      size=16),
-                            showarrow=False))
-    # labeling the right_side of the plot
-    annotations.append(dict(xref='paper', x=0.95, y=y_trace[11],  # hier stand 11
-                            xanchor='left', yanchor='middle',
-                            text='{} $'.format(y_trace[11]),  # hier stand 11
-                            font=dict(family='Arial',
-                                      size=14),
-                            showarrow=False))
-
-# Title chart costs
-annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
-                        xanchor='left', yanchor='bottom',
-                        text='',
-                        font=dict(family='Arial',
-                                  size=30,
-                                  color='rgb(37,37,37)'),
-                        showarrow=False))
-
-fig_costs.update_layout(annotations=annotations)'''
-
 ######## pie chart vehicle capacity ########
 
 # new dataframe for filter result
@@ -454,39 +380,46 @@ layout = html.Div(
                             html.H2(str(profit) + "$"),
                             html.H4("+3%")
                         ], className='card'), width=True),
+
                         # Revenue
                         dbc.Col(html.Div([
                             html.H5('Revenue'),
                             html.H2(str(revenue) + "$"),
                             html.H4("+8%")
                         ], className='card'), width=True),
+
                          # Cost card
                         dbc.Col(html.Div([
                         html.H5('Cost'),
                         html.H2(str(cost_juli['total_cost']) + '$'),
                         html.H4("+" + str(cost_change) + "%")
                         ], className='card'), width=True),
+
                         # Total Number vehicle
                         dbc.Col(html.Div([
                             html.H5('Total Number of Vehicles'),
                             html.H2(df_vehicle_total),
                         ], className='card'), width=True),
+
                         # Vehicle active
                         dbc.Col(html.Div([
                             html.H5('Active Vehicle'),
                             html.H2(df_vehicle_active),
                         ], className='card'), width=True),
+
                         # Vehicle maintenance
                         dbc.Col(html.Div([
                             html.H5('Vehicle in Maintenance'),
                             html.H2(values['maintenance']),
                         ], className='card'), width=True),
+
                         # Vehicle unused
                         dbc.Col(html.Div([
                             html.H5('Unused Vehicle'),
                             html.H2(values['unused']),
                         ], className='card'), width=True),
-                        #availability rate
+
+                        # Availability rate
                         dbc.Col(html.Div([
                             html.H5('Availability rate'),
                             html.H2(str(availability_rate) + "%"),
@@ -539,6 +472,7 @@ layout = html.Div(
                              html.H1('Carbon Footprint'),
                              dcc.Graph(id='graph-carbon-footprint', figure=fig_carbon)
                          ], className='card'), width=True),
+
                          # Kept delivery dates
                          dbc.Col(html.Div([
                             html.H1('Kept delivery dates'),
@@ -548,7 +482,7 @@ layout = html.Div(
                      dbc.Row([
                          # Vehicle capacity
                          dbc.Col(html.Div([
-                                 html.H1('Vehicle Capacity'),
+                                 html.H1('Vehicle Status'),
                                  dcc.Graph(figure=pie_capacity, config={'responsive': True}, className='piechart'),
                                  ], className='card'), width=True),
 
@@ -569,7 +503,6 @@ layout = html.Div(
                                              'maxHeight': '',
                                              'maxWidth': '',
                                              'overflowY': '',
-
                                          },
                                          data=[{}],
                                          columns=[{'name': i, 'id': i} for i in
@@ -592,7 +525,7 @@ layout = html.Div(
                                              'fontSize': 13,
                                              'fontFamily': 'sans-serif'
                                          },
-                                     ),], className='card'), width=True),
+                                     ), ], className='card'), width=True),
                      ]),
                  ])
     ])

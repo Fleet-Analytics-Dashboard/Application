@@ -266,7 +266,6 @@ def on_data_set_graph(data, field):
         a = aggregation[row['vid']]
         a['name'] = row['vid']
         a['mode'] = 'lines+markers'
-        a['line'] = dict(color=colors[1])
 
         a['x'].append(row['month'])
         a['y'].append(row[field])
@@ -422,8 +421,6 @@ def create_heat_map(selected_licence_plate):
 
     fig = go.Figure(data=data, layout=layout)
     return fig
-
-
 
 ####Callback radio buttons accident-probability-table###########
 
