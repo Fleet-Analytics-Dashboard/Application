@@ -68,11 +68,11 @@ accepted_vehicle_status_array = ['accident', 'unused', 'maintenance', 'traffic j
 ###filter####
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
 
-####use unique values as labels###
+# use unique values as labels
 lables = df_vehicle_status.groupby(['vehicle_status'])['licence_plate'].count().reset_index()
 lables.columns = (['vehicle_status', 'Amount'])
 
-####count values###
+# count values
 values = df_vehicle_status.vehicle_status.value_counts()
 
 #index = df_vehicle_status.vid
