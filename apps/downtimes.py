@@ -69,7 +69,8 @@ accepted_vehicle_status_array = ['accident', 'unused', 'maintenance', 'traffic j
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
 
 ####use unique values as labels###
-labels = df_vehicle_status['vehicle_status'].unique()
+lables = df_vehicle_status.groupby(['vehicle_status'])['licence_plate'].count().reset_index()
+lables.columns = (['vehicle_status', 'Amount'])
 
 ####count values###
 values = df_vehicle_status.vehicle_status.value_counts()
@@ -77,7 +78,7 @@ values = df_vehicle_status.vehicle_status.value_counts()
 #index = df_vehicle_status.vid
 text = len(df_vehicle_status)
 
-pie1 = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+pie1 = go.Figure(data=[go.Pie(labels=lables['vehicle_status'], values=lables['Amount'], hole=.3)])
 pie1.update_traces(marker=dict(colors=colors))
 pie1.update_layout(
     annotations=[dict(text=text, font_size=20, showarrow=False)]

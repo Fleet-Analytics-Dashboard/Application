@@ -273,13 +273,20 @@ accepted_vehicle_status_array = ['on time', 'delayed', 'unused', 'maintenance', 
 df_vehicle_status = df_vehicle_status.loc[df_vehicle_data['vehicle_status'].isin(accepted_vehicle_status_array)]
 
 # use unique values as labels
-labels = df_vehicle_status['vehicle_status'].unique()
+lables = df_vehicle_status.groupby(['vehicle_status'])['licence_plate'].count().reset_index()
+lables.columns = (['vehicle_status', 'Amount'])
 
 # count values
 values = df_vehicle_status.vehicle_status.value_counts()
 
-pie_capacity = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
+text = len(df_vehicle_status)
+
+pie_capacity = go.Figure(data=[go.Pie(labels=lables['vehicle_status'], values=lables['Amount'], hole=.3)])
 pie_capacity.update_traces(marker=dict(colors=colors))
+pie_capacity.update_layout(
+    annotations=[dict(text=text, font_size=20, showarrow=False)]
+)
+
 
 
 ########## calculation for title cards ############
@@ -298,7 +305,7 @@ cost_change = (cost_juli['total_cost'] / cost_juni['total_cost'])-1
 cost_change = cost_change*100
 cost_change = cost_change.round(decimals=2)
 
-    ##vehicle_active + total
+##vehicle_active + total
 
 df_vehicle_active = values.loc[['delayed', 'idle', 'on time']]
 df_vehicle_active = df_vehicle_active.sum()
@@ -306,9 +313,9 @@ df_vehicle_active = df_vehicle_active.sum()
 df_vehicle_total = values
 df_vehicle_total = df_vehicle_total.sum()
 
-    ## availability rate
+## availability rate
 
-availability_rate = values.loc[['delayed', 'idle', 'on time', 'maintenance', 'accident']]
+availability_rate = values.loc[['accident', 'delayed', 'idle', 'maintenance', 'on time']]
 availability_rate = availability_rate.sum()
 availability_rate = (1 - (availability_rate / df_vehicle_total)) * 100
 availability_rate = availability_rate.round(decimals=2)
@@ -351,63 +358,63 @@ layout = html.Div(
 
         html.Div(className='top-cards around',
                  children=[
-                    dbc.Row([
-                        # Profit
-                        dbc.Col(html.Div([
-                            html.H5('Profit'),
-                            html.H2(str(profit) + "$"),
-                            html.H4("+3%")
-                        ], className='card'), width=True),
+                     dbc.Row([
+                         # Profit
+                         dbc.Col(html.Div([
+                             html.H5('Profit'),
+                             html.H2(str(profit) + "$"),
+                             html.H4("+3%")
+                         ], className='card'), width=True),
 
-                        # Revenue
-                        dbc.Col(html.Div([
-                            html.H5('Revenue'),
-                            html.H2(str(revenue) + "$"),
-                            html.H4("+8%")
-                        ], className='card'), width=True),
+                         # Revenue
+                         dbc.Col(html.Div([
+                             html.H5('Revenue'),
+                             html.H2(str(revenue) + "$"),
+                             html.H4("+8%")
+                         ], className='card'), width=True),
 
                          # Cost card
-                        dbc.Col(html.Div([
-                        html.H5('Cost'),
-                        html.H2(str(cost_juli['total_cost']) + '$'),
-                        html.H4("+" + str(cost_change) + "%")
-                        ], className='card'), width=True),
+                         dbc.Col(html.Div([
+                             html.H5('Cost'),
+                             html.H2(str(cost_juli['total_cost']) + '$'),
+                             html.H4("+" + str(cost_change) + "%")
+                         ], className='card'), width=True),
 
-                        # Total Number vehicle
-                        dbc.Col(html.Div([
-                            html.H5('Total Number of Vehicles'),
-                            html.H2(df_vehicle_total),
-                            html.H4(" ")
-                        ], className='card'), width=True),
+                         # Total Number vehicle
+                         dbc.Col(html.Div([
+                             html.H5('Total Number of Vehicles'),
+                             html.H2(df_vehicle_total),
+                             html.H4(" ")
+                         ], className='card'), width=True),
 
-                        # Vehicle active
-                        dbc.Col(html.Div([
-                            html.H5('Active Vehicle'),
-                            html.H2(df_vehicle_active),
-                            html.H4(" ")
-                        ], className='card'), width=True),
+                         # Vehicle active
+                         dbc.Col(html.Div([
+                             html.H5('Active Vehicle'),
+                             html.H2(df_vehicle_active),
+                             html.H4(" ")
+                         ], className='card'), width=True),
 
-                        # Vehicle maintenance
-                        dbc.Col(html.Div([
-                            html.H5('Vehicle in Maintenance'),
-                            html.H2(values['maintenance']),
-                            html.H4(" ")
-                        ], className='card'), width=True),
+                         # Vehicle maintenance
+                         dbc.Col(html.Div([
+                             html.H5('Vehicle in Maintenance'),
+                             html.H2(values['maintenance']),
+                             html.H4(" ")
+                         ], className='card'), width=True),
 
-                        # Vehicle unused
-                        dbc.Col(html.Div([
-                            html.H5('Unused Vehicle'),
-                            html.H2(values['unused']),
-                            html.H4(" ")
-                        ], className='card'), width=True),
+                         # Vehicle unused
+                         dbc.Col(html.Div([
+                             html.H5('Unused Vehicle'),
+                             html.H2(values['unused']),
+                             html.H4(" ")
+                         ], className='card'), width=True),
 
-                        # Availability rate
-                        dbc.Col(html.Div([
-                            html.H5('Availability rate'),
-                            html.H2(str(availability_rate) + "%"),
-                            html.H4(" ")
-                        ], className='card'), width=True),
-                    ]),
+                         # Availability rate
+                         dbc.Col(html.Div([
+                             html.H5('Availability rate'),
+                             html.H2(str(availability_rate) + "%"),
+                             html.H4(" ")
+                         ], className='card'), width=True),
+                     ]),
                 ]),
         dbc.Row([
             # Business Goals
@@ -497,13 +504,11 @@ layout = html.Div(
                                              'align': 'right'
                                          },
                                          style_header={
-                                             'backgroundColor': '#FFFFFF',
                                              'fontWeight': 'bold',
                                              'fontSize': 12,
                                              'fontFamily': 'Open Sans'
                                          },
                                          style_cell={
-                                             'backgroundColor': '#FFFFFF',
                                              'padding': '5px',
                                              'fontSize': 13,
                                              'fontFamily': 'sans-serif'
