@@ -416,7 +416,7 @@ def create_heat_map(selected_licence_plate):
                 colorscale=colorscale
             )]
         layout = go.Layout(
-            height=1000,
+            height=4000,
             yaxis=dict(
                 showline=False, showgrid=False, zeroline=False,
                 # tickmode='array',
