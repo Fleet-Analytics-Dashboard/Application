@@ -142,8 +142,8 @@ h1 {
 h2 {
     font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
     color: #5b5b5b;
-    font-weight: normal;
-    font-size: 1.5em;
+	font-size: 0.8rem !important;
+	font-weight: 400 !important;
     padding-top: 6px;
     padding-bottom: 12px;
 }
@@ -160,15 +160,16 @@ h3 {
 h4 {
     font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
     color: #5b5b5b;
-    font-weight: normal;
-    font-size: 0.9em;
+	font-size: 0.8rem !important;
+	font-weight: 400 !important;
     padding-top: 6px;
     padding-bottom: 12px;
 }
 
 h5 {
     font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
-    font-size: 1.1rem;
+	font-size: 1.4rem;
+	font-weight: 400;
     color: grey;
 }
 
