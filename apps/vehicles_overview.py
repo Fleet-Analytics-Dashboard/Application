@@ -163,6 +163,7 @@ layout = html.Div(
                             page_action="native",
                             page_current=0,
                             page_size=40,
+                            style_table={'overflowX': 'scroll'},
                             style_as_list_view=True,
                             style_header={
                                 'backgroundColor': '#f1f1f1',
