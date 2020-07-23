@@ -473,7 +473,7 @@ layout = html.Div(
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Oldest Vehicles'),
+                                    html.H1('Oldest Vehicles'),
                                 ),
                             ),
                         ),
@@ -487,7 +487,7 @@ layout = html.Div(
                         dbc.Row(
                             dbc.Col(
                                 html.Div(
-                                    html.H3('Longest Distance'),
+                                    html.H1('Longest Distance'),
                                 ),
                             ),
                         ),
