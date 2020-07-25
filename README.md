@@ -6,7 +6,7 @@ This project was developed for the course "338025 Data Science Project - Optimiz
 This dashboard supports fleet managers and decision makers to gain insights into their automotive fleets and optimize them. The data foundation for this the [NREL Fleet DNA project Truck Platooning Data](https://data.world/smartcolumbusos/636302d3-1197-4d38-9abf-9ffef44d4570) and simulated data by [Tim](https://github.com/ts170).
 ![image](https://user-images.githubusercontent.com/33202527/88454271-a9e06000-ce6e-11ea-82e7-86f10d01be60.png)
 
-**It consists of three pages for satisfying the need of different target groups:**
+It consists of three pages for satisfying the need of different target groups:
 
 * Home view: especially controllers and financial officer can quickly gain insights into the most important key metrics and make high level decisions (e.g. Revenue, Costs, Capacity Overview)
 * Downtimes: this page enables fleet managers to easily monitor their fleet and respond to various challenges fast and confidently
@@ -14,15 +14,17 @@ This dashboard supports fleet managers and decision makers to gain insights into
 
 ## Wiki page
 _The wiki has the following sub pages:_
+
 1. [Home](https://github.com/Fleet-Analytics-Dashboard/Application/wiki)
 2. [Goals](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Goals)
-3. [Research](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Research)
-4. [Design concept](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Design-Concept)
-5. [Data foundation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Data-Foundation)
-6. [Technology stack](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Technology-stack)
-7. [Dashboard Explanation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Dashboard-Explanation)
-8. [Lessons Learned](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Lessons-Learned)
-9. [Potential Improvements](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Potential-Improvements)
+3. [Solution Approach](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Solution-Approach)
+4. [Research](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Research)
+5. [Design concept](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Design-Concept)
+6. [Data foundation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Data-Foundation)
+7. [Technology stack](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Technology-stack)
+8. [Dashboard Explanation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Dashboard-Explanation)
+9. [Lessons Learned](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Lessons-Learned)
+10. [Potential Improvements](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Potential-Improvements)
 
 ## Repository Structure
 _The files in this repository have the following purpose:_
@@ -52,7 +54,6 @@ _Are more detailed list can be found [on the lessons learned wiki page](https://
 * Working with different python libraries (e.g. Dash, Plotly. pandas, Numpy)
 * Creating a dashboard with user-centric data visualization (different views for different target groups)
 * Communication is key (GitHub tasks, video calls, documentation, comments)
-
 
 ## Contact
 * [Lucie](https://github.com/lj025)
