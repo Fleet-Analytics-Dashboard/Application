@@ -1,0 +1,339 @@
+/* STRUCTURE
+
+    GENERAL
+    TEXT
+    NAVIGATION
+    HOME
+    CONTROLLING
+    DOWNTIMES
+    VEHICLESTABLE
+ */
+
+
+/* GENERAL */
+body {
+    font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif;
+    color: #444444;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+div {
+    padding: 0;
+}
+
+.button, button {
+    display: block;
+    padding: 12px 24px;
+    margin-left: 12px;
+    background: #007bff;
+    border-radius: 3px;
+    color: white;
+    border: none;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.card {
+    padding: 24px 24px;
+    border-radius: 6px;
+    border: none;
+    background: white;
+}
+
+.card input {
+    margin-right: 6px !important;
+}
+
+.last-page {
+    font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif !important;
+    font-size: 12px !important;
+}
+
+.table-menu {
+    width: 100%;
+    margin: 12px;
+}
+
+.column-header-name {
+    font-family: 'Open Sans', 'Ubuntu', 'Lato', sans-serif !important;
+}
+
+#vehicle-table2 .dash-spreadsheet-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch !important;
+    align-content: stretch;
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+}
+
+.row .col .card {
+    height: 100%;
+}
+
+.maintenance-calender {
+    overflow: scroll;
+    height: 100%;
+}
+
+.top-cards > .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch !important;
+    align-content: stretch;
+}
+
+.top-cards > .row .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: stretch;
+}
+
+.top-cards > .row .card h2 {
+    font-size: 33px;
+    font-weight: 600;
+    color: #444444;
+}
+
+.top-cards > .row .card h4 {
+    font-size: 20px !important;
+    font-weight: normal;
+    color: #2ecc71;
+}
+
+#vocation-dropdown-table .Select {
+    border: solid 2px #eeeeee;
+    border-radius: 6px;
+}
+
+.Select-control {
+    min-height: 50px !important;
+}
+
+
+/* TEXT */
+h1 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.8em;
+    padding-top: 24px;
+    padding-bottom: 12px;
+}
+
+h2 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+	font-size: 1.4rem !important;
+	font-weight: 400 !important;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+h3 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+    font-weight: normal;
+    font-size: 1.2em;
+    padding-top: 6px;
+    padding-bottom: 12px;
+
+}
+
+h4 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    color: #5b5b5b;
+	font-size: 0.8rem !important;
+	font-weight: 400 !important;
+    padding-top: 6px;
+    padding-bottom: 12px;
+}
+
+h5 {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+	font-size: 1.4rem;
+	font-weight: 400;
+    color: grey;
+}
+
+/* HEADER */
+.logo-text {
+    font-family: 'Montserrat', 'Ubuntu', 'Lato', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative;
+    top: 4px;
+    margin: 0 !important;
+    padding: 0 18px !important;
+}
+
+.header {
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px lightgrey;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
+}
+
+#navbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
+}
+
+.header > * {
+    display: inline-block;
+}
+
+.logo-and-nav > * {
+    display: inline-block;
+}
+
+/* HOME */
+.home-content {
+    margin: 5px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.home-welcome-text {
+    margin-bottom: 20px;
+    height: 700px;
+}
+
+realtime-map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+
+/* CONTROLLING */
+.tab-content {
+    margin: 18px;
+}
+
+.controlling-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+.dropdown-alignment {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: baseline;
+    flex: auto;
+    width: 100% !important;
+}
+
+
+.dropdown-alignment > div {
+    width: 100% !important;
+}
+
+#page-controlling-radios-3 > label {
+    margin-right: 40px;
+}
+
+
+.data-picker {
+    margin-bottom: 12px;
+    display: inline-block;
+}
+
+
+/* DOWNTIMES */
+.downtimes-content {
+    margin: 0 auto;
+}
+
+.card-tab {
+    margin: 18px;
+}
+
+.dash-table-container {
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.cal-container {
+    width: 100%;
+    height: 700px;
+}
+
+.dash-graph {
+    margin-bottom: 24px;
+}
+
+#page-downtimes-radios-1 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-2 > label {
+    margin-right: 20px;
+}
+
+#page-downtimes-radios-3 > label {
+    margin-right: 10px;
+}
+
+
+/* VEHICLES TABLES */
+.vehiclestables-content {
+    padding: 12px 36px;
+    margin: 0 auto;
+}
+
+#graph-filter label {
+    padding-right: 12px;
+}
+
+.vehicles-tables-filter {
+    width: 200px;
+}
+
+.vehicles-tables-content {
+    max-width: 900px;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.vehicles-tables-data-table {
+    padding: 12px;
+}
