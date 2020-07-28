@@ -18,13 +18,14 @@ _The wiki has the following sub pages:_
 1. [Home](https://github.com/Fleet-Analytics-Dashboard/Application/wiki)
 2. [Goals](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Goals)
 3. [Solution Approach](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Solution-Approach)
-4. [Research](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Research)
+4. [User Research](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/User-Research)
 5. [Design Concept](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Design-Concept)
-6. [Data Science](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Data-Science)
+6. [Data Foundation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Data-Foundation)
 7. [Technology stack](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Technology-stack)
-8. [Dashboard Explanation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Dashboard-Explanation)
-9. [Lessons Learned](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Lessons-Learned)
-10. [Potential Improvements](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Potential-Improvements)
+8. [Data Science](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Data-Science)
+9. [Dashboard Explanation](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Dashboard-Explanation)
+10. [Lessons Learned](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Lessons-Learned)
+11. [Potential Improvements](https://github.com/Fleet-Analytics-Dashboard/Application/wiki/Potential-Improvements)
 
 ## Repository Structure
 _The files in this repository have the following purpose:_
