@@ -9,23 +9,23 @@ from database_connection import connect
 import dash_bootstrap_components as dbc
 
 # connect to database
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from vehicle_cost_data"
-df_cost_data = pd.read_sql_query(sql, conn)
-df_cost_data = df_cost_data.round(decimals=2)
-sql = "select * from driving_data"
-df_driving_data = pd.read_sql_query(sql, conn)
-df_driving_data = df_driving_data.round(decimals=2)
-conn = None
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from vehicle_cost_data"
+# df_cost_data = pd.read_sql_query(sql, conn)
+# df_cost_data = df_cost_data.round(decimals=2)
+# sql = "select * from driving_data"
+# df_driving_data = pd.read_sql_query(sql, conn)
+# df_driving_data = df_driving_data.round(decimals=2)
+# conn = None
 
 # get data from csv files
-# df_vehicle_data = pd.read_csv('vehicle_data.csv')
-# df_driving_data = pd.read_csv('driving_data.csv')
-# df_driving_data = df_driving_data.round(decimals=2)
-# df_cost_data = pd.read_csv('vehicle_cost_data.csv')
-# df_cost_data = df_cost_data.round(decimals=2)
+df_vehicle_data = pd.read_csv('csv_data_files/vehicle_data.csv')
+df_driving_data = pd.read_csv('csv_data_files/driving_data.csv')
+df_driving_data = df_driving_data.round(decimals=2)
+df_cost_data = pd.read_csv('csv_data_files/vehicle_cost_data.csv')
+df_cost_data = df_cost_data.round(decimals=2)
 
 # colors
 colors_1 = ['rgb(115,115,115)', 'rgb(49,130,189)', 'rgb(189,189,189)', 'rgb(67,67,67)']

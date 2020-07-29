@@ -6,14 +6,20 @@ import dash_table as dt
 import plotly.graph_objects as go
 import plotly.express as px
 
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from driving_data;"
-fleet_data = pd.read_sql_query(sql, conn)
-sql = "select * from driver_names;"
-dfnames = pd.read_sql_query(sql, conn)
-conn = None
+# get data from database
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from driving_data;"
+# fleet_data = pd.read_sql_query(sql, conn)
+# sql = "select * from driver_names;"
+# dfnames = pd.read_sql_query(sql, conn)
+# conn = None
+
+# get data from csv files
+df_vehicle_data = pd.read_csv('csv_data_files/vehicle_data.csv')
+fleet_data = pd.read_csv('csv_data_files/driving_data.csv')
+dfnames = pd.read_csv('csv_data_files/names.csv')
 
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)

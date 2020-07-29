@@ -9,14 +9,20 @@ from apps import downtimes, home, vehicles_overview
 from apps.downtimes import *
 from apps.home import *
 
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from driving_data;"
-fleet_data = pd.read_sql_query(sql, conn)
-sql = "select * from driver_names;"
-dfnames = pd.read_sql_query(sql, conn)
-conn = None
+# get data from database
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from driving_data;"
+# fleet_data = pd.read_sql_query(sql, conn)
+# sql = "select * from driver_names;"
+# dfnames = pd.read_sql_query(sql, conn)
+# conn = None
+
+# get data from csv files
+df_vehicle_data = pd.read_csv('csv_data_files/vehicle_data.csv')
+fleet_data = pd.read_csv('csv_data_files/driving_data.csv')
+dfnames = pd.read_csv('csv_data_files/names.csv')
 
 # Rounded data
 fleet_data_rounded = fleet_data.round(decimals=2)
@@ -38,10 +44,6 @@ df_driver = df_driver.drop_duplicates(subset=None, keep='first', inplace=False)
 
 df_group_driver = df_driver.groupby(['licence_plate', 'last_name'])['pid'].count().reset_index()
 df_group_driver.columns = (['License Plate', 'Name', 'Amount'])
-
-
-# get data from csv
-# df_vehicle_data = pd.read_csv('vehicle_data.csv')
 
 external_scripts = [
     {'src': 'https://code.jquery.com/jquery-3.3.1.min.js'},

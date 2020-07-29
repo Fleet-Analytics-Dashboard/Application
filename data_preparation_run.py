@@ -74,13 +74,13 @@ cv_table, vehicle_data, xg_class = m_prediction.predict_maintenance(x, y, data_d
 
 # ------------ return changes to database ------------------------------
 # create new Database Tables from Dataframes
-engine = return_engine()
-driving_data.to_sql('driving_data', con=engine, if_exists='replace')
-vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
-vehicle_cost_data.to_sql('vehicle_cost_data', con=engine, if_exists='replace')
-cv_table.to_sql('10_fold_cross_validation_maintenance', con=engine, if_exists='replace')
-driver_names.to_sql('driver_names', con=engine, if_exists='replace')
-engine = None
+# engine = return_engine()
+# driving_data.to_sql('driving_data', con=engine, if_exists='replace')
+# vehicle_data.to_sql('vehicle_data', con=engine, if_exists='replace')
+# vehicle_cost_data.to_sql('vehicle_cost_data', con=engine, if_exists='replace')
+# cv_table.to_sql('10_fold_cross_validation_maintenance', con=engine, if_exists='replace')
+# driver_names.to_sql('driver_names', con=engine, if_exists='replace')
+# engine = None
 
 # generate new csv Files from new dataframes
 vehicle_data.to_csv('csv_data_files/vehicle_data.csv')

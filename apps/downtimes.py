@@ -11,19 +11,16 @@ from plotly.subplots import make_subplots
 from database_connection import connect, return_engine
 
 #connect to database and add files to
-conn = connect()
-sql = "select * from vehicle_data;"
-df_vehicle_data = pd.read_sql_query(sql, conn)
-sql = "select * from driving_data;"
-fleet_data = pd.read_sql_query(sql, conn)
-conn = None
-
-
-
+# conn = connect()
+# sql = "select * from vehicle_data;"
+# df_vehicle_data = pd.read_sql_query(sql, conn)
+# sql = "select * from driving_data;"
+# fleet_data = pd.read_sql_query(sql, conn)
+# conn = None
 
 # get data from csv files
-#df_vehicle_data = pd.read_csv('vehicle_data.csv')
-#fleet_data = pd.read_csv('driving_data.csv')
+df_vehicle_data = pd.read_csv('csv_data_files/vehicle_data.csv')
+fleet_data = pd.read_csv('csv_data_files/driving_data.csv')
 
 # colors theme
 colors = ['rgb(66,234,221)', 'rgb(7,130,130)', 'rgb(171,209,201)', 'rgb(151,179,208)', 'rgb(118,82,139)', 'rgb(173,239,209)', 'rgb(96,96,96)', 'rgb(214,65,97)']
