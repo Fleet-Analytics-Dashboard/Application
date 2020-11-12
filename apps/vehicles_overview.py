@@ -1,10 +1,11 @@
 import pandas as pd
 import dash_html_components as html
 import dash_core_components as dcc
-from database_connection import connect
 import dash_table as dt
 import plotly.graph_objects as go
 import plotly.express as px
+
+# from database_connection import connect
 
 # get data from database
 # conn = connect()

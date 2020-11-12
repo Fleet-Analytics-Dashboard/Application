@@ -8,7 +8,7 @@ import numpy as np
 import statistics
 from plotly.subplots import make_subplots
 
-from database_connection import connect, return_engine
+# from database_connection import connect, return_engine
 
 #connect to database and add files to
 # conn = connect()

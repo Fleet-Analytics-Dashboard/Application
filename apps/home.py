@@ -5,8 +5,10 @@ import pandas as pd
 import dash
 import plotly.graph_objects as go
 import numpy as np
-from database_connection import connect
 import dash_bootstrap_components as dbc
+
+# from database_connection import connect
+
 
 # connect to database
 # conn = connect()
